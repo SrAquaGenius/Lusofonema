@@ -50,7 +50,7 @@ const luzofonemaRules = [
 
 	// "ex" → "eis" se for pronunciado como /ɐjʃ/
 	{ pattern: /ex/gi, ipaPattern: "ɐjʃ", replacement: "eis" },
- { pattern: /iam/go, replacement: "íão" }
+ { pattern: /iam/gi, replacement: "íão" }
 ];
 
 /**
