@@ -1,0 +1,11 @@
+{
+	"name": "luzofonema",
+	"version": "1.0.0",
+	"description": "Conversão fonética de palavras portuguesas para Luzofonema",
+	"main": "index.js",
+	"scripts": {
+		"start": "node index.js"
+	},
+	"author": "SrAqua",
+	"license": "MIT"
+}
