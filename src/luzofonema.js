@@ -4,7 +4,7 @@
  * ------------------------------------------------------------------------- */
 
 const readline = require("readline");
-const { mostrarAlfabeto } = require("./alfabeto");
+const { mostrarAlfabetoLuzofonema, mostrarAlfabetoIPA } = require("./alfabeto");
 const { mostrarPalavra } = require("./mostrar");
 const { verificarPalavra } = require("./verificar");
 
@@ -18,21 +18,25 @@ console.log("========================================================\n");
 
 function mostrarMenu() {
 	console.log("Menu:");
-	console.log("1 - Ver alfabeto");
-	console.log("2 - Mostrar uma palavra");
-	console.log("3 - Validar uma palavra");
+	console.log("1 - Ver alfabeto do Luzofonema");
+	console.log("2 - Ver alfabeto fonético");
+	console.log("3 - Mostrar uma palavra");
+	console.log("4 - Validar uma palavra");
 	console.log("0 - Sair da aplicação");
 
 	rl.question(": ", (opcao) => {
 		console.log("");
 		switch (opcao.trim()) {
 			case "1":
-				mostrarAlfabeto(mostrarMenu);
+				mostrarAlfabetoLuzofonema(mostrarMenu);
 				break;
 			case "2":
-				mostrarPalavra(rl, mostrarMenu);
+				mostrarAlfabetoIPA(mostrarMenu);
 				break;
 			case "3":
+				mostrarPalavra(rl, mostrarMenu);
+				break;
+			case "4":
 				verificarPalavra(rl, mostrarMenu);
 				break;
 			case "0":

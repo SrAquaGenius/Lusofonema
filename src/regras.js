@@ -27,7 +27,7 @@ const luzofonemaRules = [
 	{ pattern: /ch/gi, replacement: "x" },
 
 	// /ʒ/ é sempre "j"
-	{ pattern: /g(?=[eiy])/gi, replacement: "j" },
+	{ pattern: /g(?=[eiyéí])/gi, replacement: "j" },
 
 	// Remover "u" não pronunciado (ex: "guerra" → "gerra")
 	{ pattern: /(?<=[g])u(?=[e,i])/gi, replacement: "" },
@@ -43,10 +43,10 @@ const luzofonemaRules = [
 	{ pattern: /x/gi, ipaPattern: "ks", replacement: "ç" },
 
 	// "x" → "z" se for pronunciado como /z/
-	{ pattern: /(?<=[aeiou])x(?=[aeiou])/gi, ipaPattern: "z", replacement: "z" },
+	{ pattern: /(?<=[aeiouáéíóú])x(?=[aeiouáéíóú])/gi, ipaPattern: "z", replacement: "z" },
 
 	// "x" → "s" se for pronunciado como /s/
-	{ pattern: /(?<=[aeiouáé])x(?=[aeiouãõ])/gi, ipaPattern: "s", replacement: "s" },
+	{ pattern: /(?<=[aeiouáéíóú])x(?=[aeiouáéíóúãõ])/gi, ipaPattern: "s", replacement: "s" },
 
 	// "ex" → "eis" se for pronunciado como /ɐjʃ/
 	{ pattern: /ex/gi, ipaPattern: "ɐjʃ", replacement: "eis" },
