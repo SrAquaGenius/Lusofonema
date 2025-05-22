@@ -20,13 +20,18 @@ function corrigirIPA(palavra, ipa) {
 	ipa = ipa.replace(/ɐ̃‍w̃/g, "ɐ̃‍w");
 	ipa = ipa.replace(/ɐ̃‍m/g, "ɐ̃‍");
 
+	// Ajustar alguns ditongos
+	ipa = ipa.replace(/eɪ/g, "ɐj");
+
 	// Ajustar alguns sons vocálicos
-	ipa = ipa.replace(/ɨ/g, "ə");
-	ipa = ipa.replace(/ʊ/g, "u");
 	ipa = ipa.replace(/ɑ/g, "a");
+	ipa = ipa.replace(/ɨ/g, "ə");
+	ipa = ipa.replace(/ɪ/g, "j");
+	ipa = ipa.replace(/ʊ/g, "u");
 
 	// Ajustar outros caracteres
 	ipa = ipa.replace(/ɾə/g, "ɾ");
+	ipa = ipa.replace(/ɡ/g, "g");
 
 	// Limpeza final: remove marcas fonéticas e espaços
 	ipa = ipa.replace(/\s/g, "").replace(/[ˌ]/g, "");

@@ -1,81 +1,119 @@
 /* ----------------------------------------------------------------------------
- * File:     regras.js
- * Authors:  SrAqua
- * ------------------------------------------------------------------------- */
+* File:     regras.js
+* Authors:  SrAqua
+* ------------------------------------------------------------------------- */
 
 /**
- * @brief Regras de conversão fonética para ortografia Luzofonema.
- * Cada regra é aplicada sequencialmente para transformar uma palavra
- * baseada na sua forma ortográfica ou fonética.
+ * @brief Cada regra corresponde a:
+ * - `pattern`: expressão regular sobre a forma escrita da palavra
+ * - `ipaPattern`: som IPA esperado na mesma posição
+ * - `replacement`: substituição na ortografia
+ * - `advance`: (opcional) número extra de avanços a fazer no índice da palavra
  */
 const luzofonemaRules = [
 
-	// /z/ é sempre "z"
-	{ pattern: /(?<=[aeiou])s(?=[aeiou])/gi, replacement: "z" },
-
-	// /s/ é sempre "s"
-	{ pattern: /ç/gi, replacement: "s" },
-	{ pattern: /ss/gi, replacement: "s" },
-	{ pattern: /c(?=[e,i])/gi, replacement: "s" },
-
-	// /k/ é sempre "c"
-	{ pattern: /qu(?=[ei])/gi, replacement: "c" },
-	{ pattern: /q(?=u[ao])/gi, replacement: "c" },
-	{ pattern: /k/gi, replacement: "c" },
-
-	// /ʃ/ é sempre "x"
-	{ pattern: /ch/gi, replacement: "x" },
-
-	// /ʒ/ é sempre "j"
-	{ pattern: /g(?=[eiyéí])/gi, replacement: "j" },
-
-	// Remover "u" não pronunciado (ex: "guerra" → "gerra")
-	{ pattern: /(?<=[g])u(?=[e,i])/gi, replacement: "" },
-
-	// Queda do "h" se não for antecedido por "l" ou "n"
-	{ pattern: /(?<![ln])h/gi, replacement: "" },
-
-	// Som nasal com "m" passar para som nasal com "n"
-	{ pattern: /(?<=[aeiou])m(?=[ pb])/gi, replacement: "n" },
-
-	// Regras especiais para o "x" com base no IPA:
-	// "x" → "ç" se for pronunciado como /ks/
+	// ==================== SIBILANTES ====================
+	{ pattern: /(?<=[aeiou])s(?=[aeiou])/gi, ipaPattern: "z", replacement: "z" },
+	{ pattern: /ç/gi, ipaPattern: "s", replacement: "s" },
+	{ pattern: /ss/gi, ipaPattern: "s", replacement: "s" },
+	{ pattern: /c(?=[e,i])/gi, ipaPattern: "s", replacement: "s" },
+	{ pattern: /ch/gi, ipaPattern: "ʃ", replacement: "x" },
 	{ pattern: /x/gi, ipaPattern: "ks", replacement: "ç" },
-
-	// "x" → "z" se for pronunciado como /z/
 	{ pattern: /(?<=[aeiouáéíóú])x(?=[aeiouáéíóú])/gi, ipaPattern: "z", replacement: "z" },
-
-	// "x" → "s" se for pronunciado como /s/
 	{ pattern: /(?<=[aeiouáéíóú])x(?=[aeiouáéíóúãõ])/gi, ipaPattern: "s", replacement: "s" },
-
-	// "ex" → "eis" se for pronunciado como /ɐjʃ/
 	{ pattern: /ex/gi, ipaPattern: "ɐjʃ", replacement: "eis" },
- { pattern: /iam/gi, replacement: "íão" }
+	
+	// ==================== OCLUSIVAS =====================
+	{ pattern: /g(?=[eiyéí])/gi, ipaPattern: "ʒ", replacement: "j" },
+	{ pattern: /qu(?=[ei])/gi, ipaPattern: "k", replacement: "c" },
+	{ pattern: /q(?=u[ao])/gi, ipaPattern: "k", replacement: "c" },
+	{ pattern: /k/gi, ipaPattern: "k", replacement: "c" },
+	{ pattern: /rr/gi, ipaPattern: "ʁ",  replacement: "rr", advance: 1 },
+	
+	// =================== LETRAS MUDAS ===================
+	{ pattern: /(?<=[g])u(?=[e,i])/gi, ipaPattern: "",  replacement: "" },
+	{ pattern: /(?<![ln])h/gi, ipaPattern: "",  replacement: "" },
+
+	// ==================== NASALIZAÇÃO ====================
+	{ pattern: /lh/gi, ipaPattern: "ʎ",  replacement: "lh", advance: 1 },
+	{ pattern: /nh/gi, ipaPattern: "ɲ",  replacement: "nh", advance: 1 },
+	{ pattern: /(?<=[aeiou])m(?=[ pb])/gi, ipaPattern: "n", replacement: "n" },
+
+	// ==================== SONS VOCÁLICOS ====================
+	{ pattern: /a/gi, ipaPattern: "a",  replacement: "á" },
+	{ pattern: /a/gi, ipaPattern: "ɐ",  replacement: "a" },
+	{ pattern: /e/gi, ipaPattern: "ɛ",  replacement: "é" },
+	{ pattern: /o/gi, ipaPattern: "ɔ",  replacement: "ó" },
 ];
+
+
+const sonsIgnorados = new Set(["ˈ", ".", "̃"]);
+function ignorarSom(som) {
+	return sonsIgnorados.has(som);
+}
+
 
 /**
  * @brief Aplica as regras do Luzofonema à string fornecida.
- * 
- * @param {string} texto - A palavra ou fonema a converter.
+ * A substituição é feita apenas se o caractere da palavra coincidir com o som no IPA.
+ *
+ * @param {string} palavra - A palavra original.
  * @param {string} ipa - A transcrição fonética IPA da palavra.
- * @return <string> Palavra convertida.
+ * @return {string} Palavra convertida.
  */
 function aplicarLuzofonema(palavra, ipa) {
-	let resultado = palavra;
 
-	// Aplicar regras especiais para "x" baseado no IPA
-	for (const { pattern, ipaPattern, replacement } of luzofonemaRules) {
-		// Verificar se o padrão IPA corresponde
-		if (ipaPattern && ipa.includes(ipaPattern)) {
-			resultado = resultado.replace(pattern, replacement);
+	const resultado = [];
+	const wordArray = palavra.split(""); // array de caracteres
+	const ipaArray = ipa.split("").slice(1, ipa.length - 1); // array de símbolos IPA
+
+	const maxIndex = Math.max(wordArray.length, ipaArray.length);
+	let wIndex = 0;
+	let iIndex = 0;
+
+	while (wIndex < maxIndex && iIndex < maxIndex) {
+
+		const letra = wordArray[wIndex] || "";
+		const som = ipaArray[iIndex] || "";
+		const contexto = palavra.slice(Math.max(0, wIndex - 2), wIndex + 3);
+
+		let novaLetra = letra;
+
+		console.log(wIndex, letra, letra.charCodeAt(0), iIndex, som, som.charCodeAt(0), contexto);
+
+		if (ignorarSom(som)) {
+			iIndex++;
+			continue;
 		}
-		// Aplicar regras normais
-		else if (!ipaPattern) {
-			resultado = resultado.replace(pattern, replacement);
+
+		if (letra == som) {
+			wIndex++;
+			iIndex++;
+			resultado.push(novaLetra);
+			console.log(resultado.join(""));
+			continue;
 		}
+
+		for (const { pattern, ipaPattern, replacement, advance } of luzofonemaRules) {
+			const re = new RegExp(pattern, "i");
+			if (!contexto.match(re)) continue;
+			if (ipaPattern && (som != ipaPattern)) continue;
+
+			console.log(pattern, ipaPattern, replacement, advance);
+
+			novaLetra = replacement;
+			wIndex += advance ?? 0;
+			break;
+		}
+
+		if (novaLetra != "") iIndex++;
+
+		resultado.push(novaLetra);
+		console.log(resultado.join(""));
+		wIndex++;
 	}
 
-	return resultado;
+	return resultado.join("");
 }
 
 module.exports = { aplicarLuzofonema, luzofonemaRules };

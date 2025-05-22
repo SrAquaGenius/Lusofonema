@@ -5,7 +5,7 @@
 
 const readline = require("readline");
 const { mostrarAlfabetoLuzofonema, mostrarAlfabetoIPA } = require("./alfabeto");
-const { mostrarPalavra } = require("./mostrar");
+const { mostrarPalavra, mostrarTexto } = require("./mostrar");
 const { verificarPalavra } = require("./verificar");
 
 const rl = readline.createInterface({
@@ -22,6 +22,7 @@ function mostrarMenu() {
 	console.log("2 - Ver alfabeto fonético");
 	console.log("3 - Mostrar uma palavra");
 	console.log("4 - Validar uma palavra");
+	console.log("5 - Mostrar texto");
 	console.log("0 - Sair da aplicação");
 
 	rl.question(": ", (opcao) => {
@@ -38,6 +39,9 @@ function mostrarMenu() {
 				break;
 			case "4":
 				verificarPalavra(rl, mostrarMenu);
+				break;
+			case "5":
+				mostrarTexto(rl, mostrarMenu);
 				break;
 			case "0":
 				console.log("👋 Adeus!");
