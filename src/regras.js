@@ -40,15 +40,37 @@ const luzofonemaRules = [
 	{ pattern: /(?<=[aeiou])m(?=[ pb])/gi, ipaPattern: "n", replacement: "n" },
 
 	// ==================== SONS VOCÁLICOS ====================
-	{ pattern: /a/gi, ipaPattern: "a",  replacement: "á" },
-	{ pattern: /a/gi, ipaPattern: "ɐ",  replacement: "a" },
-	{ pattern: /e/gi, ipaPattern: "ɛ",  replacement: "é" },
-	{ pattern: /o/gi, ipaPattern: "ɔ",  replacement: "ó" },
+	// SEMIVOGAIS
+	{ pattern: /i/gi, ipaPattern: "j", replacement: "i" },
+	{ pattern: /u/gi, ipaPattern: "w", replacement: "u" },
+
+	// VOGAIS
+	{ pattern: /[aá]/gi, ipaPattern: "a",  replacement: "á" },
+	{ pattern: /a/gi,    ipaPattern: "ɐ",  replacement: "a" },
+	{ pattern: /[eé]/gi, ipaPattern: "ɛ",  replacement: "é" },
+	{ pattern: /[eê]/gi, ipaPattern: "e",  replacement: "ê" },
+	{ pattern: /e/gi,    ipaPattern: "ə",  replacement: "e" },
+	{ pattern: /i/gi,    ipaPattern: "i",  replacement: "i" },
+	{ pattern: /[oó]/gi, ipaPattern: "ɔ",  replacement: "ó" },
+	{ pattern: /o/gi,    ipaPattern: "o",  replacement: "o" },
+	{ pattern: /o/gi,    ipaPattern: "u",  replacement: "u" },
+	{ pattern: /u/gi,    ipaPattern: "u",  replacement: "u" },
 ];
 
 
+const mapaGrave = {
+	a: "à", á: "ǎ",
+	e: "è", é: "ě",
+	i: "ì",
+	o: "ò", ó: "ǒ",
+	u: "ù",
+};
+
+
+
 const sonsIgnorados = new Set(["ˈ", ".", "̃"]);
-function ignorarSom(som) {
+function ignorarSom(som, index) {
+	index++;
 	return sonsIgnorados.has(som);
 }
 
@@ -67,9 +89,13 @@ function aplicarLuzofonema(palavra, ipa) {
 	const wordArray = palavra.split(""); // array de caracteres
 	const ipaArray = ipa.split("").slice(1, ipa.length - 1); // array de símbolos IPA
 
+	let tIndex = ipaArray.indexOf("ˈ"); // indíce do caracter tónico "ˈ"
+	console.log(tIndex);
+
 	const maxIndex = Math.max(wordArray.length, ipaArray.length);
 	let wIndex = 0;
 	let iIndex = 0;
+	let tonica = false;
 
 	while (wIndex < maxIndex && iIndex < maxIndex) {
 
@@ -81,18 +107,7 @@ function aplicarLuzofonema(palavra, ipa) {
 
 		console.log(wIndex, letra, letra.charCodeAt(0), iIndex, som, som.charCodeAt(0), contexto);
 
-		if (ignorarSom(som)) {
-			iIndex++;
-			continue;
-		}
-
-		if (letra == som) {
-			wIndex++;
-			iIndex++;
-			resultado.push(novaLetra);
-			console.log(resultado.join(""));
-			continue;
-		}
+		if (ignorarSom(som)) continue;
 
 		for (const { pattern, ipaPattern, replacement, advance } of luzofonemaRules) {
 			const re = new RegExp(pattern, "i");
@@ -102,6 +117,13 @@ function aplicarLuzofonema(palavra, ipa) {
 			console.log(pattern, ipaPattern, replacement, advance);
 
 			novaLetra = replacement;
+
+			// Aplica acento grave se esta é a vogal tónica
+			if (iIndex >= tIndex && /[aeiouáéíóú]/i.test(letra) && !tonica) {
+				novaLetra = mapaGrave[novaLetra] || novaLetra;
+				tonica = true;
+			}
+
 			wIndex += advance ?? 0;
 			break;
 		}
@@ -116,4 +138,4 @@ function aplicarLuzofonema(palavra, ipa) {
 	return resultado.join("");
 }
 
-module.exports = { aplicarLuzofonema, luzofonemaRules };
+module.exports = { aplicarLuzofonema };

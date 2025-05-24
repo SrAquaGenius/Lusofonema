@@ -69,7 +69,7 @@ function mostrarAlfabetoIPA(callback) {
 		{ som: "/ɛ/", tipo: "V-O", palavra: "Pé" },
 		{ som: "/e/", tipo: "V-O", palavra: "Mesa" },
 		{ som: "/ə/", tipo: "V-O", palavra: "Sede" },
-		{ som: "/i", tipo: "V-O", palavra: "Vida"},
+		{ som: "/i/", tipo: "V-O", palavra: "Vida"},
 		{ som: "/ɔ/", tipo: "V-O", palavra: "Pó"},
 		{ som: "/o/", tipo: "V-O", palavra: "Ovo"},
 		{ som: "/u/", tipo: "V-O", palavra: "Luz"},
