@@ -3,7 +3,7 @@
  * Authors:  SrAqua
  * ------------------------------------------------------------------------- */
 
-function mostrarAlfabetoLuzofonema(callback) {
+function mostrarAlfabetoLusofonema(callback) {
 	const alfabeto = [
 		{ letra: "A", nome: "á", som: "/a/ ou /ɐ/" },
 		{ letra: "B", nome: "bê", som: "/b/" },
@@ -30,7 +30,7 @@ function mostrarAlfabetoLuzofonema(callback) {
 		{ letra: "Z", nome: "zê", som: "/z/" },
 	];
 
-	console.log("\n🔡 Alfabeto Luzofonema:\n");
+	console.log("\n🔡 Alfabeto Lusofonema:\n");
 	console.log("Letra | Nome | Som");
 	console.log("-------------------------------");
 	alfabeto.forEach(({ letra, nome, som }) => {
@@ -102,4 +102,4 @@ function mostrarAlfabetoIPA(callback) {
 	if (callback) callback();
 }
 
-module.exports = { mostrarAlfabetoLuzofonema, mostrarAlfabetoIPA };
+module.exports = { mostrarAlfabetoLusofonema, mostrarAlfabetoIPA };

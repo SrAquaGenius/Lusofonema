@@ -1,7 +1,7 @@
 {
-	"name": "luzofonema",
+	"name": "lusofonema",
 	"version": "1.0.0",
-	"description": "Conversão fonética de palavras portuguesas para Luzofonema",
+	"description": "Conversão fonética de palavras portuguesas para Lusofonema",
 	"main": "index.js",
 	"scripts": {
 		"start": "node index.js"

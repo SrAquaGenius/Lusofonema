@@ -4,7 +4,7 @@
  * ------------------------------------------------------------------------- */
 
 const readline = require("readline");
-const { mostrarAlfabetoLuzofonema, mostrarAlfabetoIPA } = require("./alfabeto");
+const { mostrarAlfabetoLusofonema, mostrarAlfabetoIPA } = require("./alfabeto");
 const { mostrarPalavra, mostrarTexto } = require("./mostrar");
 const { verificarPalavra } = require("./verificar");
 
@@ -13,12 +13,12 @@ const rl = readline.createInterface({
 	output: process.stdout
 });
 
-console.log("🗣️  Luzofonema — Uma versão fonética da língua Portuguesa");
+console.log("🗣️  Lusofonema — Uma versão fonética da língua Portuguesa");
 console.log("========================================================\n");
 
 function mostrarMenu() {
 	console.log("Menu:");
-	console.log("1 - Ver alfabeto do Luzofonema");
+	console.log("1 - Ver alfabeto do Lusofonema");
 	console.log("2 - Ver alfabeto fonético");
 	console.log("3 - Mostrar uma palavra");
 	console.log("4 - Validar uma palavra");
@@ -29,7 +29,7 @@ function mostrarMenu() {
 		console.log("");
 		switch (opcao.trim()) {
 			case "1":
-				mostrarAlfabetoLuzofonema(mostrarMenu);
+				mostrarAlfabetoLusofonema(mostrarMenu);
 				break;
 			case "2":
 				mostrarAlfabetoIPA(mostrarMenu);
