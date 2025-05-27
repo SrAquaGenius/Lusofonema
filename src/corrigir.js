@@ -4,88 +4,130 @@
  * ------------------------------------------------------------------------- */
 
 const fs = require("fs");
+const { aplicarLuzofonema } = require("./regras");
 
-function corrigirAdicionar(rl, callback, palavraOriginal, ipa, luzofonema) {
+function corrigirAdicionar(rl, callback, palavraOriginal, ipaOriginal, luzofonemaOriginal) {
+	function cicloCorrecao(palavraAtual, ipaAtual, luzofonemaAtual) {
+		rl.question("🔧 Queres corrigir este triplo? (s/n/q): ", (resposta) => {
+			const r = resposta.trim().toLowerCase();
+			if (r === "q") {
+				console.log("🚪 Saída forçada. A operação foi cancelada.\n");
+				callback();
+				return;
+			}
 
-	rl.question("🔧 Queres corrigir este triplo? (s/n): ", (resposta) => {
-		if (resposta.trim().toLowerCase() === "s") {
-			// Permitir correção manual
-			rl.question(`✏️  Palavra [${palavraOriginal}]: `, (novaPalavra) => {
-				const palavra = novaPalavra.trim().toLowerCase() || palavraOriginal;
-
-				rl.question(`✏️  IPA [${ipa}]: `, (novoIPA) => {
-					ipa = novoIPA.trim() || ipa;
-
-					rl.question(`✏️  Luzofonema [${luzofonema}]: `, (novoLuzofonema) => {
-						luzofonema = novoLuzofonema.trim() || luzofonema;
-
-						const linhaNova = `${palavra}\t${ipa}\t${luzofonema}`;
-						const ficheiro = "dicionario.tsv";
-						let conteudo = fs.existsSync(ficheiro) ? fs.readFileSync(ficheiro, "utf8") : "";
-
-						const linhas = conteudo.split("\n").filter(Boolean);
-						const indiceExistente = linhas.findIndex(l => l.startsWith(`${palavra}\t`));
-
-						if (indiceExistente === -1) {
-							rl.question("💾 Adicionar ao dicionário? (s/n): ", (respostaAdicionar) => {
-								if (respostaAdicionar.trim().toLowerCase() === "s") {
-									fs.appendFileSync(ficheiro, linhaNova + "\n", "utf8");
-									console.log("✅ Adicionado ao dicionário.\n");
-								} else {
-									console.log("❌ Não foi adicionado.\n");
+			if (r === "s") {
+				console.log("1 - Corrigir tudo");
+				console.log("2 - Corrigir só o IPA e reaplicar regras");
+				console.log("0 - Cancelar correção");
+				console.log("q - Cancelar e voltar ao menu inicial");
+				rl.question("✏️  Escolhe uma opção: ", (modo) => {
+					switch (modo.trim()) {
+						case "1":
+							rl.question(`✏️  Palavra [${palavraAtual}]: `, (novaPalavra) => {
+								if (novaPalavra.trim().toLowerCase() === "q") {
+									console.log("🚪 Saída forçada. A operação foi cancelada.\n");
+									callback();
+									return;
 								}
-								callback();
+								const nova = novaPalavra.trim().toLowerCase() || palavraAtual;
+
+								rl.question(`✏️  IPA [${ipaAtual}]: `, (novoIPA) => {
+									if (novoIPA.trim().toLowerCase() === "q") {
+										console.log("🚪 Saída forçada. A operação foi cancelada.\n");
+										callback();
+										return;
+									}
+									const novo = novoIPA.trim() || ipaAtual;
+
+									rl.question(`✏️  Luzofonema [${luzofonemaAtual}]: `, (novoLuzofonema) => {
+										if (novoLuzofonema.trim().toLowerCase() === "q") {
+											console.log("🚪 Saída forçada. A operação foi cancelada.\n");
+											callback();
+											return;
+										}
+										const novoLuz = novoLuzofonema.trim() || luzofonemaAtual;
+										cicloCorrecao(nova, novo, novoLuz);
+									});
+								});
 							});
-						} else {
-							console.log(`📚 Palavra já existe:\n→ ${linhas[indiceExistente]}`);
-							rl.question("✏️  Queres substituir esta entrada? (s/n): ", (respostaSubstituir) => {
-								if (respostaSubstituir.trim().toLowerCase() === "s") {
-									linhas[indiceExistente] = linhaNova;
-									fs.writeFileSync(ficheiro, linhas.join("\n") + "\n", "utf8");
-									console.log("✅ Entrada atualizada.\n");
-								} else {
-									console.log("❌ Entrada mantida.\n");
+							break;
+
+						case "2":
+							rl.question(`✏️  Novo IPA [${ipaAtual}]: `, (novoIPA) => {
+								if (novoIPA.trim().toLowerCase() === "q") {
+									console.log("🚪 Saída forçada. A operação foi cancelada.\n");
+									callback();
+									return;
 								}
-								callback();
+								const novo = novoIPA.trim() || ipaAtual;
+								const novoLuz = aplicarLuzofonema(palavraAtual, novo);
+								console.log(`🔁 Novo Luzofonema gerado: ${novoLuz}`);
+								cicloCorrecao(palavraAtual, novo, novoLuz);
 							});
-						}
-					});
-				});
-			});
-		} else {
-			// Caso não queira corrigir, perguntar se quer adicionar
-			const linhaNova = `${palavraOriginal}\t${ipa}\t${luzofonema}`;
-			const ficheiro = "dicionario.tsv";
-			let conteudo = fs.existsSync(ficheiro) ? fs.readFileSync(ficheiro, "utf8") : "";
+							break;
 
-			const linhas = conteudo.split("\n").filter(Boolean);
-			const indiceExistente = linhas.findIndex(l => l.startsWith(`${palavraOriginal}\t`));
+						case "q":
+							console.log("🚪 Saída forçada. A operação foi cancelada.\n");
+							callback();
+							break;
 
-			if (indiceExistente === -1) {
-				rl.question("💾 Adicionar ao dicionário? (s/n): ", (respostaAdicionar) => {
-					if (respostaAdicionar.trim().toLowerCase() === "s") {
-						fs.appendFileSync(ficheiro, linhaNova + "\n", "utf8");
-						console.log("✅ Adicionado ao dicionário.\n");
-					} else {
-						console.log("❌ Não foi adicionado.\n");
+						default:
+							console.log("❌ Cancelado.\n");
+							cicloCorrecao(palavraAtual, ipaAtual, luzofonemaAtual);
+							break;
 					}
-					callback();
 				});
 			} else {
-				console.log(`📚 Palavra já existe:\n→ ${linhas[indiceExistente]}`);
-				rl.question("✏️  Queres substituir esta entrada? (s/n): ", (respostaSubstituir) => {
-					if (respostaSubstituir.trim().toLowerCase() === "s") {
-						linhas[indiceExistente] = linhaNova;
-						fs.writeFileSync(ficheiro, linhas.join("\n") + "\n", "utf8");
-						console.log("✅ Entrada atualizada.\n");
-					} else {
-						console.log("❌ Entrada mantida.\n");
-					}
-					callback();
-				});
+				// Apenas se não quiser corrigir (e não sair) é que avança para guardar
+				guardarEntrada(rl, callback, palavraAtual, ipaAtual, luzofonemaAtual);
 			}
-		}
-	});
+		});
+	}
+
+	cicloCorrecao(palavraOriginal, ipaOriginal, luzofonemaOriginal);
+}
+
+function guardarEntrada(rl, callback, palavra, ipa, luzofonema) {
+	const linhaNova = `${palavra}\t${ipa}\t${luzofonema}`;
+	const ficheiro = "dicionario.tsv";
+	let conteudo = fs.existsSync(ficheiro) ? fs.readFileSync(ficheiro, "utf8") : "";
+	const linhas = conteudo.split("\n").filter(Boolean);
+	const indiceExistente = linhas.findIndex(l => l.startsWith(`${palavra}\t`));
+
+	if (indiceExistente === -1) {
+		rl.question("💾 Adicionar ao dicionário? (s/n/q): ", (respostaAdicionar) => {
+			const r = respostaAdicionar.trim().toLowerCase();
+			if (r === "q") {
+				console.log("🚪 Saída forçada. A operação foi cancelada.\n");
+				callback();
+			} else if (r === "s") {
+				fs.appendFileSync(ficheiro, linhaNova + "\n", "utf8");
+				console.log("✅ Adicionado ao dicionário.\n");
+				callback();
+			} else {
+				console.log("❌ Não foi adicionado.\n");
+				callback();
+			}
+		});
+	} else {
+		console.log(`📚 Palavra já existe:\n→ ${linhas[indiceExistente]}`);
+		rl.question("✏️  Queres substituir esta entrada? (s/n/q): ", (respostaSubstituir) => {
+			const r = respostaSubstituir.trim().toLowerCase();
+			if (r === "q") {
+				console.log("🚪 Saída forçada. A operação foi cancelada.\n");
+				callback();
+			} else if (r === "s") {
+				linhas[indiceExistente] = linhaNova;
+				fs.writeFileSync(ficheiro, linhas.join("\n") + "\n", "utf8");
+				console.log("✅ Entrada atualizada.\n");
+				callback();
+			} else {
+				console.log("❌ Entrada mantida.\n");
+				callback();
+			}
+		});
+	}
 }
 
 module.exports = { corrigirAdicionar };

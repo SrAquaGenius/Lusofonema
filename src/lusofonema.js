@@ -58,7 +58,7 @@ function mostrarMenu() {
 	console.log("3 - Mostrar uma palavra");
 	console.log("4 - Validar uma palavra");
 	console.log("5 - Mostrar texto");
-	console.log("6 - Ativar/Desativar debug", debugLigado ? "🟢" : "⚫");
+	console.log("6 - Ativar/Desativar (", debugLigado ? "🟢" : "⚫", ")");
 	console.log("0 - Sair da aplicação");
 
 	rl.question(": ", (opcao) => {
