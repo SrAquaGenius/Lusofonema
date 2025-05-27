@@ -62,7 +62,6 @@ const luzofonemaRules = [
 	{ pattern: /ão/gi, ipaPattern: "ɐ̃w", replacement: "ão" },
 	{ pattern: /ãe/gi, ipaPattern: "ɐ̃j", replacement: "ãe" },
 	{ pattern: /õe/gi, ipaPattern: "õj", replacement: "õe" },
-	{ pattern: /ũi/gi, ipaPattern: "ũj", replacement: "ui" }, // Criado por mim
 
 
 	// ==================== SONS VOCÁLICOS ====================
