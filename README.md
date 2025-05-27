@@ -21,16 +21,18 @@ Utilizando a transcrição fonética IPA como ponto de partida, o projeto conver
 
 ```
 .
+├── README.md
 ├── dicionario.tsv
 ├── package.json
 ├── package-lock.json
+├── corpus/...				# textos em português em xml para buscar palavras
 └── src
-    ├── alfabeto.js        # Mostra o alfabeto fonético Luzofonema
-    ├── ipa.js             # Corrige a transcrição IPA de espeak-ng
-    ├── luzofonema.js      # Menu principal
-    ├── mostrar.js         # Mostra palavras convertidas
-    ├── regras.js          # Regras de conversão fonética
-    └── verificar.js       # Verifica e adiciona novas palavras ao dicionário
+	├── alfabeto.js			# Mostra o alfabeto fonético Luzofonema
+	├── ipa.js				# Corrige a transcrição IPA de espeak-ng
+	├── luzofonema.js		# Menu principal
+	├── mostrar.js	 		# Mostra palavras convertidas
+	├── regras.js			# Regras de conversão fonética
+	└── verificar.js		# Verifica e adiciona novas palavras ao dicionário
 ```
 
 ## Como usar
