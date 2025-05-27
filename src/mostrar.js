@@ -37,7 +37,7 @@ function mostrarPalavra(rl, callback) {
 		// Se não existir, sugerir e perguntar se quer adicionar
 		try {
 			let ipa = execSync(`espeak-ng -v pt --ipa=3 -q "${palavra}" 2>/dev/null`).toString().trim();
-			ipa = corrigirIPA(palavra, ipa);
+			ipa = corrigirIPA(ipa);
 			const luzofonema = aplicarLuzofonema(palavra, ipa);
 
 			console.log(`❓ Palavra não encontrada no dicionário.`);
@@ -116,7 +116,7 @@ function mostrarTexto(rl, callback) {
 				if (dicionario[minuscula]) {
 					try {
 						ipa = execSync(`espeak-ng -v pt --ipa=3 -q "${palavraOriginal}" 2>/dev/null`).toString().trim();
-						ipa = corrigirIPA(palavraOriginal, ipa);
+						ipa = corrigirIPA(ipa);
 						luz = "*" + dicionario[minuscula];
 					} catch {}
 				} else {

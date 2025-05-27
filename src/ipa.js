@@ -3,12 +3,21 @@
  * Authors:  SrAqua
  * ------------------------------------------------------------------------- */
 
-function corrigirIPA(palavra, ipa) {
+function corrigirIPA(ipa) {
 
-	// Correções específicas baseadas na Infopédia (Português Europeu)
+	// Correções específicas para Português Europeu
+
+	ipa = ipa.replace(/\u200d/g, ""); // remove ZWJ (zero width joiner)
+
+	// Ajustar outros sons/caracteres
+	ipa = ipa.replace(/ɑ/g, "a");
+	ipa = ipa.replace(/ɨ/g, "ə");
+	ipa = ipa.replace(/ɪ/g, "j");
+	ipa = ipa.replace(/ʊ/g, "u");
+	ipa = ipa.replace(/ɾə/g, "ɾ");
+	ipa = ipa.replace(/ɡ/g, "g");
 
 	// Corrigir sons nasais
-
 	ipa = ipa.replace(/aŋ/g, "ɐ̃‍");
 	ipa = ipa.replace(/eiŋ/g, "ẽ");
 	ipa = ipa.replace(/e‍ɪŋ/g, "ẽ");
@@ -22,24 +31,24 @@ function corrigirIPA(palavra, ipa) {
 
 	// Ajustar alguns ditongos
 	ipa = ipa.replace(/eɪ/g, "ɐj");
+	ipa = ipa.replace(/au/g, "aw");
 
-	// Ajustar alguns sons vocálicos
-	ipa = ipa.replace(/ɑ/g, "a");
-	ipa = ipa.replace(/ɨ/g, "ə");
-	ipa = ipa.replace(/ɪ/g, "j");
-	ipa = ipa.replace(/ʊ/g, "u");
-
-	// Ajustar outros caracteres
-	ipa = ipa.replace(/ɾə/g, "ɾ");
-	ipa = ipa.replace(/ɡ/g, "g");
-
-	// Limpeza final: remove marcas fonéticas e espaços
+	// Remove marcas fonéticas e espaços
 	ipa = ipa.replace(/\s/g, "").replace(/[ˌ]/g, "");
 	
 	// Corrigir posição do acento tónico
 	ipa = ipa.replace(/([^\sˈˌ\/])ˈ([^\sˈˌ\/])/g, "ˈ$1$2");
 
-	return ipa = "/" + ipa + "/";
+	// Remover caracteres indesejados
+	const ipaArray = ipa.split("");
+	const ipaResult = [];
+	for (const c in ipaArray) {
+		if (ipaArray[c].charCodeAt(0) <= "ˈ".charCodeAt(0)) {
+			ipaResult.push(ipaArray[c]);
+		}
+	}
+
+	return "/" + ipaResult.join("") + "/";
 }
 
 module.exports = { corrigirIPA };

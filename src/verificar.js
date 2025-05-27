@@ -72,7 +72,7 @@ function verificarPalavra(rl, callback) {
 
 		try {
 			let ipa = execSync(`espeak-ng -v pt --ipa=3 -q "${palavraOriginal}" 2>/dev/null`).toString().trim();
-			ipa = corrigirIPA(palavraOriginal, ipa);
+			ipa = corrigirIPA(ipa);
 			let luzofonema = aplicarLuzofonema(palavraOriginal, ipa);
 
 			console.log(`🔤 ${palavraOriginal} → ${ipa} → ${luzofonema}\n`);
