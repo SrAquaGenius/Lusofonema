@@ -3,6 +3,8 @@
 * Authors:  SrAqua
 * ------------------------------------------------------------------------- */
 
+const { debug } = require("./debug");
+
 /**
  * @brief Cada regra corresponde a:
  * - `pattern`: expressão regular sobre a forma escrita da palavra
@@ -164,6 +166,8 @@ function aplicarTonicidade(palavra) {
  */
 function aplicarLuzofonema(palavraOriginal, ipaOriginal) {
 
+	debug(palavraOriginal, ipaOriginal);
+
 	const resultado = [];
 	const word = palavraOriginal;
 	const wordArray = palavraOriginal.split("");
@@ -183,7 +187,7 @@ function aplicarLuzofonema(palavraOriginal, ipaOriginal) {
 
 		let novaLetra = letra;
 
-		//console.log(wIndex, letra, wordContext, iIndex, som, ipaContext);
+		debug(wIndex, letra, wordContext, iIndex, som, ipaContext);
 
 		// Ignorar marcadores ou símbolos não alfabéticos (ex: ˈ)
 		if (letra.charCodeAt(0) > "ˈ".charCodeAt(0)) {
@@ -208,13 +212,13 @@ function aplicarLuzofonema(palavraOriginal, ipaOriginal) {
 			const wordRegex = new RegExp(pattern, "i");
 			const ipaRegex = new RegExp(ipaPattern, "i");
 
-			//console.log(wordRegex, ipaRegex, pattern, ipaPattern, replacement);
+			debug(wordRegex, ipaRegex, pattern, ipaPattern, replacement);
 
 			if (!wordContext.match(wordRegex)) continue;
 				
 			if (ipaPattern && som !== ipaPattern) continue;
 
-			//console.log("✔️ Regra aplicada:", pattern, ipaPattern, replacement);
+			debug("✔️ Regra aplicada:", pattern, ipaPattern, replacement);
 
 			novaLetra = replacement;
 			resultado.push(novaLetra);
@@ -223,7 +227,7 @@ function aplicarLuzofonema(palavraOriginal, ipaOriginal) {
 			wIndex += passo;
 			iIndex += passo;
 			regraAplicada = true;
-			break; // aplica só uma regra por iteração
+			break;
 		}
 
 		if (!regraAplicada) {
@@ -233,7 +237,7 @@ function aplicarLuzofonema(palavraOriginal, ipaOriginal) {
 			iIndex++;
 		}
 
-		//console.log("🔡 Resultado parcial:", resultado.join(""));
+		debug("🔡 Resultado parcial:", resultado.join(""));
 	}
 
 	return aplicarTonicidade(resultado.join(""));
