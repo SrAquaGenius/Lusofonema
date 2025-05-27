@@ -1,20 +1,21 @@
-# Luzofonema
+# Luzófunêma
 
-**Luzofonema** é um projeto linguístico-experimental que visa criar uma ortografia alternativa para o português europeu, baseada diretamente na forma como a língua é falada. Utilizando a transcrição fonética IPA como ponto de partida, o projeto converte palavras para uma representação fonética simplificada e mais intuitiva.
+**Luzófunêma** é um projeto linguístico experimental que visa criar uma ortografia alternativa para o português europeu, baseada diretamente na forma como a língua é falada.
+Utilizando a transcrição fonética IPA como ponto de partida, o projeto converte palavras para uma representação fonética simplificada e mais intuitiva para os falantes.
 
 ## Objetivos
 
 * Criar uma "língua ortofônica" baseada no português europeu.
 * Tornar a pronúncia do português mais acessível através de uma grafia fonética consistente.
-* Permitir experimentação linguística e/ou artística com uma nova forma de escrita.
-* Possibilitar colaboração na correção e evolução das regras fonéticas.
+* Permitir experimentação linguística com uma nova forma de escrita.
+* Inspirar outros a explorarem as extenção das respetivas línguas.
 
 ## Como funciona
 
 1. As palavras são convertidas em transcrição fonética IPA usando `espeak-ng`.
 2. Aplica-se uma camada de correções manuais para refletir mais precisamente a pronúncia em português europeu.
-3. Utilizam-se regras fonéticas para converter o IPA numa ortografia fonética simplificada (o Luzofonema).
-4. Os resultados são guardados num ficheiro `dicionario.tsv`.
+3. Utilizam-se regras fonéticas para converter o IPA numa ortografia fonética simplificada.
+4. Os resultados podem, depois, ser guardados no ficheiro `dicionario.tsv`.
 
 ## Estrutura do projeto
 
@@ -57,10 +58,6 @@ node src/luzofonema.js
 
 * [espeak-ng](https://github.com/espeak-ng/espeak-ng) (deve estar instalado no sistema)
 * Node.js
-
-## Contribuição
-
-No futuro, o projeto pode evoluir para uma plataforma de **anotação colaborativa**. Por agora, apenas o autor está a introduzir palavras manualmente. Sugestões, ideias ou correcções são bem-vindas via pull request ou issue.
 
 ## Licença
 
