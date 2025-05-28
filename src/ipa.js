@@ -3,9 +3,13 @@
  * Authors:  SrAqua
  * ------------------------------------------------------------------------- */
 
+const { debug } = require("./debug");
+
 function corrigirIPA(ipa) {
 
 	// Correções específicas para Português Europeu
+
+	debug("IPA original:", ipa);
 
 	ipa = ipa.replace(/\u200d/g, ""); // remove ZWJ (zero width joiner)
 
@@ -13,21 +17,22 @@ function corrigirIPA(ipa) {
 	ipa = ipa.replace(/ɑ/g, "a");
 	ipa = ipa.replace(/ɨ/g, "ə");
 	ipa = ipa.replace(/ɪ/g, "j");
-	ipa = ipa.replace(/ʊ/g, "u");
+	ipa = ipa.replace(/ʊ/g, "w");
+	ipa = ipa.replace(/ʊ̃/g, "w");
+	ipa = ipa.replace(/w$/g, "u");
 	ipa = ipa.replace(/ɾə/g, "ɾ");
 	ipa = ipa.replace(/ɡ/g, "g");
 
 	// Corrigir sons nasais
 	ipa = ipa.replace(/aŋ/g, "ɐ̃‍");
 	ipa = ipa.replace(/eiŋ/g, "ẽ");
-	ipa = ipa.replace(/e‍ɪŋ/g, "ẽ");
+	ipa = ipa.replace(/eɪŋ/g, "ẽ");
 	ipa = ipa.replace(/iŋ/g, "ĩ");
 	ipa = ipa.replace(/oŋ/g, "õ");
 	ipa = ipa.replace(/uŋ/g, "ũ");
 	ipa = ipa.replace(/ŋ/g, "");
-	ipa = ipa.replace(/ʊ̃/g, "w̃");
-	ipa = ipa.replace(/ɐ̃‍w̃/g, "ɐ̃‍w");
-	ipa = ipa.replace(/ɐ̃‍m/g, "ɐ̃‍");
+	ipa = ipa.replace(/ɐ̃w̃/g, "ɐ̃w");
+	ipa = ipa.replace(/ɐ̃m/g, "ɐ̃‍");
 
 	// Ajustar alguns ditongos
 	ipa = ipa.replace(/eɪ/g, "ɐj");
@@ -43,7 +48,11 @@ function corrigirIPA(ipa) {
 	const ipaArray = ipa.split("");
 	const ipaResult = [];
 	for (const c in ipaArray) {
-		if (ipaArray[c].charCodeAt(0) <= "ˈ".charCodeAt(0)) {
+
+		debug("Char: ", ipaArray[c], ipaArray[c].charCodeAt(0));
+
+		if (ipaArray[c].charCodeAt(0) <= "ˈ".charCodeAt(0) ||
+			ipaArray[c].charCodeAt(0) == 771) {
 			ipaResult.push(ipaArray[c]);
 		}
 	}

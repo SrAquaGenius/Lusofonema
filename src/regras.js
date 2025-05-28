@@ -9,79 +9,120 @@ const { debug } = require("./debug");
  * @brief Cada regra corresponde a:
  * - `pattern`: expressão regular sobre a forma escrita da palavra
  * - `ipaPattern`: som IPA esperado na mesma posição
- * - `replacement`: substituição na ortografia
+ * - `out`: substituição na ortografia
  * - `advance`: (opcional) número extra de avanços a fazer no índice da palavra
  */
-const luzofonemaRules = [
+const lusofonemaRules = [ 
 
-	// ==================== SIBILANTES ====================
-	{ pattern: /(?<=[aeiou])s(?=[aeiou])/gi, ipaPattern: "z", replacement: "z" },
-	{ pattern: /ç/gi, ipaPattern: "s", replacement: "s" },
-	{ pattern: /ss/gi, ipaPattern: "s", replacement: "s" },
-	{ pattern: /c(?=[e,i])/gi, ipaPattern: "s", replacement: "s" },
-	{ pattern: /ch/gi, ipaPattern: "ʃ", replacement: "x" },
-	{ pattern: /x/gi, ipaPattern: "ks", replacement: "ç" },
-	{ pattern: /(?<=[aeiouáéíóú])x(?=[aeiouáéíóú])/gi, ipaPattern: "z", replacement: "z" },
-	{ pattern: /(?<=[aeiouáéíóú])x(?=[aeiouáéíóúãõ])/gi, ipaPattern: "s", replacement: "s" },
-	{ pattern: /ex/gi, ipaPattern: "ɐjʃ", replacement: "eis" },
-	
-	// ==================== OCLUSIVAS =====================
-	{ pattern: /g(?=[eiyéí])/gi, ipaPattern: "ʒ", replacement: "j" },
-	{ pattern: /qu(?=[ei])/gi, ipaPattern: "k", replacement: "c" },
-	{ pattern: /q(?=u[ao])/gi, ipaPattern: "k", replacement: "c" },
-	{ pattern: /k/gi, ipaPattern: "k", replacement: "c" },
-	{ pattern: /rr/gi, ipaPattern: "ʁ",  replacement: "rr", advance: 1 },
+	// ========================== SONS CONSOANTÍCOS ===========================
 
-	// =================== LETRAS MUDAS ===================
-	{ pattern: /(?<=[g])u(?=[e,i])/gi, ipaPattern: "",  replacement: "" },
-	{ pattern: /(?<![ln])h/gi, ipaPattern: "",  replacement: "" },
+	// ---------------------- Consoantes Oclusivas (C-O) ----------------------
+	{ pattern: /p/gi,	ipaPattern: "p", out: "p" },				// Pato
+	{ pattern: /b/gi,	ipaPattern: "b", out: "b" },				// Bola
+	{ pattern: /t/gi,	ipaPattern: "t", out: "t" },				// Teto
+	{ pattern: /d/gi,	ipaPattern: "d", out: "d" },				// Dado
+	{ pattern: /k/gi,	ipaPattern: "k", out: "c" },				// Casa
+	{ pattern: /qu(?=[ei])/gi, ipaPattern: "k", out: "c" },			// Queijo
+	{ pattern: /q(?=u[ao])/gi, ipaPattern: "k", out: "c" },			// Quanto
+	{ pattern: /g/gi,	ipaPattern: "g", out: "g" },				// Gato
 
-	// ==================== NASALIZAÇÃO ====================
-	{ pattern: /lh/gi, ipaPattern: "ʎ",  replacement: "lh", advance: 1 },
-	{ pattern: /nh/gi, ipaPattern: "ɲ",  replacement: "nh", advance: 1 },
-	{ pattern: /(?<=[aeiou])m(?=[ pb])/gi, ipaPattern: "n", replacement: "n" },
+	// --------------------- Consoantes Fricativas (C-F) ----------------------
+	{ pattern: /f/gi,	ipaPattern: "f", out: "f" },				// Faca
+	{ pattern: /v/gi,	ipaPattern: "v", out: "v" },				// Vaca
+	{ pattern: /s/gi,	ipaPattern: "s", out: "s" },				// Sapo
+	{ pattern: /s/gi,	ipaPattern: "ʃ", out: "s" },				// Cesta
+	{ pattern: /ss/gi,	ipaPattern: "s", out: "s" },				// Massa
+	{ pattern: /c(?=[e,i])/gi, ipaPattern: "s", out: "s" },			// Cinema
+	{ pattern: /ç/gi,	ipaPattern: "s", out: "s" },				// Lição
+	{ pattern: /(?<=[aeiouáéíóú])x(?=[aeiouáéíóúãõ])/gi,
+						ipaPattern: "s", out: "s" },				// Máximo
+	{ pattern: /z/gi,	ipaPattern: "z", out: "z" },				// Zero
+	{ pattern: /(?<=[aeiou])s(?=[aeiou])/gi, 
+						ipaPattern: "z", out: "z" },				// Casa
+	{ pattern: /(?<=[aeiouáéíóú])x(?=[aeiouáéíóú])/gi,
+						ipaPattern: "z", out: "z" },				// Exame
+	{ pattern: /x/gi,	ipaPattern: "ʃ", out: "x" },				// Bruxa
+	{ pattern: /ch/gi,	ipaPattern: "ʃ", out: "x" },				// Chave
+	{ pattern: /ex/gi, 	ipaPattern: "ɐjʃ", out: "eis" },			// Texto
+	{ pattern: /ʒ/gi,	ipaPattern: "ʒ", out: "ʒ" },				// Jogo
+	{ pattern: /g(?=[eiyéí])/gi, ipaPattern: "ʒ", out: "j" },		// Gente
 
-	// ======================= DITONGOS =======================
-	// Ditongos Orais
-	{ pattern: /ai/gi,		ipaPattern: "aj", replacement: "ai" },
-	{ pattern: /au/gi,		ipaPattern: "aw", replacement: "au" },
-	{ pattern: /ei/gi,		ipaPattern: "ɐj", replacement: "ei" },
-	{ pattern: /(éu|eu)/gi, ipaPattern: "ɛw", replacement: "éu" },
-	{ pattern: /eu/gi,		ipaPattern: "ew", replacement: "eu" },
-	{ pattern: /iu/gi,		ipaPattern: "iw", replacement: "iu" },
-	{ pattern: /(ói|oi)/gi, ipaPattern: "ɔj", replacement: "ói" },
-	{ pattern: /oi/gi,		ipaPattern: "oj", replacement: "oi" },
-	{ pattern: /ou/gi,		ipaPattern: "ow", replacement: "ou" },
-	{ pattern: /ui/gi,		ipaPattern: "uj", replacement: "ui" },
+	// -------------- Par Consoantal Oclusivo-Fricativo (PC-OF) ---------------
+	{ pattern: /x/gi,	ipaPattern: "ks", out: "ç" },				// Fluxo
 
-	// Ditongos Orais Estáveis
-	{ pattern: /ua/gi,		ipaPattern: "wɐ", replacement: "ua" },
-	{ pattern: /ue/gi,		ipaPattern: "we", replacement: "ue" },
-	{ pattern: /ui/gi,		ipaPattern: "wi", replacement: "ui" },
-	{ pattern: /uo/gi,		ipaPattern: "wɔ", replacement: "uo" },
+	// ----------------------- Consoantes Nasais (C-N) ------------------------
+	{ pattern: /m/gi,	ipaPattern: "m", out: "m" },				// Mão
+	{ pattern: /n/gi,	ipaPattern: "n", out: "n" },				// Nuvem
+	{ pattern: /nh/gi,	ipaPattern: "ɲ", out: "nh", advance: 1 },	// Manhã
+	{ pattern: /(?<=[aeiou])m(?=[ pb])/gi,
+						ipaPattern: "n", out: "n" },				// Campo
 
-	// Ditongos Nasais
-	{ pattern: /ão/gi, ipaPattern: "ɐ̃w", replacement: "ão" },
-	{ pattern: /ãe/gi, ipaPattern: "ɐ̃j", replacement: "ãe" },
-	{ pattern: /õe/gi, ipaPattern: "õj", replacement: "õe" },
+	// ---------------------- Consoantes Laterais (C-L) -----------------------
+	{ pattern: /l/gi,	ipaPattern: "l", out: "l" },				// Lata
+	{ pattern: /lh/gi,	ipaPattern: "ʎ",  out: "lh", advance: 1 },	// Milho
+
+	// ---------------------- Consoantes Vibrantes (C-V) ----------------------
+	{ pattern: /r/gi,	ipaPattern: "ɾ", out: "r" },				// Raro
+	{ pattern: /r/gi,	ipaPattern: "ɹ", out: "r" },				// Prato
+	{ pattern: /rr/gi,	ipaPattern: "ʁ", out: "rr", advance: 1 },	// Raro
 
 
-	// ==================== SONS VOCÁLICOS ====================
-	// SEMIVOGAIS
-	{ pattern: /i/gi, ipaPattern: "j", replacement: "i" },
-	{ pattern: /u/gi, ipaPattern: "w", replacement: "u" },
+	// ============================ SONS VOCÁLICOS ============================
 
-	// VOGAIS
-	{ pattern: /[aá](?![iu])/gi, ipaPattern: "a",  replacement: "á" },
-	{ pattern: /a/gi,    ipaPattern: "ɐ",  replacement: "a" },
-	{ pattern: /[eé]/gi, ipaPattern: "ɛ",  replacement: "é" },
-	{ pattern: /[eê]/gi, ipaPattern: "e",  replacement: "ê" },
-	{ pattern: /e/gi,    ipaPattern: "ə",  replacement: "e" },
-	{ pattern: /i/gi,    ipaPattern: "i",  replacement: "i" },
-	{ pattern: /[oó]/gi, ipaPattern: "ɔ",  replacement: "ó" },
-	{ pattern: /o/gi,    ipaPattern: "o",  replacement: "o" },
-	{ pattern: /o/gi,    ipaPattern: "u",  replacement: "u" },
-	{ pattern: /u/gi,    ipaPattern: "u",  replacement: "u" },
+	// --------------------------- Semivogais (SV) ----------------------------
+	{ pattern: /i/gi,	ipaPattern: "j", out: "i" },				// Pai
+	{ pattern: /u/gi,	ipaPattern: "w", out: "u" },				// Quadro
+
+	// -------------------------- Vogais Orais (V-O) --------------------------
+	{ pattern: /[aá](?![iu])/gi, ipaPattern: "a",  out: "á" },		// Pá
+	{ pattern: /a/gi,	ipaPattern: "ɐ",  out: "a" },				// Cama
+	{ pattern: /[eé]/gi, ipaPattern: "ɛ",  out: "é" },				// Pé
+	{ pattern: /[eê]/gi, ipaPattern: "e",  out: "ê" },				// Mesa
+	{ pattern: /e/gi,	ipaPattern: "ə",  out: "e" },				// Sede
+	{ pattern: /i/gi,	ipaPattern: "i",  out: "i" },				// Vida
+	{ pattern: /[oó]/gi, ipaPattern: "ɔ",  out: "ó" },				// Pó
+	{ pattern: /o/gi,	ipaPattern: "o",  out: "o" },				// Ovo
+	{ pattern: /o/gi,	ipaPattern: "u",  out: "u" },				// Conto
+	{ pattern: /u/gi,	ipaPattern: "u", out: "u" },				// Luz
+
+	// ------------------------- Vogais Nasais (V-N) --------------------------
+	{ pattern: /an/gi,	ipaPattern: "ɐ̃", out: "an" },				// Manta
+	{ pattern: /en/gi,	ipaPattern: "ẽ", out: "en" },				// Bem
+	{ pattern: /in/gi,	ipaPattern: "ĩ", out: "in" },				// Fim
+	{ pattern: /on/gi,	ipaPattern: "õ", out: "on" },				// Bom
+	{ pattern: /un/gi,	ipaPattern: "ũ", out: "un" },				// Um
+
+
+	// =============================== DITONGOS ===============================
+
+	// ---------------------------- Ditongos Orais ----------------------------
+	{ pattern: /ai/gi,		ipaPattern: "aj", out: "ai" },			// Pai
+	{ pattern: /au/gi,		ipaPattern: "aw", out: "au" },			// Pau
+	{ pattern: /ei/gi,		ipaPattern: "ɐj", out: "ei" },			// Sei
+	{ pattern: /(éu|eu)/gi, ipaPattern: "ɛw", out: "éu" },			// Céu
+	{ pattern: /eu/gi,		ipaPattern: "ew", out: "eu" },			// Meu
+	{ pattern: /iu/gi,		ipaPattern: "iw", out: "iu" },			// Piu
+	{ pattern: /(ói|oi)/gi, ipaPattern: "ɔj", out: "ói" },			// Dói
+	{ pattern: /oi/gi,		ipaPattern: "oj", out: "oi" },			// Foi
+	{ pattern: /ou/gi,		ipaPattern: "ow", out: "ou" },			// Sou
+	{ pattern: /ui/gi,		ipaPattern: "uj", out: "ui" },			// Fui
+
+	// ----------------------- Ditongos Orais Estáveis ------------------------
+	{ pattern: /ua/gi,		ipaPattern: "wɐ", out: "ua" },			// Quadro
+	{ pattern: /ue/gi,		ipaPattern: "we", out: "ue" },			// Aguentar
+	{ pattern: /ui/gi,		ipaPattern: "wi", out: "ui" },			// Arguido
+	{ pattern: /uo/gi,		ipaPattern: "wɔ", out: "uo" },			// Quota
+
+	// --------------------------- Ditongos Nasais ----------------------------
+	{ pattern: /ão/gi, ipaPattern: "ɐ̃w", out: "ão" },				// Pão
+	{ pattern: /ãe/gi, ipaPattern: "ɐ̃j", out: "ãe" },				// Mãe
+	{ pattern: /õe/gi, ipaPattern: "õj", out: "õe" },				// Visões
+
+
+	// ============================= LETRAS MUDAS =============================
+
+	{ pattern: /(?<=[g])u(?=[e,i])/gi, ipaPattern: "",  out: "" },	// Guerra
+	{ pattern: /(?<![ln])h/gi, ipaPattern: "",  out: "" },			// Hiena
 ];
 
 
@@ -171,8 +212,12 @@ function aplicarLuzofonema(palavraOriginal, ipaOriginal) {
 	const resultado = [];
 	const word = palavraOriginal;
 	const wordArray = palavraOriginal.split("");
-	const ipa = ipaOriginal.slice(1, -1); // tira barras indicadores de IPA
-	const ipaArray = ipa.split("");
+	const ipa = ipaOriginal.slice(1, -1).normalize("NFD");
+
+	const segmenter = new Intl.Segmenter('pt', {granularity: 'grapheme'});
+	const ipaArray = Array.from(segmenter.segment(ipa), s => s.segment);
+
+	debug(ipaArray);
 
 	let wIndex = 0;
 	let iIndex = 0;
@@ -183,7 +228,7 @@ function aplicarLuzofonema(palavraOriginal, ipaOriginal) {
 		const som = ipaArray[iIndex] || "";
 
 		const wordContext = word.slice(Math.max(0, wIndex - 2), wIndex + 3);
-		const ipaContext = ipa.slice(Math.max(0, wIndex - 2), wIndex + 3);
+		const ipaContext = ipa.slice(Math.max(0, iIndex - 2), iIndex + 3);
 
 		let novaLetra = letra;
 
@@ -208,24 +253,27 @@ function aplicarLuzofonema(palavraOriginal, ipaOriginal) {
 
 		let regraAplicada = false;
 
-		for (const { pattern, ipaPattern, replacement, advance } of luzofonemaRules) {
+		for (const { pattern, ipaPattern, out, advance } of lusofonemaRules) {
 			const wordRegex = new RegExp(pattern, "i");
 			const ipaRegex = new RegExp(ipaPattern, "i");
 
-			debug(wordRegex, ipaRegex, pattern, ipaPattern, replacement);
+			debug("wRegex: ", wordRegex, "iRegex: ", ipaRegex);
+			//debug("Rule: ", pattern, ipaPattern, out);
 
 			if (!wordContext.match(wordRegex)) continue;
-				
-			if (ipaPattern && som !== ipaPattern) continue;
+			
+			if (ipaPattern && !ipaRegex.test(ipaContext)) continue;
 
-			debug("✔️ Regra aplicada:", pattern, ipaPattern, replacement);
+			if (!(ipaContext.match(ipaRegex)?.includes(som))) continue;
 
-			novaLetra = replacement;
+			debug("✔️ Regra aplicada:", pattern, ipaPattern, out);
+
+			novaLetra = out;
 			resultado.push(novaLetra);
 
 			const passo = (advance ?? 0) + 1;
 			wIndex += passo;
-			iIndex += passo;
+			iIndex++;
 			regraAplicada = true;
 			break;
 		}
