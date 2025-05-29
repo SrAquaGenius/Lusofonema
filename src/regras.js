@@ -4,6 +4,7 @@
 * ------------------------------------------------------------------------- */
 
 const { debug } = require("./debug");
+const { separarSilabas, marcarHiatosComH } = require('./silabas');
 
 /**
  * @brief Cada regra corresponde a:
@@ -79,11 +80,11 @@ const lusofonemaRules = [
 	{ pattern: /[eé]/gi, ipaPattern: "ɛ",  out: "é" },				// Pé
 	{ pattern: /[eê]/gi, ipaPattern: "e",  out: "ê" },				// Mesa
 	{ pattern: /e/gi,	ipaPattern: "ə",  out: "e" },				// Sede
-	{ pattern: /i/gi,	ipaPattern: "i",  out: "i" },				// Vida
+	{ pattern: /[ií]/gi, ipaPattern: "i",  out: "i" },				// Vida
 	{ pattern: /[oó]/gi, ipaPattern: "ɔ",  out: "ó" },				// Pó
 	{ pattern: /o/gi,	ipaPattern: "o",  out: "o" },				// Ovo
 	{ pattern: /o/gi,	ipaPattern: "u",  out: "u" },				// Conto
-	{ pattern: /u/gi,	ipaPattern: "u", out: "u" },				// Luz
+	{ pattern: /[uú]/gi, ipaPattern: "u", out: "u" },				// Luz
 
 	// ------------------------- Vogais Nasais (V-N) --------------------------
 	{ pattern: /an/gi,	ipaPattern: "ɐ̃", out: "an" },				// Manta
@@ -209,7 +210,7 @@ function aplicarLuzofonema(palavraOriginal, ipaOriginal) {
 
 	debug(palavraOriginal, ipaOriginal);
 
-	const resultado = [];
+	const resArray = [];
 	const word = palavraOriginal;
 	const wordArray = palavraOriginal.split("");
 	const ipa = ipaOriginal.slice(1, -1).normalize("NFD");
@@ -246,7 +247,7 @@ function aplicarLuzofonema(palavraOriginal, ipaOriginal) {
 
 		// Lidar com acento tónico ˈ
 		if (som === "ˈ") {
-			resultado.push("ˈ");
+			resArray.push("ˈ");
 			iIndex++;
 			continue;
 		}
@@ -269,7 +270,7 @@ function aplicarLuzofonema(palavraOriginal, ipaOriginal) {
 			debug("✔️ Regra aplicada:", pattern, ipaPattern, out);
 
 			novaLetra = out;
-			resultado.push(novaLetra);
+			resArray.push(novaLetra);
 
 			const passo = (advance ?? 0) + 1;
 			wIndex += passo;
@@ -280,15 +281,19 @@ function aplicarLuzofonema(palavraOriginal, ipaOriginal) {
 
 		if (!regraAplicada) {
 			// nenhuma regra aplicada, copia a letra como está
-			resultado.push(novaLetra);
+			resArray.push(novaLetra);
 			wIndex++;
 			iIndex++;
 		}
 
-		debug("🔡 Resultado parcial:", resultado.join(""));
+		debug("🔡 resArray parcial:", resArray.join(""));
 	}
 
-	return aplicarTonicidade(resultado.join(""));
+	const result = resArray.join("");
+
+	debug("Sílabas: ", separarSilabas(result), marcarHiatosComH(result));
+
+	return aplicarTonicidade(marcarHiatosComH(result));
 }
 
 module.exports = { aplicarLuzofonema };

@@ -7,7 +7,7 @@ const readline = require("readline");
 const { mostrarAlfabetoLusofonema, mostrarAlfabetoIPA } = require("./alfabeto");
 const { mostrarPalavra, mostrarTexto } = require("./mostrar");
 const { verificarPalavra } = require("./verificar");
-const { debug, ativarDebug, desativarDebug } = require("./debug");
+const { ativarDebug, desativarDebug } = require("./debug");
 
 const rl = readline.createInterface({
 	input: process.stdin,

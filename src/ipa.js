@@ -42,7 +42,8 @@ function corrigirIPA(ipa) {
 	ipa = ipa.replace(/\s/g, "").replace(/[ˌ]/g, "");
 	
 	// Corrigir posição do acento tónico
-	ipa = ipa.replace(/([^\sˈˌ\/])ˈ([^\sˈˌ\/])/g, "ˈ$1$2");
+	ipa = ipa.replace(/([^aeiouɐɛəɔɐ̃ẽĩõũ\sˈˌ\/])ˈ([^aeiouɐɛəɔɐ̃ẽĩõũ\sˈˌ\/])/gi, "ˈ$1$2");
+
 
 	// Remover caracteres indesejados
 	const ipaArray = ipa.split("");
