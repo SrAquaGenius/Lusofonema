@@ -4,6 +4,7 @@
 * ------------------------------------------------------------------------- */
 
 const { debug } = require("./debug");
+const { aplicarTonicidade } = require('./tonicidade');
 const { separarSilabas, marcarHiatosComH } = require('./silabas');
 
 /**
@@ -13,7 +14,7 @@ const { separarSilabas, marcarHiatosComH } = require('./silabas');
  * - `out`: substituição na ortografia
  * - `advance`: (opcional) número extra de avanços a fazer no índice da palavra
  */
-const lusofonemaRules = [ 
+const rules = [ 
 
 	// ========================== SONS CONSOANTÍCOS ===========================
 
@@ -127,77 +128,6 @@ const lusofonemaRules = [
 ];
 
 
-const mapaGrave = {
-	a: "à", á: "ǎ",
-	e: "è", é: "ě",
-	i: "ì", í: "ǐ",
-	o: "ò", ó: "ǒ",
-	u: "ù", ú: "ǔ",
-};
-
-const vogaisAgudas = /[áéíóú]/i;
-const vogaisCarons = /[ǎěǐǒǔ]/i;
-const vogaisFlexas = /[âêô]/i;
-const vogaisTildes = /[ãõ]/i;
-
-/**
- * Aplica acento tónico grave (ou caron) à vogal tónica indicada pelo marcador ˈ.
- * Só aplica acento se nenhuma vogal já estiver acentuada (aguda ou caron).
- */
-function aplicarTonicidade(palavra) {
-	const chars = palavra.split("");
-	const tIndex = chars.indexOf("ˈ");
-	if (tIndex === -1) return palavra; // sem marcador, retorna como está
-
-	// Estatísticas
-	let agudos = 0;
-	let temTilde = false;
-	let temFlexo = false;
-
-	for (const c of chars) {
-		if (vogaisAgudas.test(c)) agudos++;
-		if (vogaisTildes.test(c)) temTilde = true;
-		if (vogaisFlexas.test(c)) temFlexo = true;
-	}
-
-	// Procura vogal tónica
-	let tonicaIndex = -1;
-	for (let i = tIndex + 1; i < chars.length; i++) {
-		if ("aeiouáéíóúâêôãõ".includes(chars[i].toLowerCase())) {
-			tonicaIndex = i;
-			break;
-		}
-	}
-	if (tonicaIndex === -1) return palavra.replace("ˈ", ""); // sem vogal depois de ˈ
-
-	const letraTonica = chars[tonicaIndex];
-
-	// Caso 1: mistura de acentos (e tónica é til ou circunflexo) → não fazer nada
-	if ((temTilde || temFlexo) && (vogaisTildes.test(letraTonica) || vogaisFlexas.test(letraTonica))) {
-		return palavra.replace("ˈ", "");
-	}
-
-	// Caso 2: só um agudo → manter como está
-	if (agudos === 1 && vogaisAgudas.test(letraTonica)) {
-		return palavra.replace("ˈ", "");
-	}
-
-	// Caso 3: vários agudos → transformar agudo tónico em caron
-	if (agudos > 1 && vogaisAgudas.test(letraTonica)) {
-		chars[tonicaIndex] = mapaGrave[letraTonica] || letraTonica;
-		return chars.filter(c => c !== "ˈ").join("");
-	}
-
-	// Caso 4: sem acento visível → aplicar acento grave na vogal tónica
-	if (agudos === 0 && !temTilde && !temFlexo) {
-		chars[tonicaIndex] = mapaGrave[letraTonica] || letraTonica;
-	}
-
-	// Remove o marcador ˈ e retorna
-	return chars.filter(c => c !== "ˈ").join("");
-}
-
-
 /**
  * @brief Aplica as regras do Luzofonema à string fornecida.
  * A substituição é feita apenas se o caractere da palavra coincidir com o som no IPA.
@@ -254,7 +184,7 @@ function aplicarLuzofonema(palavraOriginal, ipaOriginal) {
 
 		let regraAplicada = false;
 
-		for (const { pattern, ipaPattern, out, advance } of lusofonemaRules) {
+		for (const { pattern, ipaPattern, out, advance } of rules) {
 			const wordRegex = new RegExp(pattern, "i");
 			const ipaRegex = new RegExp(ipaPattern, "i");
 
@@ -289,11 +219,7 @@ function aplicarLuzofonema(palavraOriginal, ipaOriginal) {
 		debug("🔡 resArray parcial:", resArray.join(""));
 	}
 
-	const result = resArray.join("");
-
-	debug("Sílabas: ", separarSilabas(result), marcarHiatosComH(result));
-
-	return aplicarTonicidade(marcarHiatosComH(result));
+	return aplicarTonicidade(marcarHiatosComH(resArray.join("")));
 }
 
 module.exports = { aplicarLuzofonema };

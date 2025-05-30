@@ -3,99 +3,142 @@
  * Authors:  SrAqua
  * ------------------------------------------------------------------------- */
 
+const { debug } = require("./debug");
+
+const vogais = 'aeiouáéíóúâêôãõà';
+const semivogais = 'iu';
+
 /**
- * Separa uma palavra em sílabas de forma heurística (não exata).
- * Regras básicas:
- * - Preferência por CV, CVC, V, VC
- * - Evita ditongos crescentes e decrescentes
- * - Heurística básica para lidar com encontros consonantais e hiatos
+ * @brief Separa uma palavra em sílabas de forma heurística (não exata).
+ *        Usa padrões como CV, CVC, V, VC e evita ditongos e outros encontros.
+ * @param {string} palavra Palavra a ser separada em sílabas.
+ * @returns {string[]} Lista de sílabas resultantes da separação.
  */
 function separarSilabas(palavra) {
-	const vogais = 'aeiouáéíóúâêôãõà';
-	const semivogais = ['i', 'u'];
+
 	const silabas = [];
 	let atual = '';
+	let i = 0;
 
-	for (let i = 0; i < palavra.length; i++) {
+	while (i < palavra.length) {
+
+		const prev = palavra[i - 1] || '';
 		const char = palavra[i];
+		const next = palavra[i + 1] || '';
+		const next2 = palavra[i + 2] || '';
 
-		// Se encontrar o marcador de separação silábica "ˈ"
+		const isV = (c) => vogais.includes(c.toLowerCase());
+		const isC = (c) => !isV(c) && c !== 'ˈ';
+
+		debug("i:", i, "char:", char, "atual:", atual);
+
+		// Caso encontre marcador de tonicidade
 		if (char === 'ˈ') {
-			// Se já tiver sílaba acumulada, finaliza-a
-			if (atual) {
-				silabas.push(atual);
-				atual = '';
-			}
-			// Começa nova sílaba com 'ˈ'
-			atual += char;
+			if (atual !== '') silabas.push(atual);
+			atual = 'ˈ';
+			i++;
 			continue;
 		}
 
 		atual += char;
 
-		const prox = palavra[i + 1] || '';
-		const prox2 = palavra[i + 2] || '';
-
-		const ehVogal = vogais.includes(char.toLowerCase());
-		const ehProxVogal = vogais.includes(prox.toLowerCase());
-		const ehHiato = ehVogal && ehProxVogal &&
-			!(semivogais.includes(char.toLowerCase()) ||
-			semivogais.includes(prox.toLowerCase()));
-
-		// Hiato: separa entre duas vogais distintas
-		if (ehHiato) {
+		// Detecção de hiato: duas vogais fortes consecutivas
+		if (
+			isV(char) && isV(next) &&
+			!semivogais.includes(char.toLowerCase()) &&
+			!semivogais.includes(next.toLowerCase())
+		) {
 			silabas.push(atual);
 			atual = '';
+			i++;
 			continue;
 		}
 
-		// Se a sílaba termina com consoante antes de vogal, divide
-		if (!vogais.includes(char.toLowerCase()) &&
-			vogais.includes(prox.toLowerCase()) &&
-			atual.length > 1) {
-			silabas.push(atual.slice(0, -1));
-			atual = atual.slice(-1);
+		// V–rr–V → "rr" inicia nova sílaba
+		if (
+			char.toLowerCase() === 'r' &&
+			next.toLowerCase() === 'r' &&
+			isV(next2)
+		) {
+			silabas.push(atual.slice(0, -1)); // tudo antes do primeiro 'r'
+			atual = 'rr';
+			i += 2;
+			continue;
 		}
+
+		// V–r–V → "r" inicia nova sílaba
+		if (isV(prev) && char.toLowerCase() === 'r' && isV(next)) {
+			silabas.push(atual.slice(0, -1)); // até antes do 'r'
+			atual = char;
+			i++;
+			continue;
+		}
+
+		// V–r ou V–r–C → "r" termina a sílaba anterior
+		if (isV(prev) && char.toLowerCase() === 'r' &&
+			(!next || isC(next))) {
+			silabas.push(atual);
+			atual = '';
+			i++;
+			continue;
+		}
+
+		// C–r–V → "r" continua a sílaba
+		// nada a fazer — continua
+
+		// Regra genérica: após V–C–V → corta depois da vogal
+		if (isV(char) && isC(next) && isV(next2)) {
+			silabas.push(atual);
+			atual = '';
+			i++;
+			continue;
+		}
+
+		i++;
 	}
 
 	if (atual) silabas.push(atual);
+
+	// debug("Sílabas:", silabas);
 	return silabas;
 }
 
+
 /**
- * Reinsere 'h' entre vogais separadas (hiatos), p.ex. 'criança' → 'crihansa'.
- * Se a sílaba tônica começa com 'ˈ' e há hiato, insere 'ˈh' antes da vogal da próxima sílaba.
+ * @brief Insere 'h' entre vogais consecutivas de sílabas distintas (hiatos).
+ *        Marca com 'ˈh' se o hiato iniciar a sílaba tônica.
+ * @param {string} palavra Palavra com sílabas separadas e marca de tonicidade.
+ * @returns {string} Palavra com 'h' inserido entre vogais em hiato.
  */
 function marcarHiatosComH(palavra) {
+
 	const silabas = separarSilabas(palavra);
+	debug("Sílabas: ", silabas);
+
 	let resultado = silabas[0] || '';
 
-	const vogais = 'aeiouáéíóúâêôãõà';
-
 	for (let i = 1; i < silabas.length; i++) {
-		const ultimaSilaba = silabas[i - 1];
-		let silabaAtual = silabas[i];
 
-		// Último caractere da sílaba anterior (ignorando 'ˈ' que só aparece no início)
-		const ultimaChar = ultimaSilaba[ultimaSilaba.length - 1].toLowerCase();
+		const lastSilaba = silabas[i - 1];
+		let silaba = silabas[i];
+
+		debug("Sílaba anterior: ", lastSilaba, ", Sílaba atual: ", silaba);
+
+		// Último caractere da sílaba anterior
+		const lastChar = lastSilaba[lastSilaba.length - 1].toLowerCase();
 
 		// Primeiro caractere da sílaba atual, que pode ser 'ˈ'
-		// Se tiver 'ˈ' no início, a vogal relevante está no índice 1, caso contrário índice 0
-		let primeiraChar = silabaAtual[0];
-		if (primeiraChar === 'ˈ') {
-			primeiraChar = silabaAtual[1] || ''; // segundo caractere
-		}
-		primeiraChar = primeiraChar.toLowerCase();
+		// Se tiver 'ˈ' no início, a vogal relevante está no índice 1
+		let char = (silaba[0] === 'ˈ') ? silaba[1] : silaba[0];
+		char = char.toLowerCase();
 
-		if (vogais.includes(ultimaChar) && vogais.includes(primeiraChar)) {
-			if (silabaAtual.startsWith('ˈ')) {
-				// Insere 'h' após 'ˈ'
-				silabaAtual = 'ˈh' + silabaAtual.slice(1);
-			} else {
-				silabaAtual = 'h' + silabaAtual;
-			}
+		if (vogais.includes(lastChar) && vogais.includes(char)) {
+
+			if (silaba.startsWith('ˈ')) { silaba = 'ˈh' + silaba.slice(1); }
+			else silaba = 'h' + silaba;
 		}
-		resultado += silabaAtual;
+
+		resultado += silaba;
 	}
 
 	return resultado;
