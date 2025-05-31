@@ -88,11 +88,11 @@ const rules = [
 	{ pattern: /[uú]/gi, ipaPattern: "u", out: "u" },				// Luz
 
 	// ------------------------- Vogais Nasais (V-N) --------------------------
-	{ pattern: /an/gi,	ipaPattern: "ɐ̃", out: "an" },				// Manta
-	{ pattern: /en/gi,	ipaPattern: "ẽ", out: "en" },				// Bem
-	{ pattern: /in/gi,	ipaPattern: "ĩ", out: "in" },				// Fim
-	{ pattern: /on/gi,	ipaPattern: "õ", out: "on" },				// Bom
-	{ pattern: /un/gi,	ipaPattern: "ũ", out: "un" },				// Um
+	{ pattern: /an/gi,	ipaPattern: "ɐ̃", out: "an", advance: 1  },	// Manta
+	{ pattern: /en/gi,	ipaPattern: "ẽ", out: "en", advance: 1  },	// Bem
+	{ pattern: /in/gi,	ipaPattern: "ĩ", out: "in", advance: 1  },	// Fim
+	{ pattern: /on/gi,	ipaPattern: "õ", out: "on", advance: 1  },	// Bom
+	{ pattern: /un/gi,	ipaPattern: "ũ", out: "un", advance: 1  },	// Um
 
 
 	// =============================== DITONGOS ===============================
@@ -209,8 +209,9 @@ function aplicarLuzofonema(palavraOriginal, ipaOriginal) {
 			break;
 		}
 
+		// Nenhuma regra aplicada, copia a letra como está
 		if (!regraAplicada) {
-			// nenhuma regra aplicada, copia a letra como está
+			debug("Nenhuma regra aplicada");
 			resArray.push(novaLetra);
 			wIndex++;
 			iIndex++;
