@@ -3,6 +3,9 @@
  * Authors:  SrAqua
  * ------------------------------------------------------------------------- */
 
+const { debug } = require("./debug");
+const { separarSilabas } = require("./silabas");
+
 const mapaGrave = {
 	a: "à", á: "ǎ",
 	e: "è", é: "ě",
@@ -21,34 +24,47 @@ const vogaisFlexas = /[âêô]/i;
  * Atribui uma prioridade a uma vogal consoante os critérios fonológicos.
  */
 function prioridade(centro, prox) {
-	if (vogaisCarons.test(centro)) return 100;
-	if (vogaisFlexas.test(centro)) return 90;
-	if (vogaisTildes.test(centro)) return 80;
-	if (vogaisAgudas.test(centro)) return 70;
+	// Acentuações
+	if (vogaisCarons.test(centro)) return 110;
+	if (vogaisFlexas.test(centro)) return 100;
+	if (vogaisTildes.test(centro)) return 100;
+	if (vogaisAgudas.test(centro)) return 90;
 
 	const par = centro + (prox || "");
 
-	// Combinações fonológicas (ditongos e sons consonânticos)
-	if (/[aeiou][mn]/i.test(par)) return 60;            // nasal
-	if (/[aeiou][rl]/i.test(par)) return 50;            // vibrante ou lateral
-	if (/[aeiou][aeiou]/i.test(par)) return 40;         // ditongo simples
-	if (/[mn]/i.test(prox)) return 30;                  // nasalidade isolada
-	if (/[rl]/i.test(prox)) return 20;                  // vibrante/lateral isolada
+	// Combinações fonológicas
+	if (/[aeiou][aeiou][n]/i.test(par)) return 80;		// ditongo + nasal
+	if (/[aeiou][aeiou][r]/i.test(par)) return 70;		// ditongo + vibrante
+	if (/[aeiou][aeiou][l]/i.test(par)) return 60;		// ditongo + lateral
+	if (/[aeiou][aeiou]/i.test(par)) return 50;			// ditongo
+	if (/[aeiou][r]/i.test(par)) return 40;				// vibrante
+	if (/[aeiou][n]/i.test(par)) return 30;				// nasal
+	if (/[aeiou][l]/i.test(par)) return 20;				// lateral
 
 	return 10; // sem marca distintiva
 }
 
-/**
- * Aplica acento tónico segundo os critérios gráficos e fonológicos.
- */
-function aplicarTonicidade(palavra) {
-	const chars = palavra.split("");
-	const tIndex = chars.indexOf("ˈ");
-	if (tIndex === -1) return palavra; // sem marcador
 
-	// Coleta candidatas a sílaba tónica
+/**
+ * @brief Aplica acento tónico à vogal mais proeminente da sílaba marcada 
+ *        com ˈ, segundo critérios gráficos e fonológicos.
+ *        Utiliza um mapa de prioridades para distinguir entre vogais e 
+ *        combinações mais marcadas.
+ * @param {string[]} silabas Array de sílabas, uma delas com caracter 'ˈ'.
+ * @returns {string} Palavra reconstruída com a tonicidade aplicada.
+ */
+function aplicarTonicidade(silabas) {
+
+	debug(silabas);
+
+	const indexTonica = silabas.findIndex(s => s.startsWith("ˈ"));
+	if (indexTonica === -1) return silabas.join("");
+
+	let silaba = silabas[indexTonica];
+	const chars = silaba.split("");
 	const candidatos = [];
-	for (let i = tIndex + 1; i < chars.length; i++) {
+
+	for (let i = 0; i < chars.length; i++) {
 		const c = chars[i];
 		if (vogais.includes(c.toLowerCase())) {
 			const prox = chars[i + 1] || "";
@@ -57,16 +73,20 @@ function aplicarTonicidade(palavra) {
 		}
 	}
 
-	if (candidatos.length === 0) return palavra.replace("ˈ", "");
+	if (candidatos.length === 0) {
+		// Remove o ˈ se não há candidato
+		silabas[indexTonica] = silaba.replace("ˈ", "");
+		return silabas.join("");
+	}
 
-	// Escolher a vogal com maior prioridade
+	// Escolhe a vogal com maior prioridade (desempata pelo índice)
 	const tonica = candidatos.reduce((a, b) =>
 		b.prioridade > a.prioridade ? b : a
 	);
 
-	// Aplicar acento (caso necessário)
-	const tChar = tonica.letra;
+	// Aplica acento na vogal
 	const i = tonica.index;
+	const tChar = tonica.letra;
 	const temTilde = vogaisTildes.test(tChar);
 	const temFlexo = vogaisFlexas.test(tChar);
 	const temAgudo = vogaisAgudas.test(tChar);
@@ -74,13 +94,17 @@ function aplicarTonicidade(palavra) {
 
 	if (!temAcento) {
 		chars[i] = mapaGrave[tChar] || tChar;
-	} else if (temAgudo && candidatos.filter(c => vogaisAgudas.test(c.letra)).length > 1) {
-		// Se houver múltiplos agudos → transforma o da sílaba tónica em caron
+	} else if (temAgudo &&
+		candidatos.filter(c => vogaisAgudas.test(c.letra)).length > 1) {
+		// Se houver mais de um acento agudo, converte este para caron
 		chars[i] = mapaGrave[tChar] || tChar;
 	}
 
-	// Retira o marcador ˈ e retorna
-	return chars.filter(c => c !== "ˈ").join("");
+	// Reconstrói sílaba sem ˈ e com vogal acentuada
+	silabas[indexTonica] = chars.filter(c => c !== "ˈ").join("");
+
+	return silabas.join("");
 }
+
 
 module.exports = { aplicarTonicidade };

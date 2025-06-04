@@ -10,69 +10,104 @@ const semivogais = 'iu';
 
 const regrasSeparacao = [
 
-	// Mantém ˈ junto da sílaba seguinte
-	(ctx, commit) => ctx.char === 'ˈ' && (() => {
-		if (ctx.atual !== '') ctx.silabas.push(ctx.atual);
-		ctx.atual = 'ˈ';
-		ctx.i++;
-		return commit();
-	})(),
-
-	// Hiato: duas vogais fortes consecutivas
-	(ctx, commit) => ctx.isV(ctx.char) && ctx.isV(ctx.next) &&
-		!semivogais.includes(ctx.char.toLowerCase()) &&
-		!semivogais.includes(ctx.next.toLowerCase()) &&
-		(() => {
-			ctx.silabas.push(ctx.atual);
-			ctx.atual = '';
+	// #1 | Caracter tónico ˈ liga-se à sílaba seguinte
+	{
+		nome: "Tónica",
+		aplicar: (ctx, commit) => ctx.char === 'ˈ' && (() => {
+			if (ctx.atual !== '') ctx.silabas.push(ctx.atual);
+			ctx.atual = 'ˈ';
 			ctx.i++;
 			return commit();
 		})(),
+	},
 
-	// V–rr–V → "rr" inicia nova sílaba
-	(ctx, commit) => ctx.char.toLowerCase() === 'r' &&
-		ctx.next.toLowerCase() === 'r' &&
-		ctx.isV(ctx.next2) &&
-		(() => {
-			// Divide a sílaba no ponto antes do 'rr'
-			ctx.silabas.push(ctx.atual); // atual ainda não inclui o 'r'
-			ctx.atual = 'rr';            // começa nova sílaba com rr
-			ctx.i += 2;
-			return commit();
-		})(),
+	// #2 | Hiato: vogais fortes consecutivas
+	{
+		nome: "Hiato",
+		aplicar: (ctx, commit) => ctx.isV(ctx.char) &&
+			ctx.isV(ctx.next) &&
+			!semivogais.includes(ctx.char.toLowerCase()) &&
+			!semivogais.includes(ctx.next.toLowerCase()) &&
+			(() => {
+				ctx.silabas.push(ctx.atual);
+				ctx.atual = '';
+				ctx.i++;
+				return commit();
+			})(),
+	},
 
-	// V–r–V → "r" inicia nova sílaba
-	(ctx, commit) => ctx.isV(ctx.prev) &&
-		ctx.char.toLowerCase() === 'r' &&
-		ctx.isV(ctx.next) &&
-		(() => {
-			ctx.silabas.push(ctx.atual.slice(0, -1));
-			ctx.atual = ctx.char;
-			ctx.i++;
-			return commit();
-		})(),
+	// #3 | V–rr–V → 'rr' inicia nova sílaba
+	{
+		nome: "V-rr-V",
+		aplicar: (ctx, commit) => ctx.char.toLowerCase() === 'r' &&
+			ctx.next.toLowerCase() === 'r' &&
+			ctx.isV(ctx.next2) &&
+			(() => {
+				ctx.silabas.push(ctx.atual);
+				ctx.atual = 'rr';
+				ctx.i += 2;
+				return commit();
+			})(),
+	},
 
-	// V–r ou V–r–C → "r" termina a sílaba anterior
-	(ctx, commit) => ctx.isV(ctx.prev) &&
-		ctx.char.toLowerCase() === 'r' &&
-		(!ctx.next || ctx.isC(ctx.next)) &&
-		(() => {
-			ctx.silabas.push(ctx.atual);
-			ctx.atual = '';
-			ctx.i++;
-			return commit();
-		})(),
+	// #4 | V–r–V → 'r' inicia nova sílaba
+	{
+		nome: "V-r-V",
+		aplicar: (ctx, commit) => ctx.isV(ctx.prev) &&
+			ctx.char.toLowerCase() === 'r' &&
+			ctx.isV(ctx.next) &&
+			(() => {
+				ctx.silabas.push(ctx.atual.slice(0, -1));
+				ctx.atual = ctx.char;
+				ctx.i++;
+				return commit();
+			})(),
+	},
 
-	// V–C–V → corta após a vogal
-	(ctx, commit) => ctx.isV(ctx.char) &&
-		ctx.isC(ctx.next) &&
-		ctx.isV(ctx.next2) &&
-		(() => {
-			ctx.silabas.push(ctx.atual);
-			ctx.atual = '';
-			ctx.i++;
-			return commit();
-		})(),
+	// #5 | V–r ou V–r–C → 'r' termina sílaba
+	{
+		nome: "V-r",
+		aplicar: (ctx, commit) => ctx.isV(ctx.prev) &&
+			ctx.char.toLowerCase() === 'r' &&
+			(!ctx.next || ctx.isC(ctx.next)) &&
+			(() => {
+				ctx.silabas.push(ctx.atual);
+				ctx.atual = '';
+				ctx.i++;
+				return commit();
+			})(),
+	},
+
+	// #6 | V–C–V → corta após a vogal
+	{
+		nome: "V-C-V",
+		aplicar: (ctx, commit) => ctx.isV(ctx.char) &&
+			ctx.isC(ctx.next) &&
+			ctx.isV(ctx.next2) &&
+			(() => {
+				ctx.silabas.push(ctx.atual);
+				ctx.atual = '';
+				ctx.i++;
+				return commit();
+			})(),
+	},
+
+	// #7 | V–n–C → nasal termina sílaba anterior, exceto se formar "nh"
+	{
+		nome: "V-n-C",
+		aplicar: (ctx, commit) => ctx.isV(ctx.prev) &&
+			ctx.char.toLowerCase() === 'n' &&
+			ctx.isC(ctx.next) &&
+			!'h'.includes(ctx.next.toLowerCase()) &&
+			(() => {
+				ctx.atual += ctx.char;
+				ctx.silabas.push(ctx.atual);
+				ctx.atual = '';
+				ctx.i++;
+				return commit();
+			})(),
+	},
+
 ];
 
 
@@ -87,7 +122,7 @@ function separarSilabas(palavra) {
 	let atual = '';
 	let i = 0;
 
-	const isV = (c) => vogais.includes(c?.toLowerCase?.());
+	const isV = (c) => !!c && vogais.includes(c.toLowerCase());
 	const isC = (c) => c && !isV(c) && c !== 'ˈ';
 
 	debug("Início da separação de sílabas:", palavra);
@@ -107,12 +142,14 @@ function separarSilabas(palavra) {
 
 		if (contexto.char) atual += contexto.char;
 
-		const aplicada = regrasSeparacao.some((regra, idx) => regra(contexto, () => {
-			debug(`Regra ${idx + 1} aplicada em i=${i}`);
-			i = contexto.i;
-			atual = contexto.atual;
-			return true;
-		}));
+		const aplicada = regrasSeparacao.some(({ nome, aplicar }) =>
+			aplicar(contexto, () => {
+				debug(`Regra '${nome}' aplicada em i=${i}`);
+				i = contexto.i;
+				atual = contexto.atual;
+				return true;
+			})
+		);
 
 		if (!aplicada) {
 			debug(`Nenhuma regra aplicada em i=${i}, avançar.`);

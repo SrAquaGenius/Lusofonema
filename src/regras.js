@@ -5,7 +5,7 @@
 
 const { debug } = require("./debug");
 const { aplicarTonicidade } = require('./tonicidade');
-const { separarSilabas, marcarHiatosComH } = require('./silabas');
+const { separarSilabas, marcarHiatos } = require('./silabas');
 
 /**
  * @brief Cada regra corresponde a:
@@ -46,7 +46,7 @@ const rules = [
 	{ pattern: /x/gi,	ipaPattern: "ʃ", out: "x" },				// Bruxa
 	{ pattern: /ch/gi,	ipaPattern: "ʃ", out: "x" },				// Chave
 	{ pattern: /ex/gi, 	ipaPattern: "ɐjʃ", out: "eis" },			// Texto
-	{ pattern: /ʒ/gi,	ipaPattern: "ʒ", out: "ʒ" },				// Jogo
+	{ pattern: /j/gi,	ipaPattern: "ʒ", out: "j" },				// Jogo
 	{ pattern: /g(?=[eiyéí])/gi, ipaPattern: "ʒ", out: "j" },		// Gente
 
 	// -------------- Par Consoantal Oclusivo-Fricativo (PC-OF) ---------------
@@ -188,7 +188,7 @@ function aplicarLuzofonema(palavraOriginal, ipaOriginal) {
 			const wordRegex = new RegExp(pattern, "i");
 			const ipaRegex = new RegExp(ipaPattern, "i");
 
-			debug("wRegex: ", wordRegex, "iRegex: ", ipaRegex);
+			//debug("wRegex: ", wordRegex, "iRegex: ", ipaRegex);
 			//debug("Rule: ", pattern, ipaPattern, out);
 
 			if (!wordContext.match(wordRegex)) continue;
@@ -211,7 +211,7 @@ function aplicarLuzofonema(palavraOriginal, ipaOriginal) {
 
 		// Nenhuma regra aplicada, copia a letra como está
 		if (!regraAplicada) {
-			debug("Nenhuma regra aplicada");
+			//debug("Nenhuma regra aplicada");
 			resArray.push(novaLetra);
 			wIndex++;
 			iIndex++;
@@ -220,7 +220,10 @@ function aplicarLuzofonema(palavraOriginal, ipaOriginal) {
 		debug("🔡 resArray parcial:", resArray.join(""));
 	}
 
-	return aplicarTonicidade(marcarHiatosComH(resArray.join("")));
+	let silabas = separarSilabas(resArray.join(""));
+	silabas = marcarHiatos(silabas);
+
+	return aplicarTonicidade(silabas);
 }
 
 module.exports = { aplicarLuzofonema };
