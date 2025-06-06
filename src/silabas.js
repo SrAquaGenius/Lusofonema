@@ -71,6 +71,7 @@ const regrasSeparacao = [
 			ctx.char.toLowerCase() === 'r' &&
 			(!ctx.next || ctx.isC(ctx.next)) &&
 			(() => {
+				ctx.atual += ctx.char;
 				ctx.silabas.push(ctx.atual);
 				ctx.atual = '';
 				ctx.i++;

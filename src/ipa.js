@@ -21,6 +21,7 @@ function corrigirIPA(ipa) {
 	ipa = ipa.replace(/ʊ̃/g, "w");
 	ipa = ipa.replace(/w$/g, "u");
 	ipa = ipa.replace(/ɾə/g, "ɾ");
+	ipa = ipa.replace(/ɹ/g, "ɾ");
 	ipa = ipa.replace(/ɡ/g, "g");
 
 	// Corrigir sons nasais
