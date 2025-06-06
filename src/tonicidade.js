@@ -4,7 +4,6 @@
  * ------------------------------------------------------------------------- */
 
 const { debug } = require("./debug");
-const { separarSilabas } = require("./silabas");
 
 const mapaGrave = {
 	a: "à", á: "ǎ",
@@ -46,64 +45,120 @@ function prioridade(centro, prox) {
 
 
 /**
- * @brief Aplica acento tónico à vogal mais proeminente da sílaba marcada 
- *        com ˈ, segundo critérios gráficos e fonológicos.
- *        Utiliza um mapa de prioridades para distinguir entre vogais e 
- *        combinações mais marcadas.
- * @param {string[]} silabas Array de sílabas, uma delas com caracter 'ˈ'.
- * @returns {string} Palavra reconstruída com a tonicidade aplicada.
+ * @brief Aplica a tonicidade a uma palavra silabificada, respeitando
+ *        regras de prioridade vocálica e evitando sobreposição desnecessária.
+ * @param {string[]} silabas Lista de sílabas (uma contém o marcador 'ˈ')
+ * @returns {string} Palavra com acento aplicado corretamente (se necessário)
  */
 function aplicarTonicidade(silabas) {
-
-	debug(silabas);
+	debug("Sílabas recebidas:", silabas);
 
 	const indexTonica = silabas.findIndex(s => s.startsWith("ˈ"));
-	if (indexTonica === -1) return silabas.join("");
-
-	let silaba = silabas[indexTonica];
-	const chars = silaba.split("");
-	const candidatos = [];
-
-	for (let i = 0; i < chars.length; i++) {
-		const c = chars[i];
-		if (vogais.includes(c.toLowerCase())) {
-			const prox = chars[i + 1] || "";
-			const p = prioridade(c, prox);
-			candidatos.push({ index: i, letra: c, prox, prioridade: p });
-		}
-	}
-
-	if (candidatos.length === 0) {
-		// Remove o ˈ se não há candidato
-		silabas[indexTonica] = silaba.replace("ˈ", "");
+	if (indexTonica === -1) {
+		debug("Nenhuma sílaba tónica encontrada.");
 		return silabas.join("");
 	}
 
-	// Escolhe a vogal com maior prioridade (desempata pelo índice)
-	const tonica = candidatos.reduce((a, b) =>
-		b.prioridade > a.prioridade ? b : a
-	);
+	const prioridadesPorSilaba = silabas.map(s => calcularPrioridadeSilaba(s));
+	debug("Prioridade máxima por sílaba:", prioridadesPorSilaba);
 
-	// Aplica acento na vogal
-	const i = tonica.index;
-	const tChar = tonica.letra;
+	const silaba = silabas[indexTonica];
+	const chars = silaba.split("");
+	const candidatos = encontrarCandidatos(chars);
+	debug("Candidatos à tonicidade:", candidatos);
+
+	if (candidatos.length === 0) {
+		silabas[indexTonica] = removerMarcaTonica(silaba);
+		debug("Sem candidatos. A remover ˈ.");
+		return silabas.join("");
+	}
+
+	const tonica = candidatos.reduce((a, b) => b.prioridade > a.prioridade ? b : a);
+	const prioridadeTonica = prioridadesPorSilaba[indexTonica];
+	const maxUltimas3 = Math.max(...prioridadesPorSilaba.slice(-3));
+
+	if (prioridadeTonica >= maxUltimas3) {
+		silabas[indexTonica] = removerMarcaTonica(silaba);
+		debug("Tónica já tem maior prioridade. A remover ˈ.");
+		return silabas.join("");
+	}
+
+	const novaSilaba = aplicarAcento(chars, tonica);
+	silabas[indexTonica] = novaSilaba;
+	const resultado = silabas.join("");
+	debug("Resultado final:", resultado);
+	return resultado;
+}
+
+/**
+ * @brief Calcula a prioridade máxima de uma sílaba com base nas suas vogais.
+ * @param {string} silaba A sílaba a avaliar.
+ * @returns {number} Prioridade mais alta entre vogais da sílaba.
+ */
+function calcularPrioridadeSilaba(silaba) {
+	const letras = silaba.replace("ˈ", "").split("");
+	let maior = -1;
+	for (let i = 0; i < letras.length; i++) {
+		if (vogais.includes(letras[i].toLowerCase())) {
+			const prox = letras[i + 1] || "";
+			const p = prioridade(letras[i], prox);
+			if (p > maior) maior = p;
+		}
+	}
+	return maior;
+}
+
+/**
+ * @brief Encontra as vogais candidatas à tonicidade numa sílaba.
+ * @param {string[]} chars Array de caracteres da sílaba.
+ * @returns {Object[]} Lista de objetos com índice, letra e prioridade.
+ */
+function encontrarCandidatos(chars) {
+	return chars.flatMap((c, i) => {
+		if (vogais.includes(c.toLowerCase())) {
+			const prox = chars[i + 1] || "";
+			return [{ index: i, letra: c, prox, prioridade: prioridade(c, prox) }];
+		}
+		return [];
+	});
+}
+
+/**
+ * @brief Remove o marcador ˈ de uma sílaba.
+ * @param {string} silaba A sílaba com marcador.
+ * @returns {string} Sílaba sem marcador.
+ */
+function removerMarcaTonica(silaba) {
+	return silaba.replace("ˈ", "");
+}
+
+
+/**
+ * @brief Aplica o acento adequado à vogal tónica numa sílaba.
+ * @param {string[]} chars Array de caracteres da sílaba.
+ * @param {Object} tonica Informação sobre a vogal a acentuar.
+ * @returns {string} Sílaba reconstruída com acento.
+ */
+function aplicarAcento(chars, tonica) {
+
+	const { index: i, letra: tChar } = tonica;
 	const temTilde = vogaisTildes.test(tChar);
 	const temFlexo = vogaisFlexas.test(tChar);
 	const temAgudo = vogaisAgudas.test(tChar);
 	const temAcento = temTilde || temFlexo || temAgudo;
 
 	if (!temAcento) {
-		chars[i] = mapaGrave[tChar] || tChar;
-	} else if (temAgudo &&
-		candidatos.filter(c => vogaisAgudas.test(c.letra)).length > 1) {
-		// Se houver mais de um acento agudo, converte este para caron
+		debug(`Aplicar grave a '${tChar}':`, mapaGrave[tChar] || tChar);
 		chars[i] = mapaGrave[tChar] || tChar;
 	}
 
-	// Reconstrói sílaba sem ˈ e com vogal acentuada
-	silabas[indexTonica] = chars.filter(c => c !== "ˈ").join("");
+	else if (temAgudo &&
+			 chars.filter(c => vogaisAgudas.test(c)).length > 1) {
+		debug(`Converter agudo '${tChar}' para grave:`, mapaGrave[tChar] || tChar);
+		chars[i] = mapaGrave[tChar] || tChar;
+	}
 
-	return silabas.join("");
+	return chars.filter(c => c !== "ˈ").join("");
 }
 
 
