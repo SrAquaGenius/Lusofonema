@@ -37,7 +37,6 @@ Para ver que conjunto de sons existem no Lusofonema, ver [esta página](ditongos
 | /l/  | C-L  | **L**ata         |
 | /ʎ/  | C-L  | Mi**lh**o        |
 | /ʁ/  | C-V  | **R**aro         |
-| /ɹ/  | C-V  | P**r**ato        |
 | /ɾ/  | C-V  | Ra**r**o         |
 | /j/  | SV   | Pa**i**          |
 | /w/  | SV   | Q**u**adro       |
