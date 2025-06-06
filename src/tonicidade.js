@@ -23,6 +23,7 @@ const vogaisFlexas = /[âêô]/i;
  * Atribui uma prioridade a uma vogal consoante os critérios fonológicos.
  */
 function prioridade(centro, prox) {
+
 	// Acentuações
 	if (vogaisCarons.test(centro)) return 110;
 	if (vogaisFlexas.test(centro)) return 100;
@@ -77,7 +78,7 @@ function aplicarTonicidade(silabas) {
 	const prioridadeTonica = prioridadesPorSilaba[indexTonica];
 	const maxUltimas3 = Math.max(...prioridadesPorSilaba.slice(-3));
 
-	if (prioridadeTonica >= maxUltimas3) {
+	if (prioridadeTonica > maxUltimas3) {
 		silabas[indexTonica] = removerMarcaTonica(silaba);
 		debug("Tónica já tem maior prioridade. A remover ˈ.");
 		return silabas.join("");
@@ -89,6 +90,7 @@ function aplicarTonicidade(silabas) {
 	debug("Resultado final:", resultado);
 	return resultado;
 }
+
 
 /**
  * @brief Calcula a prioridade máxima de uma sílaba com base nas suas vogais.
@@ -108,6 +110,7 @@ function calcularPrioridadeSilaba(silaba) {
 	return maior;
 }
 
+
 /**
  * @brief Encontra as vogais candidatas à tonicidade numa sílaba.
  * @param {string[]} chars Array de caracteres da sílaba.
@@ -122,6 +125,7 @@ function encontrarCandidatos(chars) {
 		return [];
 	});
 }
+
 
 /**
  * @brief Remove o marcador ˈ de uma sílaba.

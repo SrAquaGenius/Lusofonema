@@ -39,7 +39,7 @@ const rules = [
 	{ pattern: /(?<=[aeiouáéíóú])x(?=[aeiouáéíóúãõ])/gi,
 						ipaPattern: "s", out: "s" },				// Máximo
 	{ pattern: /z/gi,	ipaPattern: "z", out: "z" },				// Zero
-	{ pattern: /(?<=[aeiou])s(?=[aeiou])/gi, 
+	{ pattern: /(?<=[aeiouáéíóúãõ])s(?=[aeiouáéíóúãõ])/gi, 
 						ipaPattern: "z", out: "z" },				// Casa
 	{ pattern: /(?<=[aeiouáéíóú])x(?=[aeiouáéíóú])/gi,
 						ipaPattern: "z", out: "z" },				// Exame
@@ -65,7 +65,6 @@ const rules = [
 
 	// ---------------------- Consoantes Vibrantes (C-V) ----------------------
 	{ pattern: /r/gi,	ipaPattern: "ɾ", out: "r" },				// Raro
-	{ pattern: /r/gi,	ipaPattern: "ɹ", out: "r" },				// Prato
 	{ pattern: /rr/gi,	ipaPattern: "ʁ", out: "rr", advance: 1 },	// Raro
 
 

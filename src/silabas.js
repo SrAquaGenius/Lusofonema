@@ -6,26 +6,28 @@
 const { debug } = require("./debug");
 
 const vogais = 'aeiouáéíóúâêôãõà';
-const semivogais = 'iu';
+const semivogais = 'iuo';
 
 const regrasSeparacao = [
 
 	// #1 | Caracter tónico ˈ liga-se à sílaba seguinte
 	{
 		nome: "Tónica",
-		aplicar: (ctx, commit) => ctx.char === 'ˈ' && (() => {
-			if (ctx.atual !== '') ctx.silabas.push(ctx.atual);
-			ctx.atual = 'ˈ';
-			ctx.i++;
-			return commit();
-		})(),
+		aplicar: (ctx, commit) =>
+			ctx.char === 'ˈ' &&
+			(() => {
+				if (ctx.atual !== '') ctx.silabas.push(ctx.atual);
+				ctx.atual = 'ˈ';
+				ctx.i++;
+				return commit();
+			})(),
 	},
 
 	// #2 | Hiato: vogais fortes consecutivas
 	{
 		nome: "Hiato",
-		aplicar: (ctx, commit) => ctx.isV(ctx.char) &&
-			ctx.isV(ctx.next) &&
+		aplicar: (ctx, commit) =>
+			ctx.isV(ctx.char) && ctx.isV(ctx.next) &&
 			!semivogais.includes(ctx.char.toLowerCase()) &&
 			!semivogais.includes(ctx.next.toLowerCase()) &&
 			(() => {
@@ -39,7 +41,8 @@ const regrasSeparacao = [
 	// #3 | V–rr–V → 'rr' inicia nova sílaba
 	{
 		nome: "V-rr-V",
-		aplicar: (ctx, commit) => ctx.char.toLowerCase() === 'r' &&
+		aplicar: (ctx, commit) =>
+			ctx.char.toLowerCase() === 'r' &&
 			ctx.next.toLowerCase() === 'r' &&
 			ctx.isV(ctx.next2) &&
 			(() => {
@@ -53,7 +56,8 @@ const regrasSeparacao = [
 	// #4 | V–r–V → 'r' inicia nova sílaba
 	{
 		nome: "V-r-V",
-		aplicar: (ctx, commit) => ctx.isV(ctx.prev) &&
+		aplicar: (ctx, commit) =>
+			ctx.isV(ctx.prev) &&
 			ctx.char.toLowerCase() === 'r' &&
 			ctx.isV(ctx.next) &&
 			(() => {
@@ -67,7 +71,8 @@ const regrasSeparacao = [
 	// #5 | V–r ou V–r–C → 'r' termina sílaba
 	{
 		nome: "V-r",
-		aplicar: (ctx, commit) => ctx.isV(ctx.prev) &&
+		aplicar: (ctx, commit) =>
+			ctx.isV(ctx.prev) &&
 			ctx.char.toLowerCase() === 'r' &&
 			(!ctx.next || ctx.isC(ctx.next)) &&
 			(() => {
@@ -82,10 +87,12 @@ const regrasSeparacao = [
 	// #6 | V–C–V → corta após a vogal
 	{
 		nome: "V-C-V",
-		aplicar: (ctx, commit) => ctx.isV(ctx.char) &&
+		aplicar: (ctx, commit) =>
+			ctx.isV(ctx.char) &&
 			ctx.isC(ctx.next) &&
 			ctx.isV(ctx.next2) &&
 			(() => {
+				ctx.atual += ctx.char;
 				ctx.silabas.push(ctx.atual);
 				ctx.atual = '';
 				ctx.i++;
@@ -96,7 +103,8 @@ const regrasSeparacao = [
 	// #7 | V–n–C → nasal termina sílaba anterior, exceto se formar "nh"
 	{
 		nome: "V-n-C",
-		aplicar: (ctx, commit) => ctx.isV(ctx.prev) &&
+		aplicar: (ctx, commit) =>
+			ctx.isV(ctx.prev) &&
 			ctx.char.toLowerCase() === 'n' &&
 			ctx.isC(ctx.next) &&
 			!'h'.includes(ctx.next.toLowerCase()) &&
