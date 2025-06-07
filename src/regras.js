@@ -88,11 +88,11 @@ const rules = [
 	{ pattern: /[uú]/gi, ipaPattern: "u", out: "u" },				// Luz
 
 	// ------------------------- Vogais Nasais (V-N) --------------------------
-	{ pattern: /an/gi,	ipaPattern: "ɐ̃", out: "an", advance: 1  },	// Manta
-	{ pattern: /en/gi,	ipaPattern: "ẽ", out: "en", advance: 1  },	// Bem
-	{ pattern: /in/gi,	ipaPattern: "ĩ", out: "in", advance: 1  },	// Fim
-	{ pattern: /on/gi,	ipaPattern: "õ", out: "on", advance: 1  },	// Bom
-	{ pattern: /un/gi,	ipaPattern: "ũ", out: "un", advance: 1  },	// Um
+	{ pattern: /an/gi,	ipaPattern: "ɐ̃", out: "an", advance: 1 },	// Manta
+	{ pattern: /en/gi,	ipaPattern: "ẽ", out: "en", advance: 1 },	// Bem
+	{ pattern: /in/gi,	ipaPattern: "ĩ", out: "in", advance: 1 },	// Fim
+	{ pattern: /on/gi,	ipaPattern: "õ", out: "on", advance: 1 },	// Bom
+	{ pattern: /un/gi,	ipaPattern: "ũ", out: "un", advance: 1 },	// Um
 
 
 	// =============================== DITONGOS ===============================
@@ -165,7 +165,14 @@ function aplicarLuzofonema(palavraOriginal, ipaOriginal) {
 
 		debug(wIndex, letra, wordContext, iIndex, som, ipaContext);
 
-		// Ignorar marcadores ou símbolos não alfabéticos (ex: ˈ)
+		// Lidar com acento tónico ˈ
+		if (som === "ˈ") {
+			resArray.push("ˈ");
+			iIndex++;
+			continue;
+		}
+
+		// Ignorar marcadores ou símbolos não alfabéticos
 		if (letra.charCodeAt(0) > "ˈ".charCodeAt(0)) {
 			wIndex++;
 			continue;
@@ -175,12 +182,6 @@ function aplicarLuzofonema(palavraOriginal, ipaOriginal) {
 			continue;
 		}
 
-		// Lidar com acento tónico ˈ
-		if (som === "ˈ") {
-			resArray.push("ˈ");
-			iIndex++;
-			continue;
-		}
 
 		let regraAplicada = false;
 
@@ -192,9 +193,7 @@ function aplicarLuzofonema(palavraOriginal, ipaOriginal) {
 			//debug("Rule: ", pattern, ipaPattern, out);
 
 			if (!wordContext.match(wordRegex)) continue;
-			
 			if (ipaPattern && !ipaRegex.test(ipaContext)) continue;
-
 			if (!(ipaContext.match(ipaRegex)?.includes(som))) continue;
 
 			debug("✔️ Regra aplicada:", pattern, ipaPattern, out);
@@ -209,9 +208,8 @@ function aplicarLuzofonema(palavraOriginal, ipaOriginal) {
 			break;
 		}
 
-		// Nenhuma regra aplicada, copia a letra como está
 		if (!regraAplicada) {
-			//debug("Nenhuma regra aplicada");
+			debug("Nenhuma regra aplicada");
 			resArray.push(novaLetra);
 			wIndex++;
 			iIndex++;
