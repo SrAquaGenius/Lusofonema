@@ -54,6 +54,12 @@ function prioridade(centro, prox) {
 function aplicarTonicidade(silabas) {
 	debug("Sílabas recebidas:", silabas);
 
+	if (silabas.length === 1) {
+		debug("Sílaba única. A remover ˈ.");
+		silabas[0] = removerMarcaTonica(silabas[0]);
+		return silabas[0];
+	}
+
 	const indexTonica = silabas.findIndex(s => s.startsWith("ˈ"));
 	if (indexTonica === -1) {
 		debug("Nenhuma sílaba tónica encontrada.");
@@ -69,8 +75,8 @@ function aplicarTonicidade(silabas) {
 	debug("Candidatos à tonicidade:", candidatos);
 
 	if (candidatos.length === 0) {
-		silabas[indexTonica] = removerMarcaTonica(silaba);
 		debug("Sem candidatos. A remover ˈ.");
+		silabas[indexTonica] = removerMarcaTonica(silaba);
 		return silabas.join("");
 	}
 
