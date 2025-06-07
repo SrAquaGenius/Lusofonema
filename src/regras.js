@@ -36,6 +36,7 @@ const rules = [
 	{ pattern: /ss/gi,	ipaPattern: "s", out: "s" },				// Massa
 	{ pattern: /c(?=[e,i])/gi, ipaPattern: "s", out: "s" },			// Cinema
 	{ pattern: /ç/gi,	ipaPattern: "s", out: "s" },				// Lição
+	{ pattern: /z/gi,	ipaPattern: "ʃ", out: "s" },				// Fiz
 	{ pattern: /(?<=[aeiouáéíóú])x(?=[aeiouáéíóúãõ])/gi,
 						ipaPattern: "s", out: "s" },				// Máximo
 	{ pattern: /z/gi,	ipaPattern: "z", out: "z" },				// Zero
