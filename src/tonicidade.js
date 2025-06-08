@@ -80,9 +80,15 @@ function aplicarTonicidade(silabas) {
 
 	const tonica = candidatos.reduce((a, b) => b.prioridade > a.prioridade ? b : a);
 	const prioridadeTonica = prioridadesPorSilaba[indexTonica];
-	const maxUltimas3 = Math.max(...prioridadesPorSilaba.slice(-3));
 
-	if (prioridadeTonica > maxUltimas3) {
+	const prioridades = prioridadesPorSilaba.slice(-3);
+
+	const primeiraMaior = Math.max(...prioridades);
+	const segundaMaior = segundoMaior(prioridades);
+
+	debug(primeiraMaior, segundaMaior);
+
+	if (prioridadeTonica === primeiraMaior && prioridadeTonica > segundaMaior) {
 		silabas[indexTonica] = removerMarcaTonica(silaba);
 		debug("Tónica já tem maior prioridade. A remover ˈ.");
 		return silabas.join("");
@@ -93,6 +99,13 @@ function aplicarTonicidade(silabas) {
 	const resultado = silabas.join("");
 	debug("Resultado final:", resultado);
 	return resultado;
+}
+
+
+function segundoMaior(array) {
+  const unicos = [...new Set(array)]; // remove duplicados
+  unicos.sort((a, b) => b - a);       // ordena descendentemente
+  return unicos[1];                   // segundo maior
 }
 
 
