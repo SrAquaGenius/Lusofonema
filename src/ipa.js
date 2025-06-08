@@ -34,6 +34,7 @@ function corrigirIPA(ipa) {
 	ipa = ipa.replace(/ŋ/g, "");
 	ipa = ipa.replace(/ɐ̃w̃/g, "ɐ̃w");
 	ipa = ipa.replace(/ɐ̃m/g, "ɐ̃‍");
+	ipa = ipa.replace(/en/g, "ẽ");
 
 	// Ajustar alguns ditongos
 	ipa = ipa.replace(/eɪ/g, "ɐj");

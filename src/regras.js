@@ -24,7 +24,8 @@ const rules = [
 	{ pattern: /t/gi,	ipaPattern: "t", out: "t" },				// Teto
 	{ pattern: /d/gi,	ipaPattern: "d", out: "d" },				// Dado
 	{ pattern: /k/gi,	ipaPattern: "k", out: "c" },				// Casa
-	{ pattern: /qu(?=[ei])/gi, ipaPattern: "k", out: "c" },			// Queijo
+	{ pattern: /qu(?=[ei])/gi,
+						ipaPattern: "k", out: "c", advance: 1 },	// Queijo
 	{ pattern: /q(?=u[ao])/gi, ipaPattern: "k", out: "c" },			// Quanto
 	{ pattern: /g/gi,	ipaPattern: "g", out: "g" },				// Gato
 
@@ -90,7 +91,7 @@ const rules = [
 	// ------------------------- Vogais Nasais (V-N) --------------------------
 	{ pattern: /an/gi,	ipaPattern: "ɐ̃", out: "an", advance: 1 },	// Manta
 	{ pattern: /â/gi,	ipaPattern: "ɐ̃", out: "an", advance: 1 },	// Constância
-	{ pattern: /en/gi,	ipaPattern: "ẽ", out: "en", advance: 1 },	// Quente
+	{ pattern: /en/gi,	ipaPattern: "ẽ", out: "en", advance: 1 },	// Quente
 	{ pattern: /in/gi,	ipaPattern: "ĩ", out: "in", advance: 1 },	// Fim
 	{ pattern: /on/gi,	ipaPattern: "õ", out: "on", advance: 1 },	// Bom
 	{ pattern: /un/gi,	ipaPattern: "ũ", out: "un", advance: 1 },	// Um
