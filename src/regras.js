@@ -89,9 +89,10 @@ const rules = [
 
 	// ------------------------- Vogais Nasais (V-N) --------------------------
 	{ pattern: /an/gi,	ipaPattern: "ɐ̃", out: "an", advance: 1 },	// Manta
-	{ pattern: /en/gi,	ipaPattern: "ẽ", out: "en", advance: 1 },	// Bem
+	{ pattern: /â/gi,	ipaPattern: "ɐ̃", out: "an", advance: 1 },	// Constância
+	{ pattern: /en/gi,	ipaPattern: "ẽ", out: "en", advance: 1 },	// Quente
 	{ pattern: /in/gi,	ipaPattern: "ĩ", out: "in", advance: 1 },	// Fim
-	{ pattern: /on/gi,	ipaPattern: "õ", out: "on", advance: 1 },	// Bom
+	{ pattern: /on/gi,	ipaPattern: "õ", out: "on", advance: 1 },	// Bom
 	{ pattern: /un/gi,	ipaPattern: "ũ", out: "un", advance: 1 },	// Um
 
 

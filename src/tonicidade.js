@@ -19,9 +19,7 @@ const vogaisCarons = /[ǎěǐǒǔ]/i;
 const vogaisTildes = /[ãõ]/i;
 const vogaisFlexas = /[âêô]/i;
 
-/**
- * Atribui uma prioridade a uma vogal consoante os critérios fonológicos.
- */
+/** Atribui uma prioridade a uma vogal consoante os critérios fonológicos. */
 function prioridade(centro, prox) {
 
 	// Acentuações

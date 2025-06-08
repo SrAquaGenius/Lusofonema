@@ -44,7 +44,7 @@ function corrigirIPA(ipa) {
 	ipa = ipa.replace(/\s/g, "").replace(/[ˌ]/g, "");
 	
 	// Corrigir posição do acento tónico
-	ipa = ipa.replace(/([^aeiouɐɛəɔɐ̃ẽĩõũˈˌ\s\/])ˈ([aeiouɐɛəɔɐ̃ẽĩõũ])/gi, "ˈ$1$2");
+	ipa = ipa.replace(/([^aeiouɐɛəɔwɐ̃ẽĩõũˈˌ\s\/])ˈ([aeiouɐɛəɔwɐ̃ẽĩõũ])/gi, "ˈ$1$2");
 
 	// Substitui C-"w"-C por C-"u"-C
 	ipa = ipa.replace(/([^aeiouɐɛəɔɐ̃ẽĩõũˈ̃])w([^aeiouɐɛəɔɐ̃ẽĩõũˈ̃])/g, "$1u$2");

@@ -100,7 +100,24 @@ const regrasSeparacao = [
 			})(),
 	},
 
-	// #7 | V–n–C → nasal termina sílaba anterior, exceto se formar "nh"
+	// #7 | V–n–s–C → 'n' e 's' pertencem à vogal anterior
+	{
+	nome: "V-n-s-C",
+	aplicar: (ctx, commit) =>
+		ctx.isV(ctx.prev) &&
+		ctx.char.toLowerCase() === 'n' &&
+		ctx.next.toLowerCase() === 's' &&
+		(ctx.isC(ctx.next2) || ctx.next2 === 'ˈ') &&
+		(() => {
+			ctx.atual += ctx.char + ctx.next;
+			ctx.silabas.push(ctx.atual);
+			ctx.atual = '';
+			ctx.i += 2;
+			return commit();
+		})(),
+	},
+
+	// #8 | V–n–C → nasal termina sílaba anterior, exceto se formar "nh"
 	{
 		nome: "V-n-C",
 		aplicar: (ctx, commit) =>
@@ -116,7 +133,6 @@ const regrasSeparacao = [
 				return commit();
 			})(),
 	},
-
 ];
 
 
