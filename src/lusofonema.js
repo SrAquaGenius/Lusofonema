@@ -8,6 +8,7 @@ const { mostrarAlfabetoLusofonema, mostrarAlfabetoIPA } = require("./alfabeto");
 const { mostrarPalavra, mostrarTexto } = require("./mostrar");
 const { verificarPalavra } = require("./verificar");
 const { ativarDebug, desativarDebug } = require("./debug");
+const { buscarDefinicaoWiktionary } = require('./wiktionary');
 
 const rl = readline.createInterface({
 	input: process.stdin,
@@ -58,7 +59,8 @@ function mostrarMenu() {
 	console.log("3 - Mostrar uma palavra");
 	console.log("4 - Validar uma palavra");
 	console.log("5 - Mostrar texto");
-	console.log("6 - Ativar/Desativar (", debugLigado ? "🟢" : "⚫", ")");
+	console.log("6 - Buscar definição");
+	console.log("7 - Ativar/Desativar (", debugLigado ? "🟢" : "⚫", ")");
 	console.log("0 - Sair da aplicação");
 
 	rl.question(": ", (opcao) => {
@@ -80,6 +82,9 @@ function mostrarMenu() {
 				mostrarTexto(rl, mostrarMenu);
 				break;
 			case "6":
+				buscarDefinicaoWiktionary(rl, mostrarMenu);
+				break;
+			case "7":
 				changeDebug();
 				break;
 			case "0":
