@@ -15,7 +15,15 @@ const { corrigirAdicionar } = require("./corrigir");
 const { lerPalavra } = require("./gestorPalavras");
 const { pesquisarPalavra } = require("./pesquisar");
 
-
+/**
+ * @brief Mostra a transcrição fonética e luzofonema de uma palavra.
+ *        Primeiro tenta carregar a palavra a partir do ficheiro JSON.
+ *        Se não encontrar, gera automaticamente a entrada via espeak-ng
+ *        e sugere a adição ao dicionário.
+ *
+ * @param {readline.Interface} rl Interface readline para interação CLI.
+ * @param {Function} callback Função a invocar no fim do processo.
+ */
 function mostrarPalavra(rl, callback) {
 	rl.question("🔍 Palavra: ", (input) => {
 
@@ -49,6 +57,9 @@ function mostrarPalavra(rl, callback) {
 						  resultado.luzofonema);
 	});
 }
+
+
+
 
 function mostrarTexto(rl, callback) {
 	const corpusDir = path.join(__dirname, "..", "corpus");
