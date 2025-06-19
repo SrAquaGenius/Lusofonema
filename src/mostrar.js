@@ -12,10 +12,14 @@ const { corrigirIPA } = require("./ipa");
 const { aplicarLuzofonema } = require("./regras");
 const { corrigirAdicionar } = require("./corrigir");
 
+const { lerPalavra } = require("./gestorPalavras");
+const { pesquisarPalavra } = require("./pesquisar");
+
+
 function mostrarPalavra(rl, callback) {
 	rl.question("🔍 Palavra: ", (input) => {
 
-		// Convertendo a palavra para minúsculas
+		// Converte a palavra para minúsculas
 		const palavra = input.trim().toLowerCase();
 
 		if (!palavra) {
@@ -23,32 +27,26 @@ function mostrarPalavra(rl, callback) {
 			return callback();
 		}
 
-		const ficheiro = "dicionario.tsv";
-		const conteudo = fs.existsSync(ficheiro) ? fs.readFileSync(ficheiro, "utf8") : "";
-		const linhas = conteudo.split("\n").filter(Boolean);
-		const entrada = linhas.find(l => l.startsWith(`${palavra}\t`));
+		// Tenta ler do ficheiro JSON com definição da palavra
+		const entrada = lerPalavra(palavra);
 
 		if (entrada) {
-			const [pal, ipa, luzofonema] = entrada.split("\t");
-			console.log(`📚 Entrada encontrada:\n🔤 ${pal} → ${ipa} → ${luzofonema}\n`);
+			console.log(`📚 Entrada encontrada:\n🔤 ${entrada.palavra} → ${entrada.ipa} → ${entrada.luzofonema}\n`);
 			return callback();
 		}
 
-		// Se não existir, sugerir e perguntar se quer adicionar
-		try {
-			let ipa = execSync(`espeak-ng -v pt --ipa=3 -q "${palavra}" 2>/dev/null`).toString().trim();
-			ipa = corrigirIPA(ipa);
-			const luzofonema = aplicarLuzofonema(palavra, ipa);
+		// Se não existir, pesquisar pela palavra
+		const resultado = pesquisarPalavra(palavra);
 
-			console.log(`❓ Palavra não encontrada no dicionário.`);
-			console.log(`🔤 Sugerido: ${palavra} → ${ipa} → ${luzofonema}`);
-
-			corrigirAdicionar(rl, callback, palavra, ipa, luzofonema);
-
-		} catch (error) {
-			console.error(`❌ Erro ao processar "${palavra}":`, error.message);
-			callback();
+		if (!resultado) {
+			console.log("⚠️ Erro ao obter informação da palavra.\n");
+			return callback();
 		}
+
+		console.log(`📚 Entrada sugerida: ${resultado.palavra} → ${resultado.ipa} → ${resultado.luzofonema}`);
+
+		corrigirAdicionar(rl, callback, resultado.palavra, resultado.ipa,
+						  resultado.luzofonema);
 	});
 }
 

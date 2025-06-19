@@ -35,7 +35,7 @@ function guardarPalavra(dados) {
 function lerPalavra(palavra) {
 	const caminho = path.join(PASTA_PALAVRAS, `${palavra.toLowerCase()}.json`);
 	if (!fs.existsSync(caminho)) {
-		console.warn(`⚠️ Palavra "${palavra}" não encontrada.`);
+		console.log(`⚠️  Palavra "${palavra}" não encontrada.`);
 		return null;
 	}
 	const conteudo = fs.readFileSync(caminho, "utf-8");
@@ -53,7 +53,7 @@ function eliminarPalavra(palavra) {
 		console.log(`🗑️ Palavra "${palavra}" eliminada.`);
 	}
 	
-	else console.warn(`⚠️ Palavra "${palavra}" não existe.`);
+	else console.log(`⚠️ Palavra "${palavra}" não existe.`);
 }
 
 module.exports = { guardarPalavra, lerPalavra, eliminarPalavra };
