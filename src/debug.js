@@ -49,5 +49,17 @@ function debug(...mensagens) {
 	}
 }
 
+function log(...args) {
+	console.log(...args);
+}
 
-module.exports = { debug, ativarDebug, desativarDebug };
+function warn(...args) {
+	console.warn("⚠️ ", ...args);
+}
+
+function error(...args) {
+	console.error("❌ ", ...args);
+}
+
+
+module.exports = { debug, ativarDebug, desativarDebug, log, warn, error};
