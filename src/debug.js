@@ -3,16 +3,17 @@
  * Authors:  SrAqua
  * ------------------------------------------------------------------------- */
 
-let debugAtivo = false;
+let debugFlag = false;
 
-/** Ativa a saída de debug. */
-function ativarDebug() {
-	debugAtivo = true;
+/** @brief troca o estado de debug atual */
+function changeDebug() {
+	debugFlag = !debugFlag;
+	console.log(`🐞 Modo de debug ${debugFlag ? "ativado" : "desativado"}\n`);
 }
 
-/** Desativa a saída de debug. */
-function desativarDebug() {
-	debugAtivo = false;
+/** @brief Devolve o estado de debug atual */
+function getDebugFlag() {
+	return debugFlag;
 }
 
 /**
@@ -21,7 +22,7 @@ function desativarDebug() {
  */
 function debug(...mensagens) {
 
-	if (debugAtivo) {
+	if (debugFlag) {
 		const stack = new Error().stack;
 		const linhas = stack.split("\n");
 		let origem = "desconhecida";
@@ -62,4 +63,4 @@ function error(...args) {
 }
 
 
-module.exports = { debug, ativarDebug, desativarDebug, log, warn, error};
+module.exports = { getDebugFlag, changeDebug, debug, log, warn, error };

@@ -5,10 +5,12 @@
 
 const readline = require("readline");
 const { mostrarAlfabetoLusofonema, mostrarAlfabetoIPA } = require("./alfabeto");
-const { mostrarPalavra, mostrarTexto } = require("./mostrar");
+const { mostrarPalavra } = require("./mostrar");
+const { testarTexto } = require("./testarTexto");
 const { verificarPalavra } = require("./verificar");
-const { ativarDebug, desativarDebug } = require("./debug");
 const { buscarDefinicaoWiktionary } = require('./wiktionary');
+
+const { getDebugFlag, changeDebug, log } = require("./debug");
 
 const rl = readline.createInterface({
 	input: process.stdin,
@@ -16,22 +18,8 @@ const rl = readline.createInterface({
 });
 
 
-console.log("🗣️  Lusofonema — Uma versão fonética da língua Portuguesa");
-console.log("========================================================\n");
-
-
-// Debug introduction code ----------------------------------------------------
-
-// Adiciona uma variável para o estado do debug
-let debugLigado = false;
-
-function changeDebug() {
-	debugLigado = !debugLigado;
-	if (debugLigado) ativarDebug();
-	else desativarDebug();
-	console.log(`Modo de debug ${debugLigado ? "ativado 🐞" : "desativado"}\n`);
-	mostrarMenu();
-}
+log("🗣️  Lusofonema — Uma versão fonética da língua Portuguesa");
+log("========================================================\n");
 
 
 /**
@@ -53,18 +41,18 @@ function changeDebug() {
  * funções do escopo exterior, incluindo o estado `debugLigado`.
  */
 function mostrarMenu() {
-	console.log("Menu:");
-	console.log("1 - Ver alfabeto do Lusofonema");
-	console.log("2 - Ver alfabeto fonético");
-	console.log("3 - Mostrar uma palavra");
-	console.log("4 - Validar uma palavra");
-	console.log("5 - Mostrar texto");
-	console.log("6 - Buscar definição");
-	console.log("7 - Ativar/Desativar (", debugLigado ? "🟢" : "⚫", ")");
-	console.log("0 - Sair da aplicação");
+	log("Menu:");
+	log("1 - Ver alfabeto do Lusofonema");
+	log("2 - Ver alfabeto fonético");
+	log("3 - Mostrar uma palavra");
+	log("4 - Validar uma palavra");
+	log("5 - Mostrar texto");
+	log("6 - Buscar definição");
+	log("7 - Ativar/Desativar (", getDebugFlag() ? "🟢" : "⚫", ")");
+	log("0 - Sair da aplicação");
 
 	rl.question(": ", (opcao) => {
-		console.log("");
+		log("");
 		switch (opcao.trim()) {
 			case "1":
 				mostrarAlfabetoLusofonema(mostrarMenu);
@@ -79,20 +67,21 @@ function mostrarMenu() {
 				verificarPalavra(rl, mostrarMenu);
 				break;
 			case "5":
-				mostrarTexto(rl, mostrarMenu);
+				testarTexto(rl, mostrarMenu);
 				break;
 			case "6":
 				buscarDefinicaoWiktionary(rl, mostrarMenu);
 				break;
 			case "7":
 				changeDebug();
+				mostrarMenu();
 				break;
 			case "0":
-				console.log("👋 Adeus!");
+				log("👋 Adeus!");
 				rl.close();
 				break;
 			default:
-				console.log("❗ Opção inválida.\n");
+				log("❗ Opção inválida.\n");
 				mostrarMenu();
 				break;
 		}
