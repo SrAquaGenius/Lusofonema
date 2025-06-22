@@ -5,7 +5,7 @@
 
 const readline = require("readline");
 
-const { mostrarAlfabetoLusofonema, mostrarAlfabetoIPA } = require("./alfabeto");
+const { mostrarAlfabetoLusofonema, mostrarSonsIPA } = require("./alfabeto");
 const { mostrarPalavra } = require("./mostrarPalavra");
 const { testarTexto } = require("./testarTexto");
 const { verificarPalavra } = require("./verificar");
@@ -59,7 +59,7 @@ function mostrarMenu() {
 				mostrarAlfabetoLusofonema(mostrarMenu);
 				break;
 			case "2":
-				mostrarAlfabetoIPA(mostrarMenu);
+				mostrarSonsIPA(mostrarMenu);
 				break;
 			case "3":
 				mostrarPalavra(rl, mostrarMenu);

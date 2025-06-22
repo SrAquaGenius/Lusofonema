@@ -3,6 +3,18 @@
  * Authors:  SrAqua
  * ------------------------------------------------------------------------- */
 
+const { log } = require("./debug");
+
+
+/**
+ * @brief Mostra o alfabeto do sistema Lusofonema, com cada letra,
+ *        o seu nome comum em português e a representação fonética
+ *        esperada (som IPA ou equivalente simplificado).
+ *        Imprime os dados no terminal em formato de tabela simples.
+ * @param {function} callback Função a executar após mostrar o alfabeto.
+ *                            Pode ser usada para retornar ao menu.
+ * @returns {void} Não retorna valor; apenas imprime e chama o callback.
+ */
 function mostrarAlfabetoLusofonema(callback) {
 	const alfabeto = [
 		{ letra: "A", nome: "á", som: "/a/ ou /ɐ/" },
@@ -30,18 +42,35 @@ function mostrarAlfabetoLusofonema(callback) {
 		{ letra: "Z", nome: "zê", som: "/z/" },
 	];
 
-	console.log("\n🔡 Alfabeto Lusofonema:\n");
-	console.log("Letra | Nome | Som");
-	console.log("-------------------------------");
+	log("\n🔡 Alfabeto Lusofonema:\n");
+	log("Letra | Nome | Som");
+	log("-------------------------------");
 	alfabeto.forEach(({ letra, nome, som }) => {
-		console.log(` ${letra.padEnd(5)}| ${nome.padEnd(5)}| ${som}`);
+		log(` ${letra.padEnd(5)}| ${nome.padEnd(5)}| ${som}`);
 	});
-	console.log("");
+	log("");
 
 	if (callback) callback();
 }
 
-function mostrarAlfabetoIPA(callback) {
+/**
+ * @brief Mostra os sons usados no alfabeto fonético (IPA), organizados
+ *        por tipo articulatório: consoantes, vogais, semivogais, etc.
+ *        Para cada som, mostra também um exemplo de palavra onde ocorre.
+ *        Tipos:
+ *        - C-O: Consoante Oclusiva
+ *        - C-F: Consoante Fricativa
+ *        - C-N: Consoante Nasal
+ *        - C-L: Consoante Lateral
+ *        - C-V: Consoante Vibrante
+ *        - SV : Semivogal
+ *        - V-O: Vogal Oral
+ *        - V-N: Vogal Nasal
+ * @param {function} callback Função a executar após mostrar os sons.
+ *                            Pode ser usada para retornar ao menu.
+ * @returns {void} Não retorna valor; apenas imprime e chama o callback.
+ */
+function mostrarSonsIPA(callback) {
 	const alfabeto = [
 		{ som: "/p/", tipo: "C-O", palavra: "Pato" },
 		{ som: "/b/", tipo: "C-O", palavra: "Bola" },
@@ -80,25 +109,26 @@ function mostrarAlfabetoIPA(callback) {
 		{ som: "/ũ/", tipo: "V-N", palavra: "Um" },
 	];
 
-	console.log("\n🔡 Lista de Sons do Alfabeto Fonético:\n");
-	console.log("(Legenda):");
-	console.log("- Consoante Oclusiva :\tC-O");	
-	console.log("- Consoante Fricativa :\tC-F");	
-	console.log("- Consoante Nasal :\tC-N");	
-	console.log("- Consoante Lateral :\tC-L");	
-	console.log("- Consoante Vibrante :\tC-V");	
-	console.log("- Semivogal :\t\tSV");	
-	console.log("- Vogal Oral :\t\tV-O");	
-	console.log("- Vogal Nasal :\t\tV-N");	
+	log("\n🔡 Lista de Sons do Alfabeto Fonético:\n");
+	log("(Legenda):");
+	log("- Consoante Oclusiva :\tC-O");	
+	log("- Consoante Fricativa :\tC-F");	
+	log("- Consoante Nasal :\tC-N");	
+	log("- Consoante Lateral :\tC-L");	
+	log("- Consoante Vibrante :\tC-V");	
+	log("- Semivogal :\t\tSV");	
+	log("- Vogal Oral :\t\tV-O");	
+	log("- Vogal Nasal :\t\tV-N");	
 	
-	console.log("\nSom | Tipo | Palavra exemplo");
-	console.log("----------------------------");
+	log("\nSom | Tipo | Palavra exemplo");
+	log("----------------------------");
 	alfabeto.forEach(({ tipo, som, palavra }) => {
-		console.log(`${som.padEnd(4)}| ${tipo.padEnd(5)}| ${palavra.padEnd(15)}`);
+		log(`${som.padEnd(4)}| ${tipo.padEnd(5)}| ${palavra.padEnd(15)}`);
 	});
-	console.log("");
+	log("");
 
 	if (callback) callback();
 }
 
-module.exports = { mostrarAlfabetoLusofonema, mostrarAlfabetoIPA };
+
+module.exports = { mostrarAlfabetoLusofonema, mostrarSonsIPA };
