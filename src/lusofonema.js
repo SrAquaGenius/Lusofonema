@@ -4,8 +4,9 @@
  * ------------------------------------------------------------------------- */
 
 const readline = require("readline");
+
 const { mostrarAlfabetoLusofonema, mostrarAlfabetoIPA } = require("./alfabeto");
-const { mostrarPalavra } = require("./mostrar");
+const { mostrarPalavra } = require("./mostrarPalavra");
 const { testarTexto } = require("./testarTexto");
 const { verificarPalavra } = require("./verificar");
 const { buscarDefinicaoWiktionary } = require('./wiktionary');
