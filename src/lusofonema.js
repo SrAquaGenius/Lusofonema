@@ -11,7 +11,7 @@ const { testarTexto } = require("./testarTexto");
 const { verificarPalavra } = require("./verificar");
 const { buscarDefinicaoWiktionary } = require('./wiktionary');
 
-const { getDebugFlag, changeDebug, log } = require("./debug");
+const { mostrarDebug, mudarDebug, log } = require("./debug");
 
 const rl = readline.createInterface({
 	input: process.stdin,
@@ -49,7 +49,7 @@ function mostrarMenu() {
 	log("4 - Validar uma palavra");
 	log("5 - Mostrar texto");
 	log("6 - Buscar definição");
-	log("7 - Ativar/Desativar (", getDebugFlag() ? "🟢" : "⚫", ")");
+	log("7 - Ativar/Desativar (", mostrarDebug() ? "🟢" : "⚫", ")");
 	log("0 - Sair da aplicação");
 
 	rl.question(": ", (opcao) => {
@@ -74,7 +74,7 @@ function mostrarMenu() {
 				buscarDefinicaoWiktionary(rl, mostrarMenu);
 				break;
 			case "7":
-				changeDebug();
+				mudarDebug();
 				mostrarMenu();
 				break;
 			case "0":

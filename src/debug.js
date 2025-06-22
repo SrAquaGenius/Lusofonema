@@ -6,13 +6,13 @@
 let debugFlag = false;
 
 /** @brief troca o estado de debug atual */
-function changeDebug() {
+function mudarDebug() {
 	debugFlag = !debugFlag;
 	console.log(`🐞 Modo de debug ${debugFlag ? "ativado" : "desativado"}\n`);
 }
 
 /** @brief Devolve o estado de debug atual */
-function getDebugFlag() {
+function mostrarDebug() {
 	return debugFlag;
 }
 
@@ -63,4 +63,4 @@ function error(...args) {
 }
 
 
-module.exports = { getDebugFlag, changeDebug, debug, log, warn, error };
+module.exports = { mostrarDebug, mudarDebug, debug, log, warn, error };
