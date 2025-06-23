@@ -8,7 +8,6 @@ const readline = require("readline");
 const { mostrarAlfabetoLusofonema, mostrarSonsIPA } = require("./alfabeto");
 const { mostrarPalavra } = require("./mostrarPalavra");
 const { testarTexto } = require("./testarTexto");
-const { verificarPalavra } = require("./verificar");
 const { buscarDefinicaoWiktionary } = require('./wiktionary');
 
 const { mostrarDebug, mudarDebug, log } = require("./debug");
@@ -46,10 +45,9 @@ function mostrarMenu() {
 	log("1 - Ver alfabeto do Lusofonema");
 	log("2 - Ver alfabeto fonético");
 	log("3 - Mostrar uma palavra");
-	log("4 - Validar uma palavra");
-	log("5 - Mostrar texto");
-	log("6 - Buscar definição");
-	log("7 - Ativar/Desativar (", mostrarDebug() ? "🟢" : "⚫", ")");
+	log("4 - Mostrar texto");
+	log("5 - Buscar definição");
+	log("6 - Ativar/Desativar (", mostrarDebug() ? "🟢" : "⚫", ")");
 	log("0 - Sair da aplicação");
 
 	rl.question(": ", (opcao) => {
@@ -65,15 +63,12 @@ function mostrarMenu() {
 				mostrarPalavra(rl, mostrarMenu);
 				break;
 			case "4":
-				verificarPalavra(rl, mostrarMenu);
-				break;
-			case "5":
 				testarTexto(rl, mostrarMenu);
 				break;
-			case "6":
+			case "5":
 				buscarDefinicaoWiktionary(rl, mostrarMenu);
 				break;
-			case "7":
+			case "6":
 				mudarDebug();
 				mostrarMenu();
 				break;
