@@ -5,16 +5,14 @@
 
 const fs = require("fs");
 const path = require("path");
-const { execSync } = require("child_process");
 
-const { corrigirAdicionar } = require("./corrigir");
 const { pesquisarPalavra } = require("./pesquisar");
 
-const { log, error } = require("./debug");
+const { log, logExit, errorExit } = require("./debug");
 
 
 /**
- * @brief Mostra a transcrição fonética e luzofonema de uma palavra.
+ * @brief Mostra a transcrição fonética e lusofonema de uma palavra.
  *        Se a palavra estiver no dicionário, mostra a entrada.
  *        Se for nova, gera entrada com espeak-ng e sugere correção.
  *        Se input for vazio, escolhe palavra aleatória do corpus.
@@ -23,80 +21,32 @@ const { log, error } = require("./debug");
  * @param {Function} callback Função de retorno.
  */
 async function mostrarPalavra(rl, callback) {
+
 	rl.question("🔍 Palavra ('Enter' para aleatória, '0' para voltar): ",
 			async (input) => {
 
 		let palavra = input.trim().toLowerCase();
-
-		if (palavra === "0") {
-			log("A voltar ao menu ...\n");
-			return callback();
-		}
+		if (palavra === "0") logExit(callback, "A voltar ao menu ...\n");
 
 		// Palavra aleatória se input estiver vazio
 		if (!palavra) {
 			palavra = obterPalavraAleatoriaDeCorpus();
 
-			if (!palavra) {
-				error("Não foi possível obter uma palavra aleatória.\n");
-				return callback();
-			}
+			if (!palavra)
+				errorExit(callback, "Falha a obter uma palavra aleatória.\n");
 
 			log(`🎲 Palavra aleatória: ${palavra}`);
 		}
 
-		await mostrarOuAdicionarPalavra(palavra, rl, callback);
+		// Procurar pela palavra escolhida
+		const res = await pesquisarPalavra(palavra, callback);
+
+		if (!res || !res.fonte)
+			errorExit(callback, "Erro ao obter a informação da palavra.\n");
+
+		logExit(callback,
+			`📚 Entrada ${res.fonte}: ${res.palavra} → ${res.ipa} → ${res.lusofonema}\n`);
 	});
-}
-
-/**
- * @brief Mostra a entrada da palavra se já existir, ou sugere nova entrada.
- * @param {string} palavra Palavra a mostrar ou sugerir.
- * @param {readline.Interface} rl Interface readline.
- * @param {Function} callback Função de retorno.
- */
-async function mostrarOuAdicionarPalavra(palavra, rl, callback) {
-
-	const resultado = await pesquisarPalavra(palavra);
-
-	if (!resultado) {
-		error("Erro ao obter informação da palavra.\n");
-		return callback();
-	}
-
-	if (resultado.fonte === "dicionario") {
-		log(`📚 Entrada encontrada: ${resultado.palavra} → ${resultado.ipa} → ${resultado.luzofonema}\n`);
-		return callback();
-	}
-
-	try {
-		let ipa = execSync(`espeak-ng -v pt --ipa=3 -q "${palavra}"`).toString().trim();
-		ipa = corrigirIPA(ipa);
-		const luzofonema = aplicarLuzofonema(palavra, ipa);
-
-		log(`📚 Entrada sugerida: ${palavra} → ${ipa} → ${luzofonema}\n`);
-
-		corrigirAdicionar(rl, callback, palavra, ipa, luzofonema);
-	}
-	catch (erro) {
-		error(`Erro ao gerar IPA com espeak-ng:`, erro.message);
-		callback();
-	}
-}
-
-/**
- * @brief Verifica se a palavra já se encontra no dicionário.
- * @param {string} palavra Palavra a verificar.
- * @returns {boolean} Verdadeiro se a palavra já estiver no dicionário.
- */
-function palavraJaNoDicionario(palavra) {
-
-	const ficheiro = "dicionario.tsv";
-	if (!fs.existsSync(ficheiro)) return false;
-
-	const conteudo = fs.readFileSync(ficheiro, "utf8");
-	const linhas = conteudo.split("\n").filter(Boolean);
-	return linhas.some(linha => linha.startsWith(`${palavra}\t`));
 }
 
 /**
@@ -128,6 +78,21 @@ function obterPalavraAleatoriaDeCorpus() {
 	} while (tentativa && palavraJaNoDicionario(tentativa));
 
 	return tentativa || null;
+}
+
+/**
+ * @brief Verifica se a palavra já se encontra no dicionário.
+ * @param {string} palavra Palavra a verificar.
+ * @returns {boolean} Verdadeiro se a palavra já estiver no dicionário.
+ */
+function palavraJaNoDicionario(palavra) {
+
+	const ficheiro = "dicionario.tsv";
+	if (!fs.existsSync(ficheiro)) return false;
+
+	const conteudo = fs.readFileSync(ficheiro, "utf8");
+	const linhas = conteudo.split("\n").filter(Boolean);
+	return linhas.some(linha => linha.startsWith(`${palavra}\t`));
 }
 
 

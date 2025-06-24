@@ -4,33 +4,72 @@
  * ------------------------------------------------------------------------- */
 
 const { execSync } = require("child_process");
+
+const { debug } = require("./debug");
+const { lerPalavra } = require("./gestorPalavras");
 const { corrigirIPA } = require("./ipa");
 const { aplicarLuzofonema } = require("./regras");
+const { buscarDadosWiktionary } = require("./wiktionary");
+
 
 /**
  * @brief Procura a palavra nos ficheiros .json ou gera automaticamente.
  * @param {string} palavra Palavra a procurar.
  * @returns {object|null} Objeto com dados da palavra e fonte ("ficheiro"|"gerado").
  */
-function pesquisarPalavra(palavra) {
+async function pesquisarPalavra(palavra, callback) {
 
+	// 1. Tenta ler do ficheiro JSON com definição da palavra
+	const entrada = lerPalavra(palavra);
+
+	if (entrada) {
+		return { fonte: "no dicionario", 
+				palavra: entrada.palavra,
+				ipa: entrada.ipa,
+				lusofonema: entrada.lusofonema };
+	}
+
+	// 2. Busca dados no Wiktionary
+	try {
+		const dadosWiki = await buscarDadosWiktionary(palavra, callback);
+
+		debug("Dados:", dadosWiki);
+
+		if (dadosWiki && dadosWiki.ipa) {
+
+			const ipaCorrigido = corrigirIPA(dadosWiki.ipa);
+			const lusofonema = aplicarLuzofonema(dadosWiki.lusofonema);
+
+			dadosWiki.ipa = ipaCorrigido;
+			dadosWiki.lusofonema = lusofonema;
+
+			guardarPalavra(dadosWiki);
+
+			return { fonte: "por pesquisa", 
+					palavra: dadosWiki.palavra,
+					ipa: dadosWiki.ipa,
+					lusofonema: dadosWiki.lusofonema };
+		}
+	}
+	catch (e) {
+		error(`Erro no Wiktionary: ${e.message}`);
+	}
+
+	// 3. Fallback: gera com espeak-ng
 	try {
 		let ipa = execSync(`espeak-ng -v pt --ipa=3 -q "${palavra}" 2>/dev/null`).toString().trim();
 		ipa = corrigirIPA(ipa);
-		const luzofonema = aplicarLuzofonema(palavra, ipa);
+		const lusofonema = aplicarLuzofonema(palavra, ipa);
 
-		return {
-			fonte: "gerado",
-			palavra,
-			ipa,
-			luzofonema
-		};
+		debug("Gerado: ", palavra, ", ", ipa, ", ", lusofonema);
 
+		return { fonte: "gerada", palavra, ipa, lusofonema };
 	}
 	catch (error) {
-		console.error(`❌ Erro ao gerar palavra "${palavra}":`, error.message);
+		error(`Erro ao gerar palavra "${palavra}":`, error.message);
 		return null;
 	}
 }
+
 
 module.exports = { pesquisarPalavra };
