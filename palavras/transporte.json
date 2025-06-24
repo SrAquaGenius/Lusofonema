@@ -1,7 +1,7 @@
 {
 	"palavra": "transporte",
 	"ipa": "/tɾɐ̃ʃˈpɔɾtə/",
-	"luzofonema": "transpórte",
+	"lusofonema": "transpórte",
 	"classe": "substantivo masculino",
 	"acentuacao": "grave",
 	"plural": "transportes",
@@ -10,12 +10,6 @@
 		"(transporte) a transferência de pessoas e/ou produtos de um ponto para um outro",
 		"(transporte) o veículo utilizado para transferir pessoas e/ou produtos de um ponto para um outro",
 		"subtotal que, num livro de escrita comercial, se passa do fim de uma página para o início da seguinte"
-	],
-	"forma verbal": [
-		"primeira pessoa do singular do presente do conjuntivo/subjuntivo do verbo transportar",
-		"terceira pessoa do singular do presente do conjuntivo/subjuntivo do verbo transportar",
-		"terceira pessoa do singular do imperativo afirmativo do verbo transportar",
-		"terceira pessoa do singular do imperativo negativo do verbo transportar"
 	],
 	"etimologia": "serivado do verbo transportar"
 }
