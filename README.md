@@ -1,6 +1,6 @@
-# Luzófunêma
+# Lusofonema
 
-**Luzófunêma**, lê-se _/luzɔfuˈnemɐ/_, é um projeto linguístico experimental que visa criar uma ortografia alternativa para o português europeu, baseada diretamente na forma como a língua é falada.
+**Lusofonema**, lê-se _/luzɔfuˈnemɐ/_, é um projeto linguístico experimental que visa criar uma ortografia alternativa para o português europeu, baseada diretamente na forma como a língua é falada.
 Utilizando a transcrição fonética IPA como ponto de partida, o projeto converte palavras para uma representação fonética simplificada e mais intuitiva para os falantes.
 
 ## Objetivos
