@@ -63,6 +63,7 @@ function corrigirIPA(ipa) {
 		}
 	}
 
+	if (ipaResult[0] === "/") return ipaResult.join("");
 	return "/" + ipaResult.join("") + "/";
 }
 

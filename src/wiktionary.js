@@ -4,7 +4,6 @@
  * ------------------------------------------------------------------------- */
 
 const fs = require("fs");
-const path = require("path");
 
 const { debug, log, warn, error } = require("./debug");
 
@@ -54,7 +53,7 @@ async function buscarDadosWiktionary(palavra) {
 		const textoLimpo = converterDadosParaTexto(dados);
 		log(`\n📚 Definição de "${palavra}:"`);
 		log(textoLimpo);
-		return conteudoLimpo;
+		return dados;
 	}
 	catch (erro) {
 		error("Erro ao buscar definição:", erro);

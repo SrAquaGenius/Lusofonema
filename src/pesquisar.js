@@ -5,7 +5,7 @@
 
 const { execSync } = require("child_process");
 
-const { debug } = require("./debug");
+const { debug, error } = require("./debug");
 const { lerPalavra } = require("./gestorPalavras");
 const { corrigirIPA } = require("./ipa");
 const { aplicarLuzofonema } = require("./regras");
@@ -31,24 +31,21 @@ async function pesquisarPalavra(palavra, callback) {
 
 	// 2. Busca dados no Wiktionary
 	try {
-		const dadosWiki = await buscarDadosWiktionary(palavra, callback);
+		const dados = await buscarDadosWiktionary(palavra, callback);
 
-		debug("Dados:", dadosWiki);
+		debug("Dados:", dados);
 
-		if (dadosWiki && dadosWiki.ipa) {
+		if (dados && dados.ipa) {
 
-			const ipaCorrigido = corrigirIPA(dadosWiki.ipa);
-			const lusofonema = aplicarLuzofonema(dadosWiki.lusofonema);
+			dados.ipa = corrigirIPA(dados.ipa);
+			dados.lusofonema = aplicarLuzofonema(dados.palavra, dados.ipa);
 
-			dadosWiki.ipa = ipaCorrigido;
-			dadosWiki.lusofonema = lusofonema;
-
-			guardarPalavra(dadosWiki);
+			// guardarPalavra(dados);
 
 			return { fonte: "por pesquisa", 
-					palavra: dadosWiki.palavra,
-					ipa: dadosWiki.ipa,
-					lusofonema: dadosWiki.lusofonema };
+					palavra: dados.palavra,
+					ipa: dados.ipa,
+					lusofonema: dados.lusofonema };
 		}
 	}
 	catch (e) {
