@@ -6,10 +6,14 @@
 const fs = require("fs");
 const path = require("path");
 
+const { log, warn } = require("./debug");
+
+
 const PASTA_PALAVRAS = path.join(__dirname, "..", "palavras");
 
 /** @brief Garante que a pasta de palavras existe. */
 function garantirPasta() {
+
 	if (!fs.existsSync(PASTA_PALAVRAS)) {
 		fs.mkdirSync(PASTA_PALAVRAS);
 	}
@@ -20,11 +24,12 @@ function garantirPasta() {
  * @param {object} dados Objeto com os campos da palavra.
  */
 function guardarPalavra(dados) {
+
 	garantirPasta();
 	const nomeFicheiro = `${dados.palavra.toLowerCase()}.json`;
 	const caminho = path.join(PASTA_PALAVRAS, nomeFicheiro);
 	fs.writeFileSync(caminho, JSON.stringify(dados, null, 2), "utf-8");
-	console.log(`✅ Palavra "${dados.palavra}" guardada em ${caminho}`);
+	log(`✅ Palavra "${dados.palavra}" guardada em ${caminho}`);
 }
 
 /**
@@ -33,9 +38,10 @@ function guardarPalavra(dados) {
  * @returns {object|null} Objeto da palavra ou null.
  */
 function lerPalavra(palavra) {
+
 	const caminho = path.join(PASTA_PALAVRAS, `${palavra.toLowerCase()}.json`);
 	if (!fs.existsSync(caminho)) {
-		console.log(`⚠️  Palavra "${palavra}" não encontrada.`);
+		warn(`Palavra "${palavra}" não encontrada no dicionário.`);
 		return null;
 	}
 	const conteudo = fs.readFileSync(caminho, "utf-8");
@@ -47,13 +53,14 @@ function lerPalavra(palavra) {
  * @param {string} palavra Palavra a eliminar.
  */
 function eliminarPalavra(palavra) {
+
 	const caminho = path.join(PASTA_PALAVRAS, `${palavra.toLowerCase()}.json`);
 	if (fs.existsSync(caminho)) {
 		fs.unlinkSync(caminho);
-		console.log(`🗑️ Palavra "${palavra}" eliminada.`);
+		log(`🗑️ Palavra "${palavra}" eliminada.`);
 	}
 	
-	else console.log(`⚠️ Palavra "${palavra}" não existe.`);
+	else warn(`Palavra "${palavra}" não existe.`);
 }
 
 module.exports = { guardarPalavra, lerPalavra, eliminarPalavra };
