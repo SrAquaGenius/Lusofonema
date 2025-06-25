@@ -9,7 +9,7 @@ const path = require("path");
 const { pesquisarPalavra } = require("./pesquisar");
 const { converterDadosParaTexto } = require("./gestorPalavras");
 
-const { log, debug } = require("./debug");
+const { log, error, debug } = require("./debug");
 
 
 /**
@@ -45,6 +45,7 @@ async function mostrarPalavra(rl, callback) {
 		}
 
 		// Procurar pela palavra escolhida
+		log("");
 		const resultado = await pesquisarPalavra(palavra, callback);
 
 		debug(resultado);
@@ -56,6 +57,7 @@ async function mostrarPalavra(rl, callback) {
 
 		log(`📚 Entrada ${resultado.fonte}:`);
 		log(converterDadosParaTexto(resultado.dados, true));
+		log("");
 		return callback();
 	});
 }

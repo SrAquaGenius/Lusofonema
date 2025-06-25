@@ -5,11 +5,12 @@
 
 const { execSync } = require("child_process");
 
-const { debug, error } = require("./debug");
-const { lerPalavra } = require("./gestorPalavras");
+const { lerPalavra, guardarPalavra } = require("./gestorPalavras");
 const { corrigirIPA } = require("./ipa");
 const { aplicarLuzofonema } = require("./regras");
 const { buscarDadosWiktionary } = require("./wiktionary");
+
+const { debug, error } = require("./debug");
 
 
 /**
@@ -23,10 +24,7 @@ async function pesquisarPalavra(palavra, callback) {
 	const entrada = lerPalavra(palavra);
 
 	if (entrada) {
-		return { fonte: "no dicionario", 
-				palavra: entrada.palavra,
-				ipa: entrada.ipa,
-				lusofonema: entrada.lusofonema };
+		return { fonte: "no dicionario", dados: entrada };
 	}
 
 	// 2. Busca dados no Wiktionary
@@ -40,12 +38,9 @@ async function pesquisarPalavra(palavra, callback) {
 			dados.ipa = corrigirIPA(dados.ipa);
 			dados.lusofonema = aplicarLuzofonema(dados.palavra, dados.ipa);
 
-			// guardarPalavra(dados);
+			guardarPalavra(dados);
 
-			return { fonte: "por pesquisa", 
-					palavra: dados.palavra,
-					ipa: dados.ipa,
-					lusofonema: dados.lusofonema };
+			return { fonte: "por pesquisa", dados: dados };
 		}
 	}
 	catch (e) {
@@ -53,19 +48,19 @@ async function pesquisarPalavra(palavra, callback) {
 	}
 
 	// 3. Fallback: gera com espeak-ng
-	try {
-		let ipa = execSync(`espeak-ng -v pt --ipa=3 -q "${palavra}" 2>/dev/null`).toString().trim();
-		ipa = corrigirIPA(ipa);
-		const lusofonema = aplicarLuzofonema(palavra, ipa);
+	// try {
+	// 	let ipa = execSync(`espeak-ng -v pt --ipa=3 -q "${palavra}" 2>/dev/null`).toString().trim();
+	// 	ipa = corrigirIPA(ipa);
+	// 	const lusofonema = aplicarLuzofonema(palavra, ipa);
 
-		debug("Gerado: ", palavra, ", ", ipa, ", ", lusofonema);
+	// 	debug("Gerado: ", palavra, ", ", ipa, ", ", lusofonema);
 
-		return { fonte: "gerada", palavra, ipa, lusofonema };
-	}
-	catch (error) {
-		error(`Erro ao gerar palavra "${palavra}":`, error.message);
-		return null;
-	}
+	// 	return { fonte: "gerada", palavra, ipa, lusofonema };
+	// }
+	// catch (error) {
+	// 	error(`Erro ao gerar palavra "${palavra}":`, error.message);
+	// 	return null;
+	// }
 }
 
 

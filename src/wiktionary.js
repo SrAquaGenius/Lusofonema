@@ -5,6 +5,7 @@
 
 const fs = require("fs");
 
+const { converterDadosParaTexto } = require("./gestorPalavras");
 const { debug, log, warn, error } = require("./debug");
 
 
@@ -50,9 +51,6 @@ async function buscarDadosWiktionary(palavra) {
 		debug("Dados:");
 		debug(dados);
 
-		const textoLimpo = converterDadosParaTexto(dados);
-		log(`\n📚 Definição de "${palavra}:"`);
-		log(textoLimpo);
 		return dados;
 	}
 	catch (erro) {
@@ -292,34 +290,6 @@ function limparLinhaDefinicao(linha) {
 		.trim();
 }
 
-/**
- * @brief Converte o conteúdo limpo do Wiktionary para texto formatado.
- * @param {object} dados Objeto com campos como classe, plural, acentuacao, definicoes.
- * @returns {string} Texto formatado para exibição.
- */
-function converterDadosParaTexto(dados) {
-
-	let linhas = [];
-
-	// if (dados.palavra) linhas.push(`• Palavra: ${dados.palavra}`);
-	if (dados.ipa) linhas.push(`• IPA: ${dados.ipa}`);
-	if (dados.lusofonema) linhas.push(`• Lusofonema: ${dados.lusofonema}`);
-
-	if (dados.classe) linhas.push(`• Classe: ${dados.classe}`);
-	if (dados.acentuacao) linhas.push(`• Acentuação: ${dados.acentuacao}`);
-	if (dados.plural) linhas.push(`• Plural: "${dados.plural}"`);
-
-	linhas.push("• Definições:");
-	if (dados.definicao.length > 0) {
-		dados.definicao.forEach((def, i) => {
-			linhas.push(`   ${i + 1}. ${def}`);
-		});
-	}
-
-	if (dados.etimologia) linhas.push(`• Etimologia: "${dados.etimologia}"`);
-
-	return linhas.join("\n");
-}
 
 
 

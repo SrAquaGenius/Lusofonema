@@ -6,17 +6,22 @@
 const fs = require("fs");
 const path = require("path");
 
-const { log, warn } = require("./debug");
+const { debug, log, warn } = require("./debug");
 
 
 const PASTA_PALAVRAS = path.join(__dirname, "..", "palavras");
 
+
 /** @brief Garante que a pasta de palavras existe. */
 function garantirPasta() {
 
-	if (!fs.existsSync(PASTA_PALAVRAS)) {
-		fs.mkdirSync(PASTA_PALAVRAS);
+	if (fs.existsSync(PASTA_PALAVRAS)) {
+		debug("Pasta para palavras existe");
+		return;
 	}
+
+	fs.mkdirSync(PASTA_PALAVRAS);
+	debug("Pasta para palavras criada");
 }
 
 /**
@@ -63,4 +68,36 @@ function eliminarPalavra(palavra) {
 	else warn(`Palavra "${palavra}" não existe.`);
 }
 
-module.exports = { guardarPalavra, lerPalavra, eliminarPalavra };
+/**
+ * @brief Converte o conteúdo limpo do Wiktionary para texto formatado.
+ * @param {object} dados Objeto com campos como classe, plural, acentuacao, definicoes.
+ * @returns {string} Texto formatado para exibição.
+ */
+function converterDadosParaTexto(dados, mostrarPalavra = false) {
+
+	let linhas = [];
+
+	if (dados.palavra && mostrarPalavra)
+		linhas.push(`• Palavra: ${dados.palavra}`);
+
+	if (dados.ipa) linhas.push(`• IPA: ${dados.ipa}`);
+	if (dados.lusofonema) linhas.push(`• Lusofonema: ${dados.lusofonema}`);
+
+	if (dados.classe) linhas.push(`• Classe: ${dados.classe}`);
+	if (dados.acentuacao) linhas.push(`• Acentuação: ${dados.acentuacao}`);
+	if (dados.plural) linhas.push(`• Plural: "${dados.plural}"`);
+
+	linhas.push("• Definições:");
+	if (dados.definicao.length > 0) {
+		dados.definicao.forEach((def, i) => {
+			linhas.push(`   ${i + 1}. ${def}`);
+		});
+	}
+
+	if (dados.etimologia) linhas.push(`• Etimologia: "${dados.etimologia}"`);
+
+	return linhas.join("\n");
+}
+
+module.exports = { guardarPalavra, lerPalavra, eliminarPalavra,
+				   converterDadosParaTexto };
