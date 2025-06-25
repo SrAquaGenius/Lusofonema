@@ -62,21 +62,4 @@ function error(...args) {
 	console.error("❌ ", ...args);
 }
 
-function logExit(callback, ...args) {
-	log(...args);
-	return callback();
-}
-
-function warnExit(callback, ...args) {
-	warn(...args);
-	return callback();
-}
-
-function errorExit(callback, ...args) {
-	error(...args);
-	return callback();
-}
-
-
-module.exports = { mostrarDebug, mudarDebug, debug,
-				   log, warn, error, logExit, warnExit, errorExit };
+module.exports = { mostrarDebug, mudarDebug, debug, log, warn, error };

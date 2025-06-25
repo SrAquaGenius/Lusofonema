@@ -7,8 +7,9 @@ const fs = require("fs");
 const path = require("path");
 
 const { pesquisarPalavra } = require("./pesquisar");
+const { converterDadosParaTexto } = require("./gestorPalavras");
 
-const { log, logExit, errorExit } = require("./debug");
+const { log, debug } = require("./debug");
 
 
 /**
@@ -26,26 +27,36 @@ async function mostrarPalavra(rl, callback) {
 			async (input) => {
 
 		let palavra = input.trim().toLowerCase();
-		if (palavra === "0") logExit(callback, "A voltar ao menu ...\n");
+		if (palavra == "0") {
+			log("A voltar ao menu ...\n");
+			return callback();
+		}
 
 		// Palavra aleatória se input estiver vazio
 		if (!palavra) {
 			palavra = obterPalavraAleatoriaDeCorpus();
 
-			if (!palavra)
-				errorExit(callback, "Falha a obter uma palavra aleatória.\n");
+			if (!palavra) {
+				error("Falha a obter uma palavra aleatória.\n");
+				return callback();
+			}
 
 			log(`🎲 Palavra aleatória: ${palavra}`);
 		}
 
 		// Procurar pela palavra escolhida
-		const res = await pesquisarPalavra(palavra, callback);
+		const resultado = await pesquisarPalavra(palavra, callback);
 
-		if (!res || !res.fonte)
-			errorExit(callback, "Erro ao obter a informação da palavra.\n");
+		debug(resultado);
 
-		logExit(callback,
-			`📚 Entrada ${res.fonte}: ${res.palavra} → ${res.ipa} → ${res.lusofonema}\n`);
+		if (!resultado || !resultado.fonte) {
+			error("Erro ao obter a informação da palavra.\n");
+			return callback();
+		}
+
+		log(`📚 Entrada ${resultado.fonte}:`);
+		log(converterDadosParaTexto(resultado.dados, true));
+		return callback();
 	});
 }
 
