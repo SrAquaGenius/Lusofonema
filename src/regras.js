@@ -138,7 +138,7 @@ const rules = [
  * @param {string} ipa - A transcrição fonética IPA da palavra.
  * @return {string} Palavra convertida.
  */
-function aplicarLuzofonema(palavraOriginal, ipaOriginal) {
+function aplicarLusofonema(palavraOriginal, ipaOriginal) {
 
 	debug(palavraOriginal, ipaOriginal);
 
@@ -226,4 +226,4 @@ function aplicarLuzofonema(palavraOriginal, ipaOriginal) {
 	return aplicarTonicidade(silabas);
 }
 
-module.exports = { aplicarLuzofonema };
+module.exports = { aplicarLusofonema };
