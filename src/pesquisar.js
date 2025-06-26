@@ -18,7 +18,7 @@ const { debug, error } = require("./debug");
  * @param {string} palavra Palavra a procurar.
  * @returns {object|null} Objeto com pesquisa da palavra e fonte ("ficheiro"|"gerado").
  */
-async function pesquisarPalavra(callback, palavra) {
+async function pesquisarPalavra(palavra) {
 
 	// 1. Tenta ler do ficheiro JSON com definição da palavra
 	let dados = lerPalavra(palavra);

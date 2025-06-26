@@ -44,7 +44,7 @@ async function mostrarPalavra(rl, callback) {
 		}
 
 		// Procurar pela palavra escolhida
-		const res = await pesquisarPalavra(callback, palavra);
+		const res = await pesquisarPalavra(palavra);
 
 		debug(res);
 
