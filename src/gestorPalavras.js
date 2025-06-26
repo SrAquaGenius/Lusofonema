@@ -11,6 +11,22 @@ const { debug, log, warn } = require("./debug");
 
 const PASTA_PALAVRAS = path.join(__dirname, "..", "palavras");
 
+/**
+ * @brief Cria uma cópia do template JSON usado para palavras.
+ *        Lê o ficheiro './palavras/template.json' e devolve um novo objeto.
+ * @returns {object|null} Objeto com os campos do template ou null em caso de erro.
+ */
+function copiarTemplateJSON() {
+	try {
+		const conteudo = fs.readFileSync("./palavras/template.json", "utf8");
+		const template = JSON.parse(conteudo);
+		return { ...template }; // cópia independente
+	}
+	catch (erro) {
+		error("Erro ao copiar template JSON:", erro.message);
+		return null;
+	}
+}
 
 /** @brief Garante que a pasta de palavras existe. */
 function garantirPasta() {
@@ -117,4 +133,5 @@ function converterDadosParaTexto(dados, mostrarPalavra = false) {
 }
 
 module.exports = { guardarPalavra, lerPalavra, eliminarPalavra,
-				   converterDadosParaTexto, palavraGuardada };
+				   converterDadosParaTexto, palavraGuardada,
+				   copiarTemplateJSON };

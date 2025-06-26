@@ -6,7 +6,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const { palavraGuardada } = require("./pesquisar");
+const { palavraGuardada } = require("./gestorPalavras");
 
 
 /**
@@ -29,8 +29,8 @@ function obterPalavraAleatoria() {
 		.replace(/\s+/g, " ");
 
 	const palavras = texto.toLowerCase().split(" ")
-		.map(p => p.trim())
-		.filter(p => p.length >= 3);
+						  .map(p => p.trim())
+						  .filter(p => p.length >= 3);
 
 	let tentativa;
 	do {
