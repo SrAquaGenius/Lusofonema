@@ -9,7 +9,7 @@ const { mostrarAlfabetoLusofonema, mostrarSonsIPA } = require("./alfabeto");
 const { mostrarPalavra } = require("./mostrarPalavra");
 const { testarTexto } = require("./testarTexto");
 
-const { mostrarDebug, mudarDebug, log } = require("./debug");
+const { mostrarDebug, mudarDebug, log, todo } = require("./debug");
 
 const rl = readline.createInterface({
 	input: process.stdin,
@@ -61,7 +61,9 @@ function mostrarMenu() {
 				mostrarPalavra(rl, mostrarMenu);
 				break;
 			case "4":
-				testarTexto(rl, mostrarMenu);
+				todo("testarTexto");
+				mostrarMenu();
+				// testarTexto(rl, mostrarMenu);
 				break;
 			case "5":
 				mudarDebug();
