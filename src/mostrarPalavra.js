@@ -8,8 +8,9 @@ const path = require("path");
 
 const { pesquisarPalavra } = require("./pesquisar");
 const { converterDadosParaTexto } = require("./gestorPalavras");
+const { corrigirAdicionar } = require("./corrigir");
 
-const { log, error, debug } = require("./debug");
+const { log, warn, error, debug } = require("./debug");
 
 
 /**
@@ -46,18 +47,19 @@ async function mostrarPalavra(rl, callback) {
 
 		// Procurar pela palavra escolhida
 		log("");
-		const resultado = await pesquisarPalavra(palavra, callback);
+		const res = await pesquisarPalavra(palavra, callback);
 
-		debug(resultado);
+		debug(res);
 
-		if (!resultado || !resultado.fonte) {
+		if (!res || !res.fonte) {
 			error("Erro ao obter a informação da palavra.\n");
 			return callback();
 		}
 
-		log(`📚 Entrada ${resultado.fonte}:`);
-		log(converterDadosParaTexto(resultado.dados, true));
-		log("");
+		log(`📚 Entrada ${res.fonte}:`);
+		log(converterDadosParaTexto(res.dados, true));
+
+		await corrigirAdicionar(rl, res.dados);
 		return callback();
 	});
 }
