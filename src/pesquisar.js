@@ -5,7 +5,7 @@
 
 const { lerPalavra, guardarPalavra } = require("./gestorPalavras");
 const { corrigirIPA } = require("./ipa");
-const { aplicarLusofonema } = require("./regras");
+const { aplicarLusofonema, aplicarLusofonemaPorSilaba } = require("./regras");
 const { buscarDadosWiktionary } = require("./wiktionary");
 
 const { debug, error } = require("./debug");
@@ -34,7 +34,7 @@ async function pesquisarPalavra(palavra, callback) {
 		if (dados && dados.ipa) {
 
 			dados.ipa = corrigirIPA(dados.ipa);
-			dados.lusofonema = aplicarLusofonema(dados.palavra, dados.ipa);
+			dados.lusofonema = aplicarLusofonemaPorSilaba(dados);
 
 			return { fonte: "por pesquisa", dados: dados };
 		}

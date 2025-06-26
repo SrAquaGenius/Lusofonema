@@ -112,10 +112,10 @@ const rules = [
 	{ pattern: /ui/gi,		ipaPattern: "uj", out: "ui" },			// Fui
 
 	// ----------------------- Ditongos Orais Estáveis ------------------------
-	{ pattern: /ua/gi,		ipaPattern: "wɐ", out: "ua" },			// Quadro
-	{ pattern: /ue/gi,		ipaPattern: "we", out: "ue" },			// Aguentar
-	{ pattern: /ui/gi,		ipaPattern: "wi", out: "ui" },			// Arguido
-	{ pattern: /uo/gi,		ipaPattern: "wɔ", out: "uo" },			// Quota
+	{ pattern: /ua/gi, ipaPattern: "wɐ", out: "ua" },				// Quadro
+	{ pattern: /ue/gi, ipaPattern: "we", out: "ue" },				// Aguentar
+	{ pattern: /ui/gi, ipaPattern: "wi", out: "ui" },				// Arguido
+	{ pattern: /uo/gi, ipaPattern: "wɔ", out: "uo" },				// Quota
 
 	// --------------------------- Ditongos Nasais ----------------------------
 	{ pattern: /ão/gi, ipaPattern: "ɐ̃w", out: "ão" },				// Pão
@@ -129,6 +129,85 @@ const rules = [
 	{ pattern: /(?<![ln])h/gi, ipaPattern: "",  out: "" },			// Hiena
 ];
 
+
+/**
+ * @brief Aplica as regras do Lusofonema sílaba a sílaba, com base em dados.
+ * @param {object} dados Objeto com campos 'palavra' e 'ipa'.
+ * @returns {string} Representação em Lusofonema.
+ */
+function aplicarLusofonemaPorSilaba(dados) {
+
+	debug(dados);
+
+	if (!dados.palavra || !dados.ipa) return "";
+
+	const silabas = dados.palavra.split(".");
+	const silabasIPA = dados.ipa.replace(/[\/]/g, "").split(".");
+
+	debug(silabas);
+	debug(silabasIPA);
+
+	if (silabas.length !== silabasIPA.length) {
+		error("Número de sílabas não coincide com o IPA. Fallback para modo linear.");
+		return aplicarLusofonema(dados.palavra.replace(/\./g, ""), dados.ipa);
+	}
+
+	const resultado = [];
+
+	for (let i = 0; i < silabas.length; i++) {
+		const silaba = silabas[i];
+		const silabaIPA = silabasIPA[i];
+		const lusofonemaSilaba = aplicarRegrasASilaba(silaba, silabaIPA);
+		resultado.push(lusofonemaSilaba);
+	}
+
+	return aplicarTonicidade(resultado);
+}
+
+/**
+ * @brief Aplica regras fonéticas a uma sílaba da palavra e do IPA.
+ * @param {string} silaba Ortografia da sílaba.
+ * @param {string} ipa Transcrição IPA da sílaba.
+ * @returns {string} Lusofonema da sílaba.
+ */
+function aplicarRegrasASilaba(silaba, ipa) {
+
+	debug(silaba, ipa);
+
+	const letras = silaba.split("");
+	const sons = Array.from(
+		new Intl.Segmenter("pt", { granularity: "grapheme" }).segment(ipa),
+		s => s.segment
+	);
+
+	let wIndex = 0;
+	let iIndex = 0;
+	const res = [];
+
+	while (wIndex < letras.length && iIndex < sons.length) {
+		const letra = letras[wIndex];
+		const som = sons[iIndex];
+		let novaLetra = letra;
+
+		let regraAplicada = false;
+
+		for (const { pattern, ipaPattern, out, advance } of rules) {
+			if (!pattern.test(letra)) continue;
+			if (ipaPattern && !new RegExp(ipaPattern).test(som)) continue;
+
+			novaLetra = out;
+			wIndex += (advance ?? 0);
+			regraAplicada = true;
+			break;
+		}
+
+		res.push(novaLetra);
+		wIndex++;
+		iIndex++;
+	}
+
+	return res.join("");
+}
 
 /**
  * @brief Aplica as regras do Luzofonema à string fornecida.
@@ -226,4 +305,4 @@ function aplicarLusofonema(palavraOriginal, ipaOriginal) {
 	return aplicarTonicidade(silabas);
 }
 
-module.exports = { aplicarLusofonema };
+module.exports = { aplicarLusofonema, aplicarLusofonemaPorSilaba };
