@@ -3,10 +3,12 @@
  * Authors:  SrAqua
  * ------------------------------------------------------------------------- */
 
-const { lerPalavra, guardarPalavra } = require("./gestorPalavras");
+const { execSync } = require('child_process');
+
+const { lerPalavra, copiarTemplateJSON } = require("./gestorPalavras");
+const { buscarDadosWiktionary } = require("./wiktionary");
 const { corrigirIPA } = require("./ipa");
 const { aplicarLusofonema, aplicarLusofonemaPorSilaba } = require("./regras");
-const { buscarDadosWiktionary } = require("./wiktionary");
 
 const { debug, error } = require("./debug");
 
@@ -14,24 +16,35 @@ const { debug, error } = require("./debug");
 /**
  * @brief Procura a palavra nos ficheiros .json ou gera automaticamente.
  * @param {string} palavra Palavra a procurar.
- * @returns {object|null} Objeto com dados da palavra e fonte ("ficheiro"|"gerado").
+ * @returns {object|null} Objeto com pesquisa da palavra e fonte ("ficheiro"|"gerado").
  */
-async function pesquisarPalavra(palavra, callback) {
+async function pesquisarPalavra(callback, palavra) {
 
 	// 1. Tenta ler do ficheiro JSON com definição da palavra
-	const entrada = lerPalavra(palavra);
+	let dados = lerPalavra(palavra);
 
-	if (entrada) {
-		return { fonte: "no dicionario", dados: entrada };
+	if (dados) {
+		return { fonte: "no dicionario", dados: dados };
+	}
+
+	dados = copiarTemplateJSON();
+	if (!dados) {
+		error("Copiar template falhou.");
+		return null;
 	}
 
 	// 2. Busca dados no Wiktionary
 	try {
-		const dados = await buscarDadosWiktionary(palavra, callback);
+		const eval = await buscarDadosWiktionary(palavra, dados);
 
 		debug("Dados:", dados);
 
-		if (dados && dados.ipa) {
+		if (eval == null) {
+			error("Procura de dados no Wiktionary falhou.");
+			return null;
+		}
+
+		else if (eval == true && dados.ipa) {
 
 			dados.ipa = corrigirIPA(dados.ipa);
 			dados.lusofonema = aplicarLusofonemaPorSilaba(dados);
@@ -41,22 +54,24 @@ async function pesquisarPalavra(palavra, callback) {
 	}
 	catch (e) {
 		error(`Erro no Wiktionary: ${e.message}`);
+		return null;
 	}
 
 	// 3. Fallback: gera com espeak-ng
-	// try {
-	// 	let ipa = execSync(`espeak-ng -v pt --ipa=3 -q "${palavra}" 2>/dev/null`).toString().trim();
-	// 	ipa = corrigirIPA(ipa);
-	// 	const lusofonema = aplicarLusofonema(palavra, ipa);
+	try {
+		dados.ipa = execSync(`espeak-ng -v pt --ipa=3 -q "${palavra}" 2>/dev/null`).toString().trim();
 
-	// 	debug("Gerado: ", palavra, ", ", ipa, ", ", lusofonema);
+		debug(dados.ipa);
 
-	// 	return { fonte: "gerada", palavra, ipa, lusofonema };
-	// }
-	// catch (error) {
-	// 	error(`Erro ao gerar palavra "${palavra}":`, error.message);
-	// 	return null;
-	// }
+		dados.ipa = corrigirIPA(dados.ipa);
+		dados.lusofonema = aplicarLusofonema(palavra, dados.ipa);
+
+		return { fonte: "gerada", dados: dados };
+	}
+	catch (e) {
+		error(`Erro ao gerar palavra "${palavra}":`, e.message);
+		return null;
+	}
 }
 
 
