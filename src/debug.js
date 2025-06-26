@@ -62,4 +62,8 @@ function error(...args) {
 	console.error("❌", ...args);
 }
 
-module.exports = { mostrarDebug, mudarDebug, debug, log, warn, error };
+function todo(...args) {
+	console.log("[TODO]", ...args, "\n");
+}
+
+module.exports = { mostrarDebug, mudarDebug, debug, log, warn, error, todo };
