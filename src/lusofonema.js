@@ -6,7 +6,7 @@
 const readline = require("readline");
 
 const { mostrarAlfabetoLusofonema, mostrarSonsIPA } = require("./alfabeto");
-const { mostrarPalavra } = require("./mostrarPalavra");
+const { mostrarPalavra } = require("./mostrar");
 const { testarTexto } = require("./testarTexto");
 
 const { mostrarDebug, mudarDebug, log, todo } = require("./debug");
