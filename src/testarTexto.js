@@ -9,7 +9,7 @@ const { DOMParser } = require("@xmldom/xmldom");
 const xpath = require("xpath");
 const { execSync } = require("child_process");
 const { corrigirIPA } = require("./ipa");
-const { aplicarLuzofonema } = require("./regras");
+const { aplicarLusofonema } = require("./regras");
 
 const { log, warn } = require("./debug");
 
@@ -189,7 +189,7 @@ function transcreverPalavra(palavraOriginal, dicionario) {
 	else {
 		try {
 			ipa = corrigirIPA(palavraOriginal, ipa);
-			luz = aplicarLuzofonema(palavraOriginal, ipa);
+			luz = aplicarLusofonema(palavraOriginal, ipa);
 		} catch {}
 	}
 
@@ -298,7 +298,7 @@ function transcreverTexto(tokens, dicionario) {
 // 					try {
 // 						ipa = execSync(`espeak-ng -v pt --ipa=3 -q "${palavraOriginal}" 2>/dev/null`).toString().trim();
 // 						ipa = corrigirIPA(palavraOriginal, ipa);
-// 						luz = aplicarLuzofonema(palavraOriginal, ipa);
+// 						luz = aplicarLusofonema(palavraOriginal, ipa);
 // 					} catch {}
 // 				}
 
