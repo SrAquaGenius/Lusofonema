@@ -59,7 +59,7 @@ function warn(...args) {
 }
 
 function error(...args) {
-	console.error("❌ ", ...args);
+	console.error("❌", ...args);
 }
 
 module.exports = { mostrarDebug, mudarDebug, debug, log, warn, error };
