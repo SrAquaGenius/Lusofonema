@@ -54,6 +54,23 @@ function lerPalavra(palavra) {
 }
 
 /**
+ * @brief Procura se uma dada palavra existe na pasta de palavras
+ * @param {string} palavra Palavra a procurar
+ * @returns {true|false}
+ */
+function palavraGuardada(palavra) {
+	
+	const caminho = path.join(PASTA_PALAVRAS, `${palavra.toLowerCase()}.json`);
+	if (!fs.existsSync(caminho)) {
+		debug(`Palavra "${palavra}" não encontrada no dicionário.`);
+		return false;
+	}
+
+	debug(`Palavra "${palavra}" encontrada no dicionário.`);
+	return true;
+}
+
+/**
  * @brief Elimina o ficheiro de uma palavra.
  * @param {string} palavra Palavra a eliminar.
  */
@@ -100,4 +117,4 @@ function converterDadosParaTexto(dados, mostrarPalavra = false) {
 }
 
 module.exports = { guardarPalavra, lerPalavra, eliminarPalavra,
-				   converterDadosParaTexto };
+				   converterDadosParaTexto, palavraGuardada };
