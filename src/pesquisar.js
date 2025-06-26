@@ -3,11 +3,9 @@
  * Authors:  SrAqua
  * ------------------------------------------------------------------------- */
 
-const { execSync } = require("child_process");
-
 const { lerPalavra, guardarPalavra } = require("./gestorPalavras");
 const { corrigirIPA } = require("./ipa");
-const { aplicarLuzofonema } = require("./regras");
+const { aplicarLusofonema } = require("./regras");
 const { buscarDadosWiktionary } = require("./wiktionary");
 
 const { debug, error } = require("./debug");
@@ -36,9 +34,7 @@ async function pesquisarPalavra(palavra, callback) {
 		if (dados && dados.ipa) {
 
 			dados.ipa = corrigirIPA(dados.ipa);
-			dados.lusofonema = aplicarLuzofonema(dados.palavra, dados.ipa);
-
-			guardarPalavra(dados);
+			dados.lusofonema = aplicarLusofonema(dados.palavra, dados.ipa);
 
 			return { fonte: "por pesquisa", dados: dados };
 		}
@@ -51,7 +47,7 @@ async function pesquisarPalavra(palavra, callback) {
 	// try {
 	// 	let ipa = execSync(`espeak-ng -v pt --ipa=3 -q "${palavra}" 2>/dev/null`).toString().trim();
 	// 	ipa = corrigirIPA(ipa);
-	// 	const lusofonema = aplicarLuzofonema(palavra, ipa);
+	// 	const lusofonema = aplicarLusofonema(palavra, ipa);
 
 	// 	debug("Gerado: ", palavra, ", ", ipa, ", ", lusofonema);
 
