@@ -275,6 +275,36 @@ function converterConteudoParaDados(conteudo, dados) {
 		if (/^#(?![:*])/.test(linha)) {
 			dados.definicao.push(limparLinhaDefinicao(linha));
 		}
+
+		// Etimologia (ex: {{etimo2|la|casa|pt}}, ...)
+		if (/^\{\{etimo\d?\|/.test(linha)) {
+			// Extrai os idiomas e palavra
+			const match = linha.match(/\{\{etimo\d?\|([a-z]{2,3})\|([^|]+?)\|pt\}\}/i);
+			if (match) {
+				const idioma = match[1];
+				const palavraOrigem = match[2];
+				let idiomaNome;
+
+				// Tradução simplificada de código → nome
+				switch (idioma) {
+					case "la": idiomaNome = "latim"; break;
+					case "grc": idiomaNome = "grego antigo"; break;
+					case "ar": idiomaNome = "árabe"; break;
+					case "fr": idiomaNome = "francês"; break;
+					default: idiomaNome = idioma;
+				}
+
+				// Extrai o resto da explicação textual (após a template)
+				const extraTexto = linha.split("}}")[1]?.trim().replace(/^,/, "").trim();
+
+				// Monta a frase final
+				let frase = `Do ${idiomaNome} ${palavraOrigem}`;
+				if (extraTexto) frase += `, ${extraTexto}`;
+
+				// Guarda
+				dados.etimologia = frase.replace(/^\s*Do/, "Do"); // Limpeza inicial
+			}
+		}
 	}
 }
 

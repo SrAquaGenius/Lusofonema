@@ -44,13 +44,13 @@ function garantirPasta() {
  * @brief Cria ou atualiza o ficheiro JSON de uma palavra.
  * @param {object} dados Objeto com os campos da palavra.
  */
-function guardarPalavra(dados) {
+function guardarPalavra(palavra, dados) {
 
 	garantirPasta();
-	const nomeFicheiro = `${dados.palavra.toLowerCase()}.json`;
+	const nomeFicheiro = `${palavra.toLowerCase()}.json`;
 	const caminho = path.join(PASTA_PALAVRAS, nomeFicheiro);
 	fs.writeFileSync(caminho, JSON.stringify(dados, null, 2), "utf-8");
-	log(`✅ Palavra "${dados.palavra}" guardada em ${caminho}`);
+	log(`✅ Palavra "${palavra}" guardada em ${caminho}`);
 }
 
 /**

@@ -56,7 +56,7 @@ async function mostrarPalavra(rl, callback) {
 		log(`📚 Entrada ${res.fonte}:`);
 		log(converterDadosParaTexto(res.dados, true));
 
-		await corrigirAdicionar(rl, res.dados);
+		await corrigirAdicionar(rl, palavra, res.dados);
 		return callback();
 	});
 }
