@@ -84,11 +84,11 @@ function converterDadosParaTexto(dados, mostrarPalavra = false) {
 	if (dados.lusofonema) linhas.push(`• Lusofonema: ${dados.lusofonema}`);
 
 	if (dados.classe) linhas.push(`• Classe: ${dados.classe}`);
-	if (dados.acentuacao) linhas.push(`• Acentuação: ${dados.acentuacao}`);
 	if (dados.plural) linhas.push(`• Plural: "${dados.plural}"`);
+	if (dados.acentuacao) linhas.push(`• Acentuação: ${dados.acentuacao}`);
 
-	linhas.push("• Definições:");
 	if (dados.definicao.length > 0) {
+		linhas.push("• Definições:");
 		dados.definicao.forEach((def, i) => {
 			linhas.push(`   ${i + 1}. ${def}`);
 		});

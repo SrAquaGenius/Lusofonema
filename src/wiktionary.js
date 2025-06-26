@@ -217,17 +217,34 @@ function converterConteudoParaDados(conteudo) {
 		if (/\{\{gramática\|f\}\}/.test(linha)) dados.classe += " feminino";
 		if (/\{\{gramática\|m\}\}/.test(linha)) dados.classe += " masculino";
 
-		// Acentuação
-		if (/\{\{(proparoxítona)/.test(linha)) {
-			dados.acentuacao = "esdrúxula";
-			continue;
-		}
-		if (/\{\{(paroxítona)/.test(linha)) {
-			dados.acentuacao = "grave";
-			continue;
-		}
-		if (/\{\{(oxítona)/.test(linha)) {
-			dados.acentuacao = "aguda";
+		// Acentuação + Palavra + Sílabas
+		const mAcento = linha.match(/\{\{(proparoxítona|paroxítona|oxítona)\|([^\}]+)\}\}/);
+		if (mAcento) {
+			const tipo = mAcento[1];
+			const silabas = mAcento[2].split("|").map(s => s.trim());
+
+			let idxTonica = -1;
+			if (tipo === "proparoxítona") {
+				dados.acentuacao = "esdrúxula";
+				idxTonica = silabas.length - 3;
+			}
+			else if (tipo === "paroxítona") {
+				dados.acentuacao = "grave";
+				idxTonica = silabas.length - 2;
+			}
+			else if (tipo === "oxítona") {
+				dados.acentuacao = "aguda";
+				idxTonica = silabas.length - 1;
+			}
+
+			// Inserir o marcador ˈ na sílaba tónica
+			if (idxTonica >= 0 && idxTonica < silabas.length) {
+				silabas[idxTonica] = "ˈ" + silabas[idxTonica];
+			}
+
+			// Palavra reconstruída com pontos
+			dados.palavra = silabas.join(".");
+			dados.silabas = silabas.length;
 			continue;
 		}
 
