@@ -63,6 +63,7 @@ const titulosParaRemover = [
 
 const blocosParaApagar = [
 	"==Ver também==",
+	"===Sinônimos===",
 	"={{-es-}}=",
 	"={{-gl-}}=",
 	"={{-lad-}}=",
@@ -271,7 +272,7 @@ function converterConteudoParaDados(conteudo, dados) {
 		}
 
 		// Definições numeradas
-		if (/^#/.test(linha)) {
+		if (/^#(?![:*])/.test(linha)) {
 			dados.definicao.push(limparLinhaDefinicao(linha));
 		}
 	}
