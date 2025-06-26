@@ -45,7 +45,7 @@ function mostrarMenu() {
 	log("2 - Ver alfabeto fonético");
 	log("3 - Mostrar uma palavra");
 	log("4 - Mostrar texto");
-	log("5 - Ativar/Desativar (", mostrarDebug() ? "🟢" : "⚫", ")");
+	log("5 - Ativar/Desativar o debug: (", mostrarDebug() ? "🟢" : "⚫", ")");
 	log("0 - Sair da aplicação");
 
 	rl.question(": ", (opcao) => {
