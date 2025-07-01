@@ -44,8 +44,8 @@ function mostrarMenu() {
 	log("Menu:");
 	log("1 - Ver alfabeto do Lusofonema");
 	log("2 - Ver alfabeto fonético");
-	log("3 - Mostrar uma palavra");
-	log("4 - Mostrar uma palavra");
+	log("3 - Mostrar uma palavra no dicionário");
+	log("4 - Verificar uma palavra nova");
 	log("5 - Mostrar texto");
 	log("6 - Ativar/Desativar o debug: (", mostrarDebug() ? "🟢" : "⚫", ")");
 	log("0 - Sair da aplicação");
