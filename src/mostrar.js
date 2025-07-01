@@ -3,13 +3,10 @@
  * Authors:  SrAqua
  * ------------------------------------------------------------------------- */
 
-const { obterPalavraAleatoria } = require("./gestorCorpus");
-const { pesquisarPalavra } = require("./pesquisar");
 const { converterDadosParaTexto, lerPalavra } = require("./gestorPalavras");
-const { corrigirAdicionar } = require("./corrigir");
+const { procurarPalavra } = require("./procurar");
 
 const { log, error, debug, warn } = require("./debug");
-const { verificarPalavra } = require("./verificar");
 
 
 /**
@@ -53,13 +50,22 @@ async function mostrarPalavra(rl, callback) {
 	});
 }
 
+/**
+ * @brief Pergunta ao utilizador se deseja pesquisar uma palavra no dicionário.
+ *        Se responder "s", inicia a função `procurarPalavra`. 
+ *        Se responder "n", chama o callback fornecido.
+ *        Caso contrário, repete a pergunta.
+ *
+ * @param {readline.Interface} rl Interface readline CLI para input do utilizador.
+ * @param {function} callback Função a executar se o utilizador não quiser pesquisar.
+ */
 function perguntaVerificar(rl, callback) {
 	rl.question("🔍 Pretende pesquisar pela palavra? (s/n): ",
 		(input) => {
 			const c = input.trim().toLowerCase();
 
 			if (c === "s") {
-				return verificarPalavra(rl, callback);
+				return procurarPalavra(rl, callback);
 			}
 
 			else if (c === "n") {

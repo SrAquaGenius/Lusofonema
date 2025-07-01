@@ -7,7 +7,7 @@ const readline = require("readline");
 
 const { mostrarAlfabetoLusofonema, mostrarSonsIPA } = require("./alfabeto");
 const { mostrarPalavra } = require("./mostrar");
-const { verificarPalavra } = require("./verificar");
+const { procurarPalavra } = require("./procurar");
 const { testarTexto } = require("./testarTexto");
 
 const { mostrarDebug, mudarDebug, log, todo } = require("./debug");
@@ -44,8 +44,8 @@ function mostrarMenu() {
 	log("\nMenu:");
 	log("1 - Ver alfabeto do Lusofonema");
 	log("2 - Ver alfabeto fonético");
-	log("3 - Mostrar uma palavra no dicionário");
-	log("4 - Verificar uma palavra nova");
+	log("3 - Mostrar uma palavra");
+	log("4 - Procurar por um palavra");
 	log("5 - Mostrar texto");
 	log("6 - Ativar/Desativar o debug: (", mostrarDebug() ? "🟢" : "⚫", ")");
 	log("0 - Sair da aplicação");
@@ -67,7 +67,7 @@ function mostrarMenu() {
 				rl.question(
 					"🔍 Palavra ('Enter' para aleatória, '0' para voltar): ",
 					async (input) => {
-						verificarPalavra(rl, mostrarMenu, input);
+						procurarPalavra(rl, mostrarMenu, input);
 					}
 				);
 				break;
