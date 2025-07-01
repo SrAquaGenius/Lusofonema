@@ -8,7 +8,7 @@ let debugFlag = false;
 /** @brief troca o estado de debug atual */
 function mudarDebug() {
 	debugFlag = !debugFlag;
-	console.log(`🐞 Modo de debug ${debugFlag ? "ativado" : "desativado"}\n`);
+	log(`🐞 Modo de debug ${debugFlag ? "ativado" : "desativado"}`);
 }
 
 /** @brief Devolve o estado de debug atual */
@@ -63,7 +63,7 @@ function error(...args) {
 }
 
 function todo(...args) {
-	console.log("[TODO]", ...args, "\n");
+	log("[TODO]", ...args, "\n");
 }
 
 module.exports = { mostrarDebug, mudarDebug, debug, log, warn, error, todo };

@@ -19,7 +19,7 @@ const rl = readline.createInterface({
 
 
 log("🗣️  Lusofonema — Uma versão fonética da língua Portuguesa");
-log("========================================================\n");
+log("========================================================");
 
 
 /**
@@ -41,7 +41,7 @@ log("========================================================\n");
  * funções do escopo exterior, incluindo o estado `debugLigado`.
  */
 function mostrarMenu() {
-	log("Menu:");
+	log("\nMenu:");
 	log("1 - Ver alfabeto do Lusofonema");
 	log("2 - Ver alfabeto fonético");
 	log("3 - Mostrar uma palavra no dicionário");
