@@ -62,7 +62,7 @@ function lerPalavra(palavra) {
 
 	const caminho = path.join(PASTA_PALAVRAS, `${palavra.toLowerCase()}.json`);
 	if (!fs.existsSync(caminho)) {
-		warn(`Palavra "${palavra}" não encontrada no dicionário.`);
+		debug(`Palavra "${palavra}" não encontrada no dicionário.`);
 		return null;
 	}
 	const conteudo = fs.readFileSync(caminho, "utf-8");
@@ -127,7 +127,7 @@ function converterDadosParaTexto(dados, mostrarPalavra = false) {
 		});
 	}
 
-	if (dados.etimologia) linhas.push(`• Etimologia: "${dados.etimologia}"`);
+	if (dados.etimologia) linhas.push(`• Etimologia: ${dados.etimologia}`);
 
 	return linhas.join("\n");
 }

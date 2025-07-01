@@ -5,10 +5,11 @@
 
 const { obterPalavraAleatoria } = require("./gestorCorpus");
 const { pesquisarPalavra } = require("./pesquisar");
-const { converterDadosParaTexto } = require("./gestorPalavras");
+const { converterDadosParaTexto, lerPalavra } = require("./gestorPalavras");
 const { corrigirAdicionar } = require("./corrigir");
 
-const { log, error, debug } = require("./debug");
+const { log, error, debug, warn } = require("./debug");
+const { verificarPalavra } = require("./verificar");
 
 
 /**
@@ -22,7 +23,7 @@ const { log, error, debug } = require("./debug");
  */
 async function mostrarPalavra(rl, callback) {
 
-	rl.question("🔍 Palavra ('Enter' para aleatória, '0' para voltar): ",
+	rl.question("🔍 Palavra a mostrar ('0' para voltar): ",
 			async (input) => {
 
 		let palavra = input.trim().toLowerCase();
@@ -31,34 +32,44 @@ async function mostrarPalavra(rl, callback) {
 			return callback();
 		}
 
-		// Palavra aleatória se input estiver vazio
 		if (!palavra) {
-			palavra = obterPalavraAleatoria();
-
-			if (!palavra) {
-				error("Falha a obter uma palavra aleatória.\n");
-				return callback();
-			}
-
-			log(`🎲 Palavra aleatória: ${palavra}\n`);
-		}
-
-		// Procurar pela palavra escolhida
-		const res = await pesquisarPalavra(palavra);
-
-		debug(res);
-
-		if (!res || !res.fonte) {
-			error("Erro ao obter a informação da palavra.\n");
+			error("Uma palavra vazia foi inserida. A sair...\n");
 			return callback();
 		}
 
-		log(`📚 Entrada ${res.fonte}:`);
-		log(converterDadosParaTexto(res.dados, true));
+		// Procurar pela palavra escolhida
+		const res = lerPalavra(palavra);
 
-		await corrigirAdicionar(rl, palavra, res.dados);
+		debug(res);
+
+		if (!res) {
+			warn(`Palavra "${palavra}" não existe na base de dados.`);
+			return perguntaVerificar(rl, callback);
+		}
+
+		log(`📚 Entrada no dicionário:`);
+		log(converterDadosParaTexto(res, true));
 		return callback();
 	});
+}
+
+function perguntaVerificar(rl, callback) {
+	rl.question("🔍 Pretende pesquisar pela palavra? (s/n): ",
+		(input) => {
+			const c = input.trim().toLowerCase();
+
+			if (c === "s") {
+				return verificarPalavra(rl, callback);
+			}
+
+			else if (c === "n") {
+				return callback();
+			}
+
+			warn("Carácter inválido.\n");
+			return perguntaVerificar(rl, callback);
+		}
+	);
 }
 
 
