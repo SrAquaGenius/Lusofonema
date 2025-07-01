@@ -37,7 +37,37 @@ function obterPalavraAleatoria() {
 		tentativa = palavras[Math.floor(Math.random() * palavras.length)];
 	} while (tentativa && palavraGuardada(tentativa));
 
-	return tentativa || null;
+	return normalizarGrafiaAntiga(tentativa) || null;
 }
+
+/**
+ * @brief Substitui grafias antigas por formas modernas equivalentes.
+ *        Ex: "elle" → "ele", "pharmacia" → "farmácia"
+ *
+ * @param {string} palavra Palavra a normalizar.
+ * @returns {string} Palavra com ortografia modernizada.
+ */
+function normalizarGrafiaAntiga(palavra) {
+
+	const substituicoes = [
+		[/\bll\b/gi, "l"],			// elle → ele
+		[/\bnn\b/gi, "n"],			// elle → ele
+		[/\besta\b/gi, "esta"],		// evita "êsta" → "esta"
+		[/\bph/g, "f"],				// pharmacia → farmácia
+		[/\bth/g, "t"],				// theatro → teatro
+		[/\bgy/g, "gi"],			// gymnasio → ginásio
+		[/\bly/g, "li"],			// lyrico → lírico
+		[/\bcy/g, "ci"],			// cyprino → ciprino
+		[/\bsy/g, "si"],			// symphonia → sinfonia
+	];
+
+	let resultado = palavra;
+	for (const [regex, novaForma] of substituicoes) {
+		resultado = resultado.replace(regex, novaForma);
+	}
+
+	return resultado;
+}
+
 
 module.exports = { obterPalavraAleatoria };
