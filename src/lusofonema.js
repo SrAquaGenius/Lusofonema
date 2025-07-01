@@ -62,9 +62,16 @@ function mostrarMenu() {
 			case "3":
 				mostrarPalavra(rl, mostrarMenu);
 				break;
+
 			case "4":
-				verificarPalavra(rl, mostrarMenu);
+				rl.question(
+					"🔍 Palavra ('Enter' para aleatória, '0' para voltar): ",
+					async (input) => {
+						verificarPalavra(rl, mostrarMenu, input);
+					}
+				);
 				break;
+
 			case "5":
 				todo("testarTexto");
 				mostrarMenu();

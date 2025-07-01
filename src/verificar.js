@@ -20,45 +20,41 @@ const { log, error, debug } = require("./debug");
  * @param {readline.Interface} rl Interface readline.
  * @param {Function} callback Função de retorno.
  */
-async function verificarPalavra(rl, callback) {
+async function verificarPalavra(rl, callback, input) {
 
-	rl.question("🔍 Palavra ('Enter' para aleatória, '0' para voltar): ",
-			async (input) => {
-
-		let palavra = input.trim().toLowerCase();
-		if (palavra == "0") {
-			log("A voltar ao menu ...\n");
-			return callback();
-		}
-
-		// Palavra aleatória se input estiver vazio
-		if (!palavra) {
-			palavra = obterPalavraAleatoria();
-
-			if (!palavra) {
-				error("Falha a obter uma palavra aleatória.\n");
-				return callback();
-			}
-
-			log(`🎲 Palavra aleatória: ${palavra}\n`);
-		}
-
-		// Procurar pela palavra escolhida
-		const res = await pesquisarPalavra(palavra);
-
-		debug(res);
-
-		if (!res || !res.fonte) {
-			error("Erro ao obter a informação da palavra.\n");
-			return callback();
-		}
-
-		log(`📚 Entrada ${res.fonte}:`);
-		log(converterDadosParaTexto(res.dados, true));
-
-		await corrigirAdicionar(rl, palavra, res.dados);
+	let palavra = input.trim().toLowerCase();
+	if (palavra == "0") {
+		log("A voltar ao menu ...\n");
 		return callback();
-	});
+	}
+
+	// Palavra aleatória se input estiver vazio
+	if (!palavra) {
+		palavra = obterPalavraAleatoria();
+
+		if (!palavra) {
+			error("Falha a obter uma palavra aleatória.\n");
+			return callback();
+		}
+
+		log(`🎲 Palavra aleatória: ${palavra}\n`);
+	}
+
+	// Procurar pela palavra escolhida
+	const res = await pesquisarPalavra(palavra);
+
+	debug(res);
+
+	if (!res || !res.fonte) {
+		error("Erro ao obter a informação da palavra.\n");
+		return callback();
+	}
+
+	log(`📚 Entrada ${res.fonte}:`);
+	log(converterDadosParaTexto(res.dados, true));
+
+	await corrigirAdicionar(rl, palavra, res.dados);
+	return callback();
 }
 
 
