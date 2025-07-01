@@ -10,7 +10,7 @@ const { mostrarPalavra } = require("./mostrar");
 const { procurarPalavra } = require("./procurar");
 const { testarTexto } = require("./testarTexto");
 
-const { mostrarDebug, mudarDebug, log, todo } = require("./debug");
+const { mostrarDebug, mudarDebug, log, todo, clear } = require("./debug");
 
 const rl = readline.createInterface({
 	input: process.stdin,
@@ -61,6 +61,7 @@ function mostrarMenu() {
 				break;
 
 			case "3":
+				clear();
 				rl.question("🔍 Palavra a mostrar ('0' para voltar): ",
 					async (input) => {
 						mostrarPalavra(rl, mostrarMenu, input);
@@ -69,8 +70,9 @@ function mostrarMenu() {
 				break;
 
 			case "4":
+				clear();
 				rl.question(
-					"🔍 Palavra ('Enter' para aleatória, '0' para voltar): ",
+					"🔍 Palavra a procurar ('Enter' para aleatória, '0' para voltar): ",
 					async (input) => {
 						procurarPalavra(rl, mostrarMenu, input);
 					}

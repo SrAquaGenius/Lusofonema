@@ -66,4 +66,9 @@ function todo(...args) {
 	log("[TODO]", ...args, "\n");
 }
 
-module.exports = { mostrarDebug, mudarDebug, debug, log, warn, error, todo };
+function clear() {
+	console.clear();
+}
+
+
+module.exports = { mostrarDebug, mudarDebug, debug, log, warn, error, todo, clear };
