@@ -11,43 +11,41 @@ const { log, error, debug, warn } = require("./debug");
 
 /**
  * @brief Mostra a transcrição fonética e lusofonema de uma palavra.
- *        Se a palavra estiver no dicionário, mostra a entrada.
- *        Se for nova, gera entrada com espeak-ng e sugere correção.
- *        Se input for vazio, escolhe palavra aleatória do corpus.
- *        Se for "0", retorna ao menu.
- * @param {readline.Interface} rl Interface readline.
- * @param {Function} callback Função de retorno.
+ *        - Se a palavra estiver no dicionário, imprime a entrada formatada.
+ *        - Se a palavra não existir, oferece opção de pesquisa.
+ *        - Se for "0", retorna ao menu inicial.
+ *        - Se estiver vazia, apresenta erro e retorna.
+ *
+ * @param {readline.Interface} rl Interface readline CLI.
+ * @param {Function} callback Função de retorno ao menu ou próximo passo.
+ * @param {string} input Palavra a mostrar (inserida pelo utilizador).
  */
-async function mostrarPalavra(rl, callback) {
+async function mostrarPalavra(rl, callback, input) {
 
-	rl.question("🔍 Palavra a mostrar ('0' para voltar): ",
-			async (input) => {
-
-		let palavra = input.trim().toLowerCase();
-		if (palavra == "0") {
-			log("A voltar ao menu ...\n");
-			return callback();
-		}
-
-		if (!palavra) {
-			error("Uma palavra vazia foi inserida. A sair...\n");
-			return callback();
-		}
-
-		// Procurar pela palavra escolhida
-		const res = lerPalavra(palavra);
-
-		debug(res);
-
-		if (!res) {
-			warn(`Palavra "${palavra}" não existe na base de dados.`);
-			return perguntaVerificar(rl, callback);
-		}
-
-		log(`📚 Entrada no dicionário:`);
-		log(converterDadosParaTexto(res, true));
+	let palavra = input.trim().toLowerCase();
+	if (palavra == "0") {
+		log("A voltar ao menu ...\n");
 		return callback();
-	});
+	}
+
+	if (!palavra) {
+		error("Uma palavra vazia foi inserida. A sair...\n");
+		return callback();
+	}
+
+	// Procurar pela palavra escolhida
+	const res = lerPalavra(palavra);
+
+	debug(res);
+
+	if (!res) {
+		warn(`Palavra "${palavra}" não existe na base de dados.`);
+		return perguntaVerificar(rl, callback);
+	}
+
+	log(`📚 Entrada no dicionário:`);
+	log(converterDadosParaTexto(res, true));
+	return callback();
 }
 
 /**

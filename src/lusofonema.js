@@ -59,8 +59,13 @@ function mostrarMenu() {
 			case "2":
 				mostrarSonsIPA(mostrarMenu);
 				break;
+
 			case "3":
-				mostrarPalavra(rl, mostrarMenu);
+				rl.question("🔍 Palavra a mostrar ('0' para voltar): ",
+					async (input) => {
+						mostrarPalavra(rl, mostrarMenu, input);
+					}
+				);				
 				break;
 
 			case "4":
