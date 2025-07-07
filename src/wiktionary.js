@@ -50,8 +50,8 @@ async function buscarDadosWiktionary(palavra, dados) {
 
 		return true;
 	}
-	catch (erro) {
-		error("Erro ao buscar definição: ", erro);
+	catch (e) {
+		error("Erro ao buscar definição: ", e);
 		return null;
 	}
 }
@@ -75,6 +75,7 @@ const blocosParaApagar = [
 	"={{-nap-}}=",
 	"={{-val-}}=",
 	"={{-vec-}}=",
+	"={{-roa-gpm-}}=",
 	"===Tradução===",
 	"==Anagramas==",
 	"===Aumentativos===",
@@ -216,6 +217,11 @@ function converterConteudoParaDados(conteudo, dados) {
 			modo = "verbo";
 			continue;
 		}
+		if (/^==\s*Pronome\s*==$/i.test(linha)) {
+			dados.classe = "pronome";
+			modo = "pronome";
+			continue;
+		}
 		if (/^==.*==$/i.test(linha)) {
 			modo = null;
 			continue;
@@ -240,7 +246,7 @@ function converterConteudoParaDados(conteudo, dados) {
 				dados.acentuacao = "grave";
 				idxTonica = silabas.length - 2;
 			}
-			else if (tipo === "oxítona") {
+			else {	// (tipo === "oxítona")
 				dados.acentuacao = "aguda";
 				idxTonica = silabas.length - 1;
 			}
@@ -263,6 +269,11 @@ function converterConteudoParaDados(conteudo, dados) {
 
 			const n = linha.match(/(?:fs|ms)=([^|}]+)/);
 			if (n) dados.palavra = n[1].trim();
+		}
+		const mSP = linha.match(/\('{3}([^']+?)'{3},\s*\{\{p\|([^}]+)\}\}\)/i);
+		if (mSP) {
+			dados.palavra = mPronomes[1].trim();
+			dados.plural = mPronomes[2].trim();
 		}
 
 		// IPA

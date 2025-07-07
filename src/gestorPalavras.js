@@ -13,12 +13,12 @@ const PASTA_PALAVRAS = path.join(__dirname, "..", "palavras");
 
 /**
  * @brief Cria uma cópia do template JSON usado para palavras.
- *        Lê o ficheiro './palavras/template.json' e devolve um novo objeto.
+ *        Lê o ficheiro './template.json' e devolve um novo objeto.
  * @returns {object|null} Objeto com os campos do template ou null em caso de erro.
  */
 function copiarTemplateJSON() {
 	try {
-		const conteudo = fs.readFileSync("./palavras/template.json", "utf8");
+		const conteudo = fs.readFileSync("./template.json", "utf8");
 		const template = JSON.parse(conteudo);
 		return { ...template }; // cópia independente
 	}
