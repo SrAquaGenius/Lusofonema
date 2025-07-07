@@ -6,6 +6,7 @@
 const readline = require("readline");
 
 const { mostrarAlfabetoLusofonema, mostrarSonsIPA } = require("./alfabeto");
+const { mostrarResumoDicionario } = require("./dicionario");
 const { mostrarPalavra } = require("./mostrar");
 const { procurarPalavra } = require("./procurar");
 const { testarTexto } = require("./testarTexto");
@@ -44,10 +45,11 @@ function mostrarMenu() {
 	log("\nMenu:");
 	log("1 - Ver alfabeto do Lusofonema");
 	log("2 - Ver alfabeto fonético");
-	log("3 - Mostrar uma palavra");
-	log("4 - Procurar por um palavra");
-	log("5 - Mostrar texto");
-	log("6 - Ativar/Desativar o debug: (", mostrarDebug() ? "🟢" : "⚫", ")");
+	log("3 - Mostrar resumo do dicionario");
+	log("4 - Mostrar uma palavra");
+	log("5 - Procurar por uma palavra");
+	log("6 - Mostrar texto");
+	log("7 - Ativar/Desativar o debug: (", mostrarDebug() ? "🟢" : "⚫", ")");
 	log("0 - Sair da aplicação");
 
 	rl.question(": ", (opcao) => {
@@ -59,8 +61,12 @@ function mostrarMenu() {
 			case "2":
 				mostrarSonsIPA(mostrarMenu);
 				break;
-
 			case "3":
+				mostrarResumoDicionario();
+				mostrarMenu();
+				break;
+
+			case "4":
 				clear();
 				rl.question("🔍 Palavra a mostrar ('0' para voltar): ",
 					async (input) => {
@@ -69,7 +75,7 @@ function mostrarMenu() {
 				);				
 				break;
 
-			case "4":
+			case "5":
 				clear();
 				rl.question(
 					"🔍 Palavra a procurar ('Enter' para aleatória, '0' para voltar): ",
@@ -79,12 +85,12 @@ function mostrarMenu() {
 				);
 				break;
 
-			case "5":
+			case "6":
 				todo("testarTexto");
 				mostrarMenu();
 				// testarTexto(rl, mostrarMenu);
 				break;
-			case "6":
+			case "7":
 				mudarDebug();
 				mostrarMenu();
 				break;
