@@ -64,6 +64,7 @@ const titulosParaRemover = [
 const blocosParaApagar = [
 	"==Ver também==",
 	"===Sinônimos===",
+	"==Anagrama==",
 	"={{-es-}}=",
 	"={{-gl-}}=",
 	"={{-lad-}}=",
@@ -204,22 +205,28 @@ function importanciaTitulo(titulo) {
 function converterConteudoParaDados(conteudo, dados) {
 
 	let modo = null;
+	let escopoAtual = null;
 
 	for (const linha of conteudo) {
 		// Identificar secções principais
 		if (/^==\s*Substantivo\s*==$/i.test(linha)) {
-			dados.classe = "substantivo";
 			modo = "substantivo";
+			if (!dados.classe.includes(modo)) dados.classe.push(modo);
 			continue;
 		}
 		if (/^==\s*Verbo\s*==$/i.test(linha)) {
-			dados.classe = "verbo";
 			modo = "verbo";
+			if (!dados.classe.includes(modo)) dados.classe.push(modo);
 			continue;
 		}
 		if (/^==\s*Pronome\s*==$/i.test(linha)) {
-			dados.classe = "pronome";
 			modo = "pronome";
+			if (!dados.classe.includes(modo)) dados.classe.push(modo);
+			continue;
+		}
+		if (/^==\s*Adjetivo\s*==$/i.test(linha)) {
+			modo = "adjetivo";
+			if (!dados.classe.includes(modo)) dados.classe.push(modo);
 			continue;
 		}
 		if (/^==.*==$/i.test(linha)) {
@@ -284,7 +291,30 @@ function converterConteudoParaDados(conteudo, dados) {
 
 		// Definições numeradas
 		if (/^#(?![:*])/.test(linha)) {
-			dados.definicao.push(limparLinhaDefinicao(linha));
+			let definicao = limparLinhaDefinicao(linha);
+
+			// Verifica se contém escopo antes de limpar (ex: {{escopo|pt|Política}})
+			const mEscopo = linha.match(/\{\{escopo\|pt\|([^\}]+)\}\}/i);
+			if (mEscopo) {
+				escopoAtual = mEscopo[1].toLowerCase(); // ex: "política"
+			}
+
+			// Anotações opcionais
+			const anotacoes = [];
+
+			if (modo && dados.classe.length > 0 && modo !== dados.classe[0]) {
+				anotacoes.push(modo.toLowerCase());
+			}
+
+			if (escopoAtual) {
+				anotacoes.push(escopoAtual);
+			}
+
+			if (anotacoes.length > 0) {
+				definicao = `(${anotacoes.join(") (")}) ${definicao}`;
+			}
+
+			dados.definicao.push(definicao);
 		}
 
 		// Etimologia (ex: {{etimo2|la|casa|pt}}, ...)
