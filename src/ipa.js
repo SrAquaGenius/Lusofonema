@@ -14,13 +14,13 @@ function corrigirIPA(ipa) {
 	ipa = ipa.replace(/\u200d/g, ""); // remove ZWJ (zero width joiner)
 
 	// Ajustar outros sons/caracteres
+	ipa = ipa.replace(/ɾə/g, "ɾ");
 	ipa = ipa.replace(/ɑ/g, "a");
 	ipa = ipa.replace(/ɨ/g, "ə");
 	ipa = ipa.replace(/ɪ/g, "j");
 	ipa = ipa.replace(/ʊ/g, "w");
 	ipa = ipa.replace(/ʊ̃/g, "w");
 	ipa = ipa.replace(/w$/g, "u");
-	ipa = ipa.replace(/ɾə/g, "ɾ");
 	ipa = ipa.replace(/ɹ/g, "ɾ");
 	ipa = ipa.replace(/ɡ/g, "g");
 
@@ -44,27 +44,17 @@ function corrigirIPA(ipa) {
 	// Remove marcas fonéticas e espaços
 	ipa = ipa.replace(/\s/g, "").replace(/[ˌ]/g, "");
 	
+	// Mover ˈ para antes de dígrafos consonantais
+	ipa = ipa.replace(/(f|p|t|c|g|b|d|v)(l|ɾ)ˈ([aeiouɐɛəɔwɐ̃ẽĩõũ])/gi, "ˈ$1$2$3");
+
 	// Corrigir posição do acento tónico
 	ipa = ipa.replace(/([^aeiouɐɛəɔwɐ̃ẽĩõũˈˌ\s\/])ˈ([aeiouɐɛəɔwɐ̃ẽĩõũ])/gi, "ˈ$1$2");
 
 	// Substitui C-"w"-C por C-"u"-C
 	ipa = ipa.replace(/([^aeiouɐɛəɔɐ̃ẽĩõũˈ̃])w([^aeiouɐɛəɔɐ̃ẽĩõũˈ̃])/g, "$1u$2");
 
-	// Remover caracteres indesejados
-	const ipaArray = ipa.split("");
-	const ipaResult = [];
-	for (const c in ipaArray) {
-
-		debug("Char: ", ipaArray[c], ipaArray[c].charCodeAt(0));
-
-		if (ipaArray[c].charCodeAt(0) <= "ˈ".charCodeAt(0) ||
-			ipaArray[c].charCodeAt(0) == 771) {
-			ipaResult.push(ipaArray[c]);
-		}
-	}
-
-	if (ipaResult[0] === "/") return ipaResult.join("");
-	return "/" + ipaResult.join("") + "/";
+	if (ipa[0] === "/") return ipa;
+	return "/" + ipa + "/";
 }
 
 module.exports = { corrigirIPA };

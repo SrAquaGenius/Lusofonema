@@ -77,6 +77,7 @@ const blocosParaApagar = [
 	"={{-val-}}=",
 	"={{-vec-}}=",
 	"={{-roa-gpm-}}=",
+	"={{-la-}}=",
 	"===Tradução===",
 	"==Anagramas==",
 	"===Aumentativos===",
