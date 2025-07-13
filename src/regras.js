@@ -70,6 +70,41 @@ const regras = [
 	{ reg: /rr/gi,	ipaReg: "ʁ",	out: "rr",	adv: 1 },	// Carro
 
 
+	// ============================= LETRAS MUDAS =============================
+
+	{ reg: /(?<=[g])u(?=[e,i])/gi,	ipaReg: "",	out: "" },		// Guito → Gito
+	{ reg: /(?<![ln])h/gi,			ipaReg: "",	out: "" },		// Hiena - Iena
+
+
+	// =============================== DITONGOS ===============================
+	
+	// ---------------------------- Ditongos Orais ----------------------------
+	{ reg: /ai/gi,	ipaReg: "aj",	out: "ai",	adv: 1 },		// Pai
+	{ reg: /au/gi,	ipaReg: "aw",	out: "au",	adv: 1 },		// Pau
+	{ reg: /ei/gi,	ipaReg: "ɐj",	out: "ei",	adv: 1 },		// Sei
+	{ reg: /(éu|eu)/gi,
+					ipaReg: "ɛw",	out: "éu",	adv: 1 },		// Céu
+	{ reg: /eu/gi,	ipaReg: "ew",	out: "eu",	adv: 1 },		// Meu
+	{ reg: /iu/gi,	ipaReg: "iw",	out: "iu",	adv: 1 },		// Piu
+	{ reg: /(ói|oi)/gi,
+					ipaReg: "ɔj",	out: "ói",	adv: 1 },		// Dói
+	{ reg: /oi/gi,	ipaReg: "oj",	out: "oi",	adv: 1 },		// Foi
+	{ reg: /ou/gi,	ipaReg: "ow",	out: "ou",	adv: 1 },		// Sou
+	{ reg: /ui/gi,	ipaReg: "uj",	out: "ui",	adv: 1 },		// Fui
+	
+	// ----------------------- Ditongos Orais Estáveis ------------------------
+	{ reg: /ua/gi,	ipaReg: "wɐ",	out: "ua",	adv: 1 },		// Quadro
+	{ reg: /ue/gi,	ipaReg: "we",	out: "ue",	adv: 1 },		// Aguentar
+	{ reg: /ui/gi,	ipaReg: "wi",	out: "ui",	adv: 1 },		// Arguido
+	{ reg: /uo/gi,	ipaReg: "wɔ",	out: "uo",	adv: 1 },		// Quota
+	
+	// --------------------------- Ditongos Nasais ----------------------------
+	{ reg: /ão/gi,	ipaReg: "ɐ̃w",	out: "ão",	adv: 1 },		// Pão
+	{ reg: /ãe/gi,	ipaReg: "ɐ̃j",	out: "ãe",	adv: 1 },		// Mãe
+	{ reg: /õe/gi,	ipaReg: "õj",	out: "õe",	adv: 1 },		// Visões
+	{ reg: /am/gi,	ipaReg: "ɐ̃w",	out: "ão",	adv: 1 , l: 0 },	// Cantam → Càntão
+
+
 	// ============================ SONS VOCÁLICOS ============================
 
 	// --------------------------- Semivogais (SV) ----------------------------
@@ -87,7 +122,7 @@ const regras = [
 	{ reg: /om/gi,	ipaReg: "õ",	out: "on",	adv: 1 },		// Bom → Bon
 	{ reg: /un/gi,	ipaReg: "ũ",	out: "un",	adv: 1 },		// Fundo
 	{ reg: /um/gi,	ipaReg: "ũ",	out: "un",	adv: 1 },		// Um → Un
-
+	
 	// -------------------------- Vogais Orais (V-O) --------------------------
 	{ reg: /[aá](?![iu])/gi,	ipaReg: "a",	out: "á" },		// Pá
 	{ reg: /[aâ]/gi,			ipaReg: "ɐ",	out: "a" },		// Cama
@@ -99,38 +134,6 @@ const regras = [
 	{ reg: /o/gi,				ipaReg: "o",	out: "o" },		// Ovo
 	{ reg: /o/gi,				ipaReg: "u",	out: "u" },		// Conto
 	{ reg: /[uú]/gi,			ipaReg: "u",	out: "u" },		// Luz
-
-
-	// =============================== DITONGOS ===============================
-
-	// ---------------------------- Ditongos Orais ----------------------------
-	{ reg: /ai/gi,			ipaReg: "aj",	out: "ai" },		// Pai
-	{ reg: /au/gi,			ipaReg: "aw",	out: "au" },		// Pau
-	{ reg: /ei/gi,			ipaReg: "ɐj",	out: "ei" },		// Sei
-	{ reg: /(éu|eu)/gi,		ipaReg: "ɛw",	out: "éu" },		// Céu
-	{ reg: /eu/gi,			ipaReg: "ew",	out: "eu" },		// Meu
-	{ reg: /iu/gi,			ipaReg: "iw",	out: "iu" },		// Piu
-	{ reg: /(ói|oi)/gi,		ipaReg: "ɔj",	out: "ói" },		// Dói
-	{ reg: /oi/gi,			ipaReg: "oj",	out: "oi" },		// Foi
-	{ reg: /ou/gi,			ipaReg: "ow",	out: "ou" },		// Sou
-	{ reg: /ui/gi,			ipaReg: "uj",	out: "ui" },		// Fui
-
-	// ----------------------- Ditongos Orais Estáveis ------------------------
-	{ reg: /ua/gi,			ipaReg: "wɐ",	out: "ua" },		// Quadro
-	{ reg: /ue/gi,			ipaReg: "we",	out: "ue" },		// Aguentar
-	{ reg: /ui/gi,			ipaReg: "wi",	out: "ui" },		// Arguido
-	{ reg: /uo/gi,			ipaReg: "wɔ",	out: "uo" },		// Quota
-
-	// --------------------------- Ditongos Nasais ----------------------------
-	{ reg: /ão/gi,			ipaReg: "ɐ̃w",	out: "ão" },		// Pão
-	{ reg: /ãe/gi,			ipaReg: "ɐ̃j",	out: "ãe" },		// Mãe
-	{ reg: /õe/gi,			ipaReg: "õj",	out: "õe" },		// Visões
-
-
-	// ============================= LETRAS MUDAS =============================
-
-	{ reg: /(?<=[g])u(?=[e,i])/gi,	ipaReg: "",	out: "" },		// Guito → Gito
-	{ reg: /(?<![ln])h/gi,			ipaReg: "",	out: "" },		// Hiena - Iena
 ];
 
 
