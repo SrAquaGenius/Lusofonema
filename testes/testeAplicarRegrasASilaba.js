@@ -12,3 +12,6 @@ console.log("Resultado 1:", resultado1);
 
 const resultado2 = aplicarRegrasASilaba('sem', 'sẽ');
 console.log("Resultado 2:", resultado2);
+
+const resultado3 = aplicarRegrasASilaba('tam', 'tɐ̃w', true);
+console.log("Resultado 3:", resultado3);
