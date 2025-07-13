@@ -55,37 +55,61 @@ function aplicarLusofonemaPorSilaba(dados) {
  */
 function aplicarRegrasASilaba(silaba, ipa) {
 
-	debug(silaba, ipa);
+	debug(`Sílaba: '${silaba}', IPA: '${ipa}'`);
 
 	const letras = silaba.split("");
 	const sons = Array.from(
-		new Intl.Segmenter("pt", { granularity: "grapheme" }).segment(ipa.normalize("NFC")),
+		new Intl.Segmenter("pt", { granularity: "grapheme" })
+		.segment(ipa.normalize("NFD")),
 		s => s.segment
 	);
+
+	debug(`Letras: [${letras}] (${letras.length})`);
+	debug(`Sons: [${sons}] (${sons.length})`);
 
 	let wIndex = 0;
 	let iIndex = 0;
 	const res = [];
 
+	let idxMax = Math.max(letras.length, sons.length);
+	
 	while (wIndex < letras.length && iIndex < sons.length) {
-		const letra = letras[wIndex];
-		const som = sons[iIndex];
-		let novaLetra = letra;
+		
+		let idxMin = Math.min(wIndex, iIndex);
+		let size = idxMax - idxMin;
 
-		debug(letra, som);
+		while (size > 0) {
 
-		for (const { reg, ipaReg, out, adv } of regras) {
-			if (!reg.test(letra)) continue;
-			if (ipaReg && !new RegExp(ipaReg).test(som)) continue;
+			debug(`Size = ${size}, idxMin = ${idxMin}, idxMax = ${idxMax}`);
 
-			debug(reg, ipaReg, out, adv);
+			const wContext = letras.slice(wIndex, wIndex + size).join('');
+			const iContext = sons.slice(iIndex, iIndex + size).join('');
+			let novaLetra = wContext;
 
-			novaLetra = out;
-			wIndex += (adv ?? 0);
-			break;
+			let regraAplicada = false;
+
+			debug(`Word Context: '${wContext}', IPA Context: '${iContext}'`);
+
+			for (const { reg, ipaReg, out, adv } of regras) {
+				if (!reg.test(wContext)) continue;
+				if (ipaReg && !new RegExp(ipaReg).test(iContext)) continue;
+
+				debug("Regra aplicada: ", reg, ipaReg, out, adv ?? 0);
+
+				regraAplicada = true;
+				novaLetra = out;
+				wIndex += (adv ?? 0);
+				break;
+			}
+
+			if (regraAplicada) {
+				res.push(novaLetra);
+				break;
+			}
+
+			size--;
 		}
 
-		res.push(novaLetra);
 		wIndex++;
 		iIndex++;
 	}
@@ -94,6 +118,48 @@ function aplicarRegrasASilaba(silaba, ipa) {
 
 	return res.join("");
 }
+
+// function aplicarRegrasASilaba(silaba, ipa) {
+
+// 	debug(silaba, ipa);
+
+// 	const letras = silaba.split("");
+// 	const sons = Array.from(
+// 		new Intl.Segmenter("pt", { granularity: "grapheme" }).segment(ipa.normalize("NFC")),
+// 		s => s.segment
+// 	);
+
+// 	let wIndex = 0;
+// 	let iIndex = 0;
+// 	const res = [];
+
+// 	while (wIndex < letras.length && iIndex < sons.length) {
+// 		const letra = letras[wIndex];
+// 		const som = sons[iIndex];
+// 		let novaLetra = letra;
+
+// 		debug(letra, som);
+
+// 		for (const { reg, ipaReg, out, adv } of regras) {
+// 			if (!reg.test(letra)) continue;
+// 			if (ipaReg && !new RegExp(ipaReg).test(som)) continue;
+
+// 			debug(reg, ipaReg, out, adv);
+
+// 			novaLetra = out;
+// 			wIndex += (adv ?? 0);
+// 			break;
+// 		}
+
+// 		res.push(novaLetra);
+// 		wIndex++;
+// 		iIndex++;
+// 	}
+
+// 	debug(res);
+
+// 	return res.join("");
+// }
 
 /**
  * @brief Aplica as regras do Luzofonema à string fornecida.
@@ -192,4 +258,6 @@ function aplicarLusofonemaLinear(palavraOriginal, ipaOriginal) {
 }
 
 
-module.exports = { aplicarLusofonemaLinear, aplicarLusofonemaPorSilaba };
+module.exports = { aplicarLusofonemaLinear, aplicarLusofonemaPorSilaba,
+					aplicarRegrasASilaba
+ };

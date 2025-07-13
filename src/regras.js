@@ -76,23 +76,6 @@ const regras = [
 	{ reg: /i/gi,	ipaReg: "j",	out: "i" },				// Pai
 	{ reg: /u/gi,	ipaReg: "w",	out: "u" },				// Quadro
 
-	// -------------------------- Vogais Orais (V-O) --------------------------
-	{ reg: /[aá](?![iu])/gi,	ipaReg: "a",	out: "á" },		// Pá
-	{ reg: /a/gi,				ipaReg: "ɐ",	out: "a" },		// Cama
-	{ reg: /[eé]/gi,			ipaReg: "ɛ",	out: "é" },		// Pé
-	{ reg: /[eê]/gi,			ipaReg: "e",	out: "ê" },		// Mesa
-	{ reg: /e/gi,				ipaReg: "ə",	out: "e" },		// Sede
-	{ reg: /[ií]/gi,			ipaReg: "i",	out: "i" },		// Vida
-	{ reg: /[oó]/gi,			ipaReg: "ɔ",	out: "ó" },		// Pó
-	{ reg: /o/gi,				ipaReg: "o",	out: "o" },		// Ovo
-	{ reg: /o/gi,				ipaReg: "u",	out: "u" },		// Conto
-	{ reg: /[uú]/gi,			ipaReg: "u",	out: "u" },		// Luz
-
-
-	{ reg: /â/gi, 				out: "a" },		// Mecânico → Mecanico
-	{ reg: /ê/gi,				out: "e" },		// Ênfase → Enfase
-
-
 	// ------------------------- Vogais Nasais (V-N) --------------------------
 	{ reg: /an/gi,	ipaReg: "ɐ̃",	out: "an",	adv: 1 },		// Manta
 	{ reg: /am/gi,	ipaReg: "ɐ̃",	out: "an",	adv: 1 },		// Campo → Canpo
@@ -102,8 +85,20 @@ const regras = [
 	{ reg: /im/gi,	ipaReg: "ĩ",	out: "in",	adv: 1 },		// Fim → Fin
 	{ reg: /on/gi,	ipaReg: "õ",	out: "on",	adv: 1 },		// Contar
 	{ reg: /om/gi,	ipaReg: "õ",	out: "on",	adv: 1 },		// Bom → Bon
-	{ reg: /un/gi,	ipaReg: "ũ",	out: "un",	adv: 1 },		// Fundo
-	{ reg: /um/gi,	ipaReg: "ũ",	out: "un",	adv: 1 },		// Um → Un
+	{ reg: /un/gi,	ipaReg: "ũ",	out: "un",	adv: 1 },		// Fundo
+	{ reg: /um/gi,	ipaReg: "ũ",	out: "un",	adv: 1 },		// Um → Un
+
+	// -------------------------- Vogais Orais (V-O) --------------------------
+	{ reg: /[aá](?![iu])/gi,	ipaReg: "a",	out: "á" },		// Pá
+	{ reg: /[aâ]/gi,			ipaReg: "ɐ",	out: "a" },		// Cama
+	{ reg: /[eé]/gi,			ipaReg: "ɛ",	out: "é" },		// Pé
+	{ reg: /[eê]/gi,			ipaReg: "e",	out: "e" },		// Mesa
+	{ reg: /e/gi,				ipaReg: "ə",	out: "e" },		// Sede
+	{ reg: /[ií]/gi,			ipaReg: "i",	out: "i" },		// Vida
+	{ reg: /[oó]/gi,			ipaReg: "ɔ",	out: "ó" },		// Pó
+	{ reg: /o/gi,				ipaReg: "o",	out: "o" },		// Ovo
+	{ reg: /o/gi,				ipaReg: "u",	out: "u" },		// Conto
+	{ reg: /[uú]/gi,			ipaReg: "u",	out: "u" },		// Luz
 
 
 	// =============================== DITONGOS ===============================
