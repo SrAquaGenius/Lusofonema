@@ -65,19 +65,6 @@ const blocosParaApagar = [
 	"==Ver também==",
 	"===Sinônimos===",
 	"==Anagrama==",
-	"={{-es-}}=",
-	"={{-gl-}}=",
-	"={{-lad-}}=",
-	"={{-an-}}=",
-	"={{-ca-}}=",
-	"={{-co-}}=",
-	"={{-it-}}=",
-	"={{-mwl-}}=",
-	"={{-nap-}}=",
-	"={{-val-}}=",
-	"={{-vec-}}=",
-	"={{-roa-gpm-}}=",
-	"={{-la-}}=",
 	"===Tradução===",
 	"==Anagramas==",
 	"===Aumentativos===",
@@ -155,6 +142,17 @@ function limparConteudo(textoBruto) {
 
 		// Verifica se a linha inicia um bloco a apagar
 		if (blocosParaApagar.includes(linha)) {
+			apagarBloco = true;
+			importanciaBloco = importanciaTitulo(linha);
+			// debug(`Início de bloco a apagar: "${linha}" (importância ${importanciaBloco})`);
+			continue;
+		}
+
+		// Regex para capturar blocos linguísticos como '={{-es-}}='
+		const regexBlocoLinguistico = /^=\{\{-[a-z-]+-\}\}=$/;
+
+		// Verifica se a linha inicia um bloco a apagar
+		if (regexBlocoLinguistico.test(linha)) {
 			apagarBloco = true;
 			importanciaBloco = importanciaTitulo(linha);
 			// debug(`Início de bloco a apagar: "${linha}" (importância ${importanciaBloco})`);
