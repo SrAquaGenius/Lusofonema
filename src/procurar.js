@@ -11,7 +11,8 @@ const { converterDadosParaTexto, lerPalavra,
 const { corrigirAdicionar } = require("./corrigir");
 const { buscarDadosWiktionary } = require("./wiktionary");
 const { corrigirIPA } = require("./ipa");
-const { aplicarLusofonema, aplicarLusofonemaPorSilaba } = require("./regras");
+const { aplicarLusofonemaLinear, aplicarLusofonemaPorSilaba
+	} = require("./aplicarRegras");
 
 const { log, error, debug } = require("./debug");
 
@@ -28,7 +29,9 @@ const { log, error, debug } = require("./debug");
 async function procurarPalavra(rl, callback, input) {
 
 	let palavra = input.trim().toLowerCase();
-	if (palavra == "0") {
+	debug("Palavra:", palavra);
+
+	if (palavra === "0") {
 		log("A voltar ao menu ...\n");
 		return callback();
 	}
@@ -102,7 +105,7 @@ async function pesquisarPalavra(palavra) {
 		}
 	}
 	catch (e) {
-		error(`Erro no Wiktionary: ${e.message}`);
+		error(`Erro na busca por Wiktionary: ${e.message}`);
 		return null;
 	}
 
@@ -113,7 +116,7 @@ async function pesquisarPalavra(palavra) {
 		debug(dados.ipa);
 
 		dados.ipa = corrigirIPA(dados.ipa);
-		dados.lusofonema = aplicarLusofonema(palavra, dados.ipa);
+		dados.lusofonema = aplicarLusofonemaLinear(palavra, dados.ipa);
 
 		return { fonte: "gerada", dados: dados };
 	}
