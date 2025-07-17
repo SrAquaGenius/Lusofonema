@@ -8,12 +8,12 @@ const { debug, warn, error } = require("./debug");
 
 /**
  * @brief Busca dados da palavra no Wiktionary.
- * @param {string} palavra Palavra a procurar.
+ * @param {string} input Palavra a procurar.
  * @returns {true|false} Booleano que indica se os dados foram bem preenchidos.
  */
-async function buscarDadosWiktionary(palavra, dados) {
+async function buscarDadosWiktionary(input, dados) {
 
-	palavra = palavra.trim().toLowerCase();
+	let palavra = input.trim().toLowerCase();
 	debug("Palavra normalizada:", palavra);
 
 	const url = `https://pt.wiktionary.org/w/api.php?action=query&titles=${
@@ -47,6 +47,10 @@ async function buscarDadosWiktionary(palavra, dados) {
 		converterConteudoParaDados(conteudoLimpo, dados);
 		// debug("Dados:");
 		// debug(dados);
+
+		if (dados.palavra === "") {
+			dados.palavra = palavra;
+		}
 
 		return true;
 	}

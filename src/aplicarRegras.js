@@ -16,7 +16,7 @@ const { regras } = require("./regras");
  */
 function aplicarLusofonemaPorSilaba(dados) {
 
-	debug(dados);
+	debug("Dados:", dados);
 
 	if (!dados.palavra || !dados.ipa) {
 		error("Dados fornecido não contêm nem palavra, nem IPA");
