@@ -9,7 +9,7 @@ const { mostrarAlfabetoLusofonema, mostrarSonsIPA } = require("./alfabeto");
 const { mostrarResumoDicionario } = require("./dicionario");
 const { mostrarPalavra } = require("./mostrar");
 const { procurarPalavra } = require("./procurar");
-const { testarTexto } = require("./testarTexto");
+// const { testarTexto } = require("./testarTexto");
 
 const { mostrarDebug, mudarDebug, log, todo, clear } = require("./debug");
 

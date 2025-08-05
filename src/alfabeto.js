@@ -3,7 +3,7 @@
  * Authors:  SrAqua
  * ------------------------------------------------------------------------- */
 
-const { log } = require("./debug");
+const { log, clear, debug } = require("./debug");
 
 
 /**
@@ -28,12 +28,12 @@ function mostrarAlfabetoLusofonema(callback) {
 		{ letra: "I", nome: "i", som: "/i/ ou /j/" },
 		{ letra: "J", nome: "jota", som: "/ʒ/" },
 		{ letra: "L", nome: "éle", som: "/l/ ou /ɫ/" },
-		{ letra: "M", nome: "ême", som: "/m/" },
-		{ letra: "N", nome: "êne", som: "/n/" },
+		{ letra: "M", nome: "éme", som: "/m/" },
+		{ letra: "N", nome: "éne", som: "/n/" },
 		{ letra: "O", nome: "ó", som: "/ɔ/ ou /o/" },
 		{ letra: "P", nome: "pê", som: "/p/" },
 		{ letra: "R", nome: "érre", som: "/ʁ/ ou /ɾ/" },
-		{ letra: "S", nome: "ésse", som: "/s/" },
+		{ letra: "S", nome: "ése", som: "/s/" },
 		{ letra: "T", nome: "tê", som: "/t/" },
 		{ letra: "U", nome: "u", som: "/u/ ou /w/" },
 		{ letra: "V", nome: "vê", som: "/v/" },
@@ -42,6 +42,7 @@ function mostrarAlfabetoLusofonema(callback) {
 		{ letra: "Z", nome: "zê", som: "/z/" },
 	];
 
+	clear();
 	log("\n🔡 Alfabeto Lusofonema:\n");
 	log("Letra | Nome | Som");
 	log("-------------------------------");
@@ -103,29 +104,41 @@ function mostrarSonsIPA(callback) {
 		{ som: "/o/", tipo: "V-O", palavra: "Ovo"},
 		{ som: "/u/", tipo: "V-O", palavra: "Luz"},
 		{ som: "/ɐ̃/ ", tipo: "V-N", palavra: "Mãe" },
-		{ som: "/ẽ/", tipo: "V-N", palavra: "Bem" },
-		{ som: "/ĩ/", tipo: "V-N", palavra: "Fim" },
-		{ som: "/õ/", tipo: "V-N", palavra: "Bom" },
-		{ som: "/ũ/", tipo: "V-N", palavra: "Um" },
+		{ som: "/ẽ/ ", tipo: "V-N", palavra: "Bem" },
+		{ som: "/ĩ/ ", tipo: "V-N", palavra: "Fim" },
+		{ som: "/õ/ ", tipo: "V-N", palavra: "Bom" },
+		{ som: "/ũ/ ", tipo: "V-N", palavra: "Um" },
 	];
 
+	clear();
 	log("\n🔡 Lista de Sons do Alfabeto Fonético:\n");
-	log("(Legenda):");
-	log("- Consoante Oclusiva :\tC-O");	
-	log("- Consoante Fricativa :\tC-F");	
-	log("- Consoante Nasal :\tC-N");	
-	log("- Consoante Lateral :\tC-L");	
-	log("- Consoante Vibrante :\tC-V");	
-	log("- Semivogal :\t\tSV");	
-	log("- Vogal Oral :\t\tV-O");	
-	log("- Vogal Nasal :\t\tV-N");	
-	
-	log("\nSom | Tipo | Palavra exemplo");
-	log("----------------------------");
-	alfabeto.forEach(({ tipo, som, palavra }) => {
-		log(`${som.padEnd(4)}| ${tipo.padEnd(5)}| ${palavra.padEnd(15)}`);
-	});
-	log("");
+	log("Consoantes:\t\t\tVogais:");
+	log("- Oclusiva :\tC-O\t\t- Semivogal :\t\tSV");	
+	log("- Fricativa :\tC-F\t\t- Vogal Oral :\t\tV-O");	
+	log("- Nasal :\tC-N\t\t- Vogal Nasal :\t\tV-N");	
+	log("- Lateral :\tC-L");	
+	log("- Vibrante :\tC-V");
+
+
+	const consoantes = alfabeto.filter(e => e.tipo.startsWith("C"));
+	const vogais = alfabeto.filter(e => e.tipo.startsWith("V") || e.tipo === "SV");
+
+	const max = Math.max(consoantes.length, vogais.length);
+	debug("Max: ", max);
+
+	log("\nSom | Tipo | Palavra".padEnd(33) + "Som | Tipo | Palavra");
+	log("--------------------".padEnd(32) + "--------------------");
+
+	for (let i = 0; i < max; i++) {
+		const c = consoantes[i];
+		const v = vogais[i];
+
+		const linhaC = `${c.som.padEnd(4)}| ${c.tipo.padEnd(5)}| ${c.palavra.padEnd(19)}`
+		const linhaV = v ? `${v.som.padEnd(4)}| ${v.tipo.padEnd(5)}| ${v.palavra}`
+						 : "";
+
+		log(`${linhaC}${linhaV}`);
+	}
 
 	if (callback) callback();
 }
