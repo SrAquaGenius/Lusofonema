@@ -6,7 +6,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const { error, log, clear } = require("./debug");
+const { error, log, clear } = require("../utils/utils");
 
 const MAX_PALAVRAS_A_MOSTRAR = 15;
 

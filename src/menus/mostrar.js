@@ -3,10 +3,12 @@
  * Authors:  SrAqua
  * ------------------------------------------------------------------------- */
 
-const { converterDadosParaTexto, lerPalavra } = require("./gestorPalavras");
+const {
+	converterDadosParaTexto, lerPalavra
+} = require("../gestor/gestorPalavras");
 const { procurarPalavra } = require("./procurar");
 
-const { log, error, debug, warn } = require("./debug");
+const { log, error, debug, warn } = require("../utils/utils");
 
 
 /**

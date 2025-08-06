@@ -5,16 +5,17 @@
 
 const { execSync } = require('child_process');
 
-const { obterPalavraAleatoria } = require("../gestorCorpus");
+const { obterPalavraAleatoria } = require("../gestor/gestorCorpus");
 const { converterDadosParaTexto, lerPalavra,
-		copiarTemplateJSON } = require("../gestorPalavras");
-const { corrigirAdicionar } = require("../corrigir");
-const { buscarDadosWiktionary } = require("../wiktionary");
-const { corrigirIPA } = require("../ipa");
-const { aplicarLusofonemaLinear, aplicarLusofonemaPorSilaba
-	} = require("../aplicarRegras");
+		copiarTemplateJSON } = require("../gestor/gestorPalavras");
+const { corrigirAdicionar } = require("../analise/corrigir");
+const { buscarDadosWiktionary } = require("../gestor/gestorWikti");
+const { corrigirIPA } = require("../analise/ipa");
+const {
+	aplicarLusofonemaLinear, aplicarLusofonemaPorSilaba
+} = require("../analise/aplicarRegras");
 
-const { log, error, debug } = require("../debug");
+const { log, error, debug } = require("../utils/utils");
 
 
 /**

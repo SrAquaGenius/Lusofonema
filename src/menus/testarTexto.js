@@ -8,10 +8,11 @@ const path = require("path");
 const { DOMParser } = require("@xmldom/xmldom");
 const xpath = require("xpath");
 const { execSync } = require("child_process");
-const { corrigirIPA } = require("../ipa");
-const { aplicarLusofonema } = require("../regras");
 
-const { log, warn } = require("../debug");
+const { corrigirIPA } = require("../analise/ipa");
+const { aplicarLusofonema } = require("../analise/regras");
+
+const { log, warn } = require("../utils/utils");
 
 
 let obraAtual = null;
