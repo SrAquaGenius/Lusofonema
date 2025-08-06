@@ -3,7 +3,7 @@
  * Authors:  SrAqua
  * ------------------------------------------------------------------------- */
 
-const { log, clear, debug } = require("./debug");
+const { log, clear, debug } = require("../utils/utils");
 
 
 /**
@@ -15,7 +15,7 @@ const { log, clear, debug } = require("./debug");
  *                            Pode ser usada para retornar ao menu.
  * @returns {void} Não retorna valor; apenas imprime e chama o callback.
  */
-function mostrarAlfabetoLusofonema(callback) {
+function mostrarAlfabeto(callback) {
 	const alfabeto = [
 		{ letra: "A", nome: "á", som: "/a/ ou /ɐ/" },
 		{ letra: "B", nome: "bê", som: "/b/" },
@@ -70,7 +70,7 @@ function mostrarAlfabetoLusofonema(callback) {
  *                            Pode ser usada para retornar ao menu.
  * @returns {void} Não retorna valor; apenas imprime e chama o callback.
  */
-function mostrarSonsIPA(callback) {
+function mostrarSons(callback) {
 	const alfabeto = [
 		{ som: "/p/", tipo: "C-O", palavra: "Pato" },
 		{ som: "/b/", tipo: "C-O", palavra: "Bola" },
@@ -143,4 +143,4 @@ function mostrarSonsIPA(callback) {
 }
 
 
-module.exports = { mostrarAlfabetoLusofonema, mostrarSonsIPA };
+module.exports = { mostrarAlfabeto, mostrarSons };
