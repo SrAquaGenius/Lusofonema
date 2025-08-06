@@ -8,7 +8,7 @@ const readline = require("readline");
 const { mostrarAlfabeto, mostrarSons } = require("./menus/alfabeto");
 const { mostrarResumoDicionario } = require("./menus/dicionario");
 const { mostrarPalavra } = require("./menus/mostrar");
-const { procurarPalavra } = require("./menu/procurar");
+const { procurarPalavra } = require("./menus/procurar");
 // const { testarTexto } = require("./menu/testarTexto");
 
 const { mostrarDebug, mudarDebug, log, todo, clear } = require("./utils/utils");
