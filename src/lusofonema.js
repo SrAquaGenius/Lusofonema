@@ -11,7 +11,7 @@ const { mostrarPalavra } = require("./menus/mostrar");
 const { procurarPalavra } = require("./menu/procurar");
 // const { testarTexto } = require("./menu/testarTexto");
 
-const { mostrarDebug, mudarDebug, log, todo, clear } = require("./debug");
+const { mostrarDebug, mudarDebug, log, todo, clear } = require("./utils/utils");
 
 const rl = readline.createInterface({
 	input: process.stdin,
