@@ -3,7 +3,7 @@
  * Authors:  SrAqua
  * ------------------------------------------------------------------------- */
 
-const { debug } = require("./debug");
+const { debug } = require("./utils/debug");
 
 function corrigirIPA(ipa) {
 
