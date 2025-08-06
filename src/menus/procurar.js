@@ -1,20 +1,20 @@
 /* ----------------------------------------------------------------------------
- * File:     verificar.js
+ * File:     menus/procurar.js
  * Authors:  SrAqua
  * ------------------------------------------------------------------------- */
 
 const { execSync } = require('child_process');
 
-const { obterPalavraAleatoria } = require("./gestorCorpus");
+const { obterPalavraAleatoria } = require("../gestorCorpus");
 const { converterDadosParaTexto, lerPalavra,
-		copiarTemplateJSON } = require("./gestorPalavras");
-const { corrigirAdicionar } = require("./corrigir");
-const { buscarDadosWiktionary } = require("./wiktionary");
-const { corrigirIPA } = require("./ipa");
+		copiarTemplateJSON } = require("../gestorPalavras");
+const { corrigirAdicionar } = require("../corrigir");
+const { buscarDadosWiktionary } = require("../wiktionary");
+const { corrigirIPA } = require("../ipa");
 const { aplicarLusofonemaLinear, aplicarLusofonemaPorSilaba
-	} = require("./aplicarRegras");
+	} = require("../aplicarRegras");
 
-const { log, error, debug } = require("./debug");
+const { log, error, debug } = require("../debug");
 
 
 /**

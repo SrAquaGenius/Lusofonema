@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- * File:     testarTexto.js
+ * File:     menus/testarTexto.js
  * Authors:  SrAqua
  * ------------------------------------------------------------------------- */
 
@@ -8,10 +8,10 @@ const path = require("path");
 const { DOMParser } = require("@xmldom/xmldom");
 const xpath = require("xpath");
 const { execSync } = require("child_process");
-const { corrigirIPA } = require("./ipa");
-const { aplicarLusofonema } = require("./regras");
+const { corrigirIPA } = require("../ipa");
+const { aplicarLusofonema } = require("../regras");
 
-const { log, warn } = require("./debug");
+const { log, warn } = require("../debug");
 
 
 let obraAtual = null;

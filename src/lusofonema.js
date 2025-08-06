@@ -5,11 +5,11 @@
 
 const readline = require("readline");
 
-const { mostrarAlfabetoLusofonema, mostrarSonsIPA } = require("./alfabeto");
-const { mostrarResumoDicionario } = require("./dicionario");
-const { mostrarPalavra } = require("./mostrar");
-const { procurarPalavra } = require("./procurar");
-// const { testarTexto } = require("./testarTexto");
+const { mostrarAlfabetoLusofonema, mostrarSonsIPA } = require("./menus/alfabeto");
+const { mostrarResumoDicionario } = require("./menus/dicionario");
+const { mostrarPalavra } = require("./menus/mostrar");
+const { procurarPalavra } = require("./menu/procurar");
+// const { testarTexto } = require("./menu/testarTexto");
 
 const { mostrarDebug, mudarDebug, log, todo, clear } = require("./debug");
 
