@@ -57,7 +57,7 @@ function aplicarLusofonemaPorSilaba(dados) {
  */
 function aplicarRegrasASilaba(silaba, ipa, isLast = false) {
 
-	debug(`Sílaba: '${silaba}', IPA: '${ipa}'`);
+	debug(`Sílaba: '${silaba}', IPA: '${ipa}'${isLast ? " (last)" : ""}`);
 
 	const letras = silaba.split("");
 	const sons = Array.from(
@@ -93,18 +93,25 @@ function aplicarRegrasASilaba(silaba, ipa, isLast = false) {
 
 			debug(`Word Context: '${wContext}', IPA Context: '${iContext}'`);
 
-			for (const { reg, ipaReg, out, adv, last } of regras) {
+			for (const { reg, ipaReg, out, inc, lastRule } of regras) {
+
+				// Se o contexto e a regra não corresponderem, pula a regra
 				if (!reg.test(wContext)) continue;
-				if (ipaReg && !new RegExp(ipaReg).test(iContext)) continue;
 
-				// Confirmar se é a última sílaba
-				if (last && (!isLast || !wContext.includes(ultimaLetra))) continue;
+				// Se tiver regra de IPA mas o contexto IPA e a regra IPA não
+				// corresponderem, pula a regra
+				if (ipaReg && !ipaReg.test(iContext)) continue;
 
-				debug("Regra aplicada: ", reg, ipaReg, out, adv ?? 0);
+				// Se for uma lastRule mas nem é a última sílaba nem o
+				// contexto contem a última letra, pula a regra
+				if ((!isLast || !wContext.includes(ultimaLetra)) && lastRule)
+					continue;
+
+				debug("Regra detetada: ", reg, ipaReg, out, inc ?? 0);
 
 				regraAplicada = true;
 				novaLetra = out;
-				wIndex += (adv ?? 0);
+				wIndex += (inc ?? 0);
 				break;
 			}
 
@@ -182,7 +189,7 @@ function aplicarLusofonemaLinear(palavraOriginal, ipaOriginal) {
 
 		let regraAplicada = false;
 
-		for (const { reg, ipaReg, out, adv } of regras) {
+		for (const { reg, ipaReg, out, inc } of regras) {
 			const wordRegex = new RegExp(reg, "i");
 			const ipaReg = new RegExp(ipaReg, "i");
 
@@ -198,7 +205,7 @@ function aplicarLusofonemaLinear(palavraOriginal, ipaOriginal) {
 			novaLetra = out;
 			resArray.push(novaLetra);
 
-			const passo = (adv ?? 0) + 1;
+			const passo = (inc ?? 0) + 1;
 			wIndex += passo;
 			iIndex++;
 			regraAplicada = true;

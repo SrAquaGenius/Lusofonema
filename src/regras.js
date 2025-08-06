@@ -11,130 +11,137 @@
  * - `out`: substituição na ortografia
  * - `adv`: (opcional) número extra de avanços a fazer no índice da palavra
  */
-const regras = [ 
+const regras = [
+
+	// ========================== SIMBOLO TONICIDADE ==========================
+	{ reg: /ˈ/,	ipaReg: /ˈ/, out: "ˈ" },
 
 	// ========================== SONS CONSOANTÍCOS ===========================
 
 	// ---------------------- Consoantes Oclusivas (C-O) ----------------------
-	{ reg: /p/gi,	ipaReg: "p",	out: "p" },				// Pato
-	{ reg: /b/gi,	ipaReg: "b",	out: "b" },				// Bola
-	{ reg: /t/gi,	ipaReg: "t",	out: "t" },				// Teto
-	{ reg: /d/gi,	ipaReg: "d",	out: "d" },				// Dado
-	{ reg: /g/gi,	ipaReg: "g",	out: "g" },				// Gato
-	{ reg: /c/gi,	ipaReg: "k",	out: "c" },				// Casa
-	{ reg: /k/gi,	ipaReg: "k",	out: "c" },				// Kilo → Cilo
-	{ reg: /qu(?=[ei])/gi,
-					ipaReg: "k",	out: "c",	adv: 1 },	// Queijo → Ceijo
-	{ reg: /q(?=u[ao])/gi,
-					ipaReg: "k",	out: "c" },				// Quanto → Cuanto
+	{ reg: /p/i,	ipaReg: /p/i,	out: "p" },				// Pato
+	{ reg: /b/i,	ipaReg: /b/i,	out: "b" },				// Bola
+	{ reg: /t/i,	ipaReg: /t/i,	out: "t" },				// Teto
+	{ reg: /d/i,	ipaReg: /d/i,	out: "d" },				// Dado
+	{ reg: /g/i,	ipaReg: /g/i,	out: "g" },				// Gato
+	{ reg: /c/i,	ipaReg: /k/i,	out: "c" },				// Casa
+	{ reg: /k/i,	ipaReg: /k/i,	out: "c" },				// Kilo → Cilo
+	{ reg: /qu(?=[ei])/i,
+					ipaReg: /k/i,	out: "c",	adv: 1 },	// Queijo → Ceijo
+	{ reg: /q(?=u[ao])/i,
+					ipaReg: /k/i,	out: "c" },				// Quanto → Cuanto
 
 	// --------------------- Consoantes Fricativas (C-F) ----------------------
-	{ reg: /f/gi,	ipaReg: "f",	out: "f" },				// Faca
-	{ reg: /v/gi,	ipaReg: "v",	out: "v" },				// Vaca
-	{ reg: /s/gi,	ipaReg: "s",	out: "s" },				// Sapo
-	{ reg: /s/gi,	ipaReg: "ʃ",	out: "s" },				// Cesta
-	{ reg: /ss/gi,	ipaReg: "s",	out: "s" },				// Massa → Masa
-	{ reg: /ce/gi,	ipaReg: "s",	out: "se" },			// Cedo → Sedo
-	{ reg: /ci/gi,	ipaReg: "s",	out: "si" },			// Cinema → Sinema
-	{ reg: /ç/gi,	ipaReg: "s",	out: "s" },				// Lição → Lisão
-	{ reg: /z/gi,	ipaReg: "ʃ",	out: "s" },				// Fiz → Fis
-	{ reg: /(?<=[aeiouáéíóú])x(?=[aeiouáéíóúãõ])/gi,
-					ipaReg: "s",	out: "s" },				// Máximo → Másimo
-	{ reg: /z/gi,	ipaReg: "z",	out: "z" },				// Zero
-	{ reg: /(?<=[aeiouáéíóúãõ])s(?=[aeiouáéíóúãõ])/gi,
-					ipaReg: "z",	out: "z" },				// Casa → Caza
-	{ reg: /(?<=[aeiouáéíóú])x(?=[aeiouáéíóú])/gi,
-					ipaReg: "z",	out: "z" },				// Exame → Ezame
-	{ reg: /x/gi,	ipaReg: "ʃ",	out: "x" },				// Bruxa
-	{ reg: /ch/gi,	ipaReg: "ʃ",	out: "x" },				// Chave → Xave
-	{ reg: /ex/gi,	ipaReg: "ɐjʃ",	out: "eis" },			// Texto → Teisto
-	{ reg: /j/gi,	ipaReg: "ʒ",	out: "j" },				// Jogo
-	{ reg: /g(?=[eiyéíèìêîĩẽ])/gi,
-					ipaReg: "ʒ",	out: "j" },				// Girafa → Jirafa
+	{ reg: /f/i,	ipaReg: /f/i,	out: "f" },				// Faca
+	{ reg: /v/i,	ipaReg: /v/i,	out: "v" },				// Vaca
+	{ reg: /s/i,	ipaReg: /s/i,	out: "s" },				// Sapo
+	{ reg: /s/i,	ipaReg: /ʃ/i,	out: "s" },				// Cesta
+	{ reg: /ss/i,	ipaReg: /s/i,	out: "s" },				// Massa → Masa
+	{ reg: /ce/i,	ipaReg: /s/i,	out: "se" },			// Cedo → Sedo
+	{ reg: /ci/i,	ipaReg: /s/i,	out: "si" },			// Cinema → Sinema
+	{ reg: /ç/i,	ipaReg: /s/i,	out: "s" },				// Lição → Lisão
+	{ reg: /z/i,	ipaReg: /ʃ/i,	out: "s" },				// Fiz → Fis
+	{ reg: /(?<=[aeiouáéíóú])x(?=[aeiouáéíóúãõ])/i,
+					ipaReg: /s/i,	out: "s" },				// Máximo → Másimo
+	{ reg: /z/i,	ipaReg: /z/i,	out: "z" },				// Zero
+	{ reg: /(?<=[aeiouáéíóúãõ])s(?=[aeiouáéíóúãõ])/i,
+					ipaReg: /z/i,	out: "z" },				// Casa → Caza
+	{ reg: /s(?=[aeiouáéíóúãõ])/i,
+					ipaReg: /z/i,	out: "z"}, 				// 's*'|'z*' → 'z*'
+	{ reg: /(?<=[aeiouáéíóú])x(?=[aeiouáéíóú])/i,
+					ipaReg: /z/i,	out: "z" },				// Exame → Ezame
+	{ reg: /x(?=[aeiouáéíóúãõ])/i,
+					ipaReg: /z/i,	out: "z" },				// 'x'|'z' → 'z'
+	{ reg: /x/i,	ipaReg: /ʃ/i,	out: "x" },				// Bruxa
+	{ reg: /ch/i,	ipaReg: /ʃ/i,	out: "x" },				// Chave → Xave
+	{ reg: /ex/i,	ipaReg: /ɐjʃ/i,	out: "eis" },			// Texto → Teisto
+	{ reg: /j/i,	ipaReg: /ʒ/i,	out: "j" },				// Jogo
+	{ reg: /g(?=[eiyéíèìêîĩẽ])/i,
+					ipaReg: /ʒ/i,	out: "j" },				// Girafa → Jirafa
 
 	// -------------- Par Consoantal Oclusivo-Fricativo (PC-OF) ---------------
-	{ reg: /x/gi,	ipaReg: "ks",	out: "ç" },				// Fluxo → Fluço
+	{ reg: /x/i,	ipaReg: /ks/i,	out: "ç" },				// Fluxo → Fluço
 
 	// ----------------------- Consoantes Nasais (C-N) ------------------------
-	{ reg: /m/gi,	ipaReg: "m",	out: "m" },				// Mão
-	{ reg: /n/gi,	ipaReg: "n",	out: "n" },				// Nuvem
-	{ reg: /nh/gi,	ipaReg: "ɲ",	out: "nh",	adv: 1 },	// Manhã
+	{ reg: /m/i,	ipaReg: /m/i,	out: "m" },				// Mão
+	{ reg: /n/i,	ipaReg: /n/i,	out: "n" },				// Nuvem
+	{ reg: /nh/i,	ipaReg: /ɲ/i,	out: "nh",	adv: 1 },	// Manhã
 
 	// ---------------------- Consoantes Laterais (C-L) -----------------------
-	{ reg: /l/gi,	ipaReg: "l",	out: "l" },				// Lata
-	{ reg: /lh/gi,	ipaReg: "ʎ",	out: "lh",	adv: 1 },	// Milho
+	{ reg: /l/i,	ipaReg: /l/i,	out: "l" },				// Lata
+	{ reg: /lh/i,	ipaReg: /ʎ/i,	out: "lh",	adv: 1 },	// Milho
 
 	// ---------------------- Consoantes Vibrantes (C-V) ----------------------
-	{ reg: /r/gi,	ipaReg: "ɾ",	out: "r" },				// Paro
-	{ reg: /r/gi,	ipaReg: "ʁ",	out: "r" },				// Rato
-	{ reg: /rr/gi,	ipaReg: "ʁ",	out: "rr",	adv: 1 },	// Carro
+	{ reg: /r/i,	ipaReg: /ɾ/i,	out: "r" },				// Faro
+	{ reg: /r/i,	ipaReg: /ʁ/i,	out: "r" },				// Rato
+	{ reg: /rr/i,	ipaReg: /ʁ/i,	out: "rr",	adv: 1 },	// Carro
 
 
 	// ============================= LETRAS MUDAS =============================
 
-	{ reg: /(?<=[g])u(?=[e,i])/gi,	ipaReg: "",	out: "" },		// Guito → Gito
-	{ reg: /(?<![ln])h/gi,			ipaReg: "",	out: "" },		// Hiena - Iena
+	{ reg: /(?<=[g])u(?=[e,i])/i,	out: "" },			// Guerra → Gerra
+	{ reg: /(?<![ln])h/i,			out: "" },			// Hiena - Iena
 
 
 	// =============================== DITONGOS ===============================
 	
 	// ---------------------------- Ditongos Orais ----------------------------
-	{ reg: /ai/gi,	ipaReg: "aj",	out: "ai",	adv: 1 },		// Pai
-	{ reg: /au/gi,	ipaReg: "aw",	out: "au",	adv: 1 },		// Pau
-	{ reg: /ei/gi,	ipaReg: "ɐj",	out: "ei",	adv: 1 },		// Sei
-	{ reg: /(éu|eu)/gi,
-					ipaReg: "ɛw",	out: "éu",	adv: 1 },		// Céu
-	{ reg: /eu/gi,	ipaReg: "ew",	out: "eu",	adv: 1 },		// Meu
-	{ reg: /iu/gi,	ipaReg: "iw",	out: "iu",	adv: 1 },		// Piu
-	{ reg: /(ói|oi)/gi,
-					ipaReg: "ɔj",	out: "ói",	adv: 1 },		// Dói
-	{ reg: /oi/gi,	ipaReg: "oj",	out: "oi",	adv: 1 },		// Foi
-	{ reg: /ou/gi,	ipaReg: "ow",	out: "ou",	adv: 1 },		// Sou
-	{ reg: /ui/gi,	ipaReg: "uj",	out: "ui",	adv: 1 },		// Fui
+	{ reg: /ai/i,	ipaReg: /aj/i,	out: "ai",	adv: 1 },		// Pai
+	{ reg: /au/i,	ipaReg: /aw/i,	out: "au",	adv: 1 },		// Pau
+	{ reg: /ei/i,	ipaReg: /ɐj/i,	out: "ei",	adv: 1 },		// Sei
+	{ reg: /(éu|eu)/i,
+					ipaReg: /ɛw/i,	out: "éu",	adv: 1 },		// Céu
+	{ reg: /eu/i,	ipaReg: /ew/i,	out: "eu",	adv: 1 },		// Meu
+	{ reg: /iu/i,	ipaReg: /iw/i,	out: "iu",	adv: 1 },		// Piu
+	{ reg: /(ói|oi)/i,
+					ipaReg: /ɔj/i,	out: "ói",	adv: 1 },		// Dói
+	{ reg: /oi/i,	ipaReg: /oj/i,	out: "oi",	adv: 1 },		// Foi
+	{ reg: /ou/i,	ipaReg: /ow/i,	out: "ou",	adv: 1 },		// Sou
+	{ reg: /ui/i,	ipaReg: /uj/i,	out: "ui",	adv: 1 },		// Fui
 	
 	// ----------------------- Ditongos Orais Estáveis ------------------------
-	{ reg: /ua/gi,	ipaReg: "wɐ",	out: "ua",	adv: 1 },		// Quadro
-	{ reg: /ue/gi,	ipaReg: "we",	out: "ue",	adv: 1 },		// Aguentar
-	{ reg: /ui/gi,	ipaReg: "wi",	out: "ui",	adv: 1 },		// Arguido
-	{ reg: /uo/gi,	ipaReg: "wɔ",	out: "uo",	adv: 1 },		// Quota
+	{ reg: /ua/i,	ipaReg: /wɐ/i,	out: "ua",	adv: 1 },		// Quadro
+	{ reg: /ue/i,	ipaReg: /we/i,	out: "ue",	adv: 1 },		// Aguentar
+	{ reg: /ui/i,	ipaReg: /wi/i,	out: "ui",	adv: 1 },		// Arguido
+	{ reg: /uo/i,	ipaReg: /wɔ/i,	out: "uo",	adv: 1 },		// Quota
 	
 	// --------------------------- Ditongos Nasais ----------------------------
-	{ reg: /ão/gi,	ipaReg: "ɐ̃w",	out: "ão",	adv: 1 },		// Pão
-	{ reg: /ãe/gi,	ipaReg: "ɐ̃j",	out: "ãe",	adv: 1 },		// Mãe
-	{ reg: /õe/gi,	ipaReg: "õj",	out: "õe",	adv: 1 },		// Visões
-	{ reg: /am/gi,	ipaReg: "ɐ̃w",	out: "ão",	adv: 1 , l: 0 },	// Cantam → Càntão
+	{ reg: /ão/i,	ipaReg: /ɐ̃w/i,	out: "ão",	adv: 1 },		// Pão
+	{ reg: /ãe/i,	ipaReg: /ɐ̃j/i,	out: "ãe",	adv: 1 },		// Mãe
+	{ reg: /õe/i,	ipaReg: /õj/i,	out: "õe",	adv: 1 },		// Visões
+	{ reg: /am/i,	ipaReg: /ɐ̃w/i,	out: "ão",	adv: 1 , l: 0 },	// Cantam → Càntão
 
 
 	// ============================ SONS VOCÁLICOS ============================
 
 	// --------------------------- Semivogais (SV) ----------------------------
-	{ reg: /i/gi,	ipaReg: "j",	out: "i" },				// Pai
-	{ reg: /u/gi,	ipaReg: "w",	out: "u" },				// Quadro
+	{ reg: /i/i,	ipaReg: /j/i,	out: "i" },				// Pai
+	{ reg: /u/i,	ipaReg: /w/i,	out: "u" },				// Quadro
 
 	// ------------------------- Vogais Nasais (V-N) --------------------------
-	{ reg: /an/gi,	ipaReg: "ɐ̃",	out: "an",	adv: 1 },		// Manta
-	{ reg: /am/gi,	ipaReg: "ɐ̃",	out: "an",	adv: 1 },		// Campo → Canpo
-	{ reg: /en/gi,	ipaReg: "ẽ",	out: "en",	adv: 1 },		// Quente
-	{ reg: /em/gi,	ipaReg: "ẽ",	out: "en",	adv: 1 },		// Bem → Ben
-	{ reg: /in/gi,	ipaReg: "ĩ",	out: "in",	adv: 1 },		// Finta
-	{ reg: /im/gi,	ipaReg: "ĩ",	out: "in",	adv: 1 },		// Fim → Fin
-	{ reg: /on/gi,	ipaReg: "õ",	out: "on",	adv: 1 },		// Contar
-	{ reg: /om/gi,	ipaReg: "õ",	out: "on",	adv: 1 },		// Bom → Bon
-	{ reg: /un/gi,	ipaReg: "ũ",	out: "un",	adv: 1 },		// Fundo
-	{ reg: /um/gi,	ipaReg: "ũ",	out: "un",	adv: 1 },		// Um → Un
+	{ reg: /an/i,	ipaReg: /ɐ̃/i,	out: "an",	adv: 1 },		// Manta
+	{ reg: /am/i,	ipaReg: /ɐ̃/i,	out: "an",	adv: 1 },		// Campo → Canpo
+	{ reg: /en/i,	ipaReg: /ẽ/i,	out: "en",	adv: 1 },		// Quente
+	{ reg: /em/i,	ipaReg: /ẽ/i,	out: "en",	adv: 1 },		// Bem → Ben
+	{ reg: /in/i,	ipaReg: /ĩ/i,	out: "in",	adv: 1 },		// Finta
+	{ reg: /im/i,	ipaReg: /ĩ/i,	out: "in",	adv: 1 },		// Fim → Fin
+	{ reg: /on/i,	ipaReg: /õ/i,	out: "on",	adv: 1 },		// Contar
+	{ reg: /om/i,	ipaReg: /õ/i,	out: "on",	adv: 1 },		// Bom → Bon
+	{ reg: /un/i,	ipaReg: /ũ/i,	out: "un",	adv: 1 },		// Fundo
+	{ reg: /um/i,	ipaReg: /ũ/i,	out: "un",	adv: 1 },		// Um → Un
 	
 	// -------------------------- Vogais Orais (V-O) --------------------------
-	{ reg: /[aá](?![iu])/gi,	ipaReg: "a",	out: "á" },		// Pá
-	{ reg: /[aâ]/gi,			ipaReg: "ɐ",	out: "a" },		// Cama
-	{ reg: /[eé]/gi,			ipaReg: "ɛ",	out: "é" },		// Pé
-	{ reg: /[eê]/gi,			ipaReg: "e",	out: "e" },		// Mesa
-	{ reg: /e/gi,				ipaReg: "ə",	out: "e" },		// Sede
-	{ reg: /[ií]/gi,			ipaReg: "i",	out: "i" },		// Vida
-	{ reg: /[oó]/gi,			ipaReg: "ɔ",	out: "ó" },		// Pó
-	{ reg: /o/gi,				ipaReg: "o",	out: "o" },		// Ovo
-	{ reg: /o/gi,				ipaReg: "u",	out: "u" },		// Conto
-	{ reg: /[uú]/gi,			ipaReg: "u",	out: "u" },		// Luz
-];
+	{ reg: /[aá](?![iu])/i,	ipaReg: /a/i,	out: "á" },		// Pá
+	{ reg: /[aâ]/i,			ipaReg: /ɐ/i,	out: "a" },		// Cama
+	{ reg: /[eé]/i,			ipaReg: /ɛ/i,	out: "é" },		// Pé
+	{ reg: /[eê]/i,			ipaReg: /e/i,	out: "e" },		// Mesa
+	{ reg: /e/i,			ipaReg: /ə/i,	out: "e" },		// Sede
+	{ reg: /[ií]/i,			ipaReg: /i/i,	out: "i" },		// Vida
+	{ reg: /[oó]/i,			ipaReg: /ɔ/i,	out: "ó" },		// Pó
+	{ reg: /o/i,			ipaReg: /o/i,	out: "o" },		// Ovo
+	{ reg: /o/i,			ipaReg: /u/i,	out: "u" },		// Conto
+	{ reg: /[uú]/i,			ipaReg: /u/i,	out: "u" },		// Luz
+]
 
 
 module.exports = { regras };
