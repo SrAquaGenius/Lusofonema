@@ -49,7 +49,6 @@ function mostrarAlfabetoLusofonema(callback) {
 	alfabeto.forEach(({ letra, nome, som }) => {
 		log(` ${letra.padEnd(5)}| ${nome.padEnd(5)}| ${som}`);
 	});
-	log("");
 
 	if (callback) callback();
 }
@@ -113,9 +112,9 @@ function mostrarSonsIPA(callback) {
 	clear();
 	log("\n🔡 Lista de Sons do Alfabeto Fonético:\n");
 	log("Consoantes:\t\t\tVogais:");
-	log("- Oclusiva :\tC-O\t\t- Semivogal :\t\tSV");	
-	log("- Fricativa :\tC-F\t\t- Vogal Oral :\t\tV-O");	
-	log("- Nasal :\tC-N\t\t- Vogal Nasal :\t\tV-N");	
+	log("- Oclusiva :\tC-O\t\t- Semivogal :\tSV");	
+	log("- Fricativa :\tC-F\t\t- Oral :\tV-O");	
+	log("- Nasal :\tC-N\t\t- Nasal :\tV-N");	
 	log("- Lateral :\tC-L");	
 	log("- Vibrante :\tC-V");
 

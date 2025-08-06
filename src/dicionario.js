@@ -6,17 +6,19 @@
 const fs = require("fs");
 const path = require("path");
 
-const { error, log } = require("./debug");
+const { error, log, clear } = require("./debug");
 
-const TOTAL_DE_PALAVRAS_A_MOSTRAR = 15;
+const MAX_PALAVRAS_A_MOSTRAR = 15;
 
 
 /**
  * @brief Mostra o resumo do dicionário: número total de palavras e exemplos.
  */
 function mostrarResumoDicionario() {
-	const pasta = path.join(__dirname, "..", "palavras");
 
+	clear();
+
+	const pasta = path.join(__dirname, "..", "palavras");
 	if (!fs.existsSync(pasta)) {
 		error("Pasta ./palavras não encontrada.");
 		return;
@@ -32,10 +34,10 @@ function mostrarResumoDicionario() {
 	// Selecionar o máximo de palavras aleatórias definidar
 	const exemplos = ficheiros
 		.sort(() => Math.random() - 0.5) // embaralhar
-		.slice(0, TOTAL_DE_PALAVRAS_A_MOSTRAR);
+		.slice(0, MAX_PALAVRAS_A_MOSTRAR);
 
 	if (exemplos.length > 0) {
-		log("Algumas palavras no dicionário:");
+		log("\nAlgumas palavras no dicionário:");
 		for (const ficheiro of exemplos) {
 			const caminho = path.join(pasta, ficheiro);
 			try {
@@ -51,7 +53,7 @@ function mostrarResumoDicionario() {
 		}
 	}
 
-	if (total > TOTAL_DE_PALAVRAS_A_MOSTRAR){
+	if (total > MAX_PALAVRAS_A_MOSTRAR){
 		log("...");
 	}
 }
