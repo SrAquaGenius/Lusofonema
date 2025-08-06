@@ -6,7 +6,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const { debug, log, warn } = require("./debug");
+const { debug, log, warn } = require("../utils/utils");
 
 
 const PASTA_PALAVRAS = path.join(__dirname, "..", "palavras");

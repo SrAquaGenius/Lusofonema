@@ -3,7 +3,7 @@
  * Authors:  SrAqua
  * ------------------------------------------------------------------------- */
 
-const { debug, warn, error } = require("./debug");
+const { debug, warn, error } = require("../utils/utils");
 
 
 /**
