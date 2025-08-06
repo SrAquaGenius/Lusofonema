@@ -299,8 +299,9 @@ function converterConteudoParaDados(conteudo, dados) {
 			// Verifica se contém escopo antes de limpar (ex: {{escopo|pt|Política}})
 			const mEscopo = linha.match(/\{\{escopo\|pt\|([^\}]+)\}\}/i);
 			if (mEscopo) {
-				escopoAtual = mEscopo[1].toLowerCase(); // ex: "política"
+				escopoAtual = mEscopo[1].toLowerCase();
 			}
+			else escopoAtual = null;  // <-- limpa o escopo anterior
 
 			// Anotações opcionais
 			const anotacoes = [];
