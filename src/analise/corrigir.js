@@ -3,10 +3,9 @@
  * Authors:  SrAqua
  * ------------------------------------------------------------------------- */
 
-const { guardarPalavra } = require("./gestorPalavras");
-const { aplicarLusofonema } = require("./regras");
-const { log, warn, error } = require("./debug");
+const { guardarPalavra } = require("../gestor/gestorPalavras");
 
+const { log, warn, error, todo } = require("../utils/utils");
 
 /**
  * @brief Inicia o ciclo de correção e eventual atualização do ficheiro JSON.
@@ -119,7 +118,8 @@ async function corrigirAdicionar(rl, palavra, dados) {
 					return resolve();
 				}
 				ipa = inIPA.trim() || ipa;
-				luso = aplicarLusofonema(word, ipa);
+				todo("Chamar aplicarLusofonema");
+				//luso = aplicarLusofonema(word, ipa);
 				ciclo();
 			});
 		}

@@ -3,7 +3,6 @@
 * Authors:  SrAqua
 * ------------------------------------------------------------------------- */
 
-
 /**
  * @brief Cada regra corresponde a:
  * - `reg`: expressão regular sobre a forma escrita da palavra

@@ -3,7 +3,7 @@
  * Authors:  SrAqua
  * ------------------------------------------------------------------------- */
 
-const { debug } = require("./debug");
+const { debug } = require("../utils/utils");
 
 const vogais = 'aeiouáéíóúâêôãõà';
 const semivogais = 'iuo';

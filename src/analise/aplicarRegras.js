@@ -3,10 +3,11 @@
  * Authors:  SrAqua
  * ------------------------------------------------------------------------- */
 
-const { debug, error, warn } = require("./debug");
 const { aplicarTonicidade } = require('./tonicidade');
 const { separarSilabas, marcarHiatos } = require('./silabas');
 const { regras } = require("./regras");
+
+const { debug, error, warn } = require("../utils/utils");
 
 
 /**

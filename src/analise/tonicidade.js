@@ -3,7 +3,7 @@
  * Authors:  SrAqua
  * ------------------------------------------------------------------------- */
 
-const { debug } = require("./debug");
+const { debug } = require("../utils/utils");
 
 const mapaGrave = {
 	a: "à", á: "ǎ",
