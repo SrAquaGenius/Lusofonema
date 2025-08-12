@@ -3,13 +3,32 @@
  * Authors:  SrAqua
  * ------------------------------------------------------------------------- */
 
-const { debug } = require("./utils/utils");
+const { execSync } = require('child_process');
 
-function corrigirIPA(ipa) {
+const { debug } = require("../utils/utils");
+
+
+function gerarIPA(palavra) {
+
+	const word = palavra.replace("ˈ", "").replace(".", "").trim();
+	debug("Palavra limpa:", word);
+
+	let ipa = execSync(`espeak-ng -v pt --ipa=3 -q "${word}" 2>/dev/null`)
+			  .toString().trim();
+
+	debug("IPA gerado:", ipa);
+
+	ipa = corrigirIPA(ipa, false);
+	if (word != palavra) ipa = atualizarMarcasIPA(palavra, ipa);
+
+	return adicionarSlash(ipa);
+}
+
+function corrigirIPA(ipa, addSlash = true) {
 
 	// Correções específicas para Português Europeu
 
-	debug("IPA original:", ipa);
+	debug("IPA palavra:", ipa);
 
 	ipa = ipa.replace(/\u200d/g, ""); // remove ZWJ (zero width joiner)
 
@@ -53,8 +72,64 @@ function corrigirIPA(ipa) {
 	// Substitui C-"w"-C por C-"u"-C
 	ipa = ipa.replace(/([^aeiouɐɛəɔɐ̃ẽĩõũˈ̃])w([^aeiouɐɛəɔɐ̃ẽĩõũˈ̃])/g, "$1u$2");
 
+	debug("IPA final:", ipa);
+
+	return addSlash ? adicionarSlash(ipa) : ipa;
+}
+
+/**
+ * @brief Restaura marcas de tonicidade e divisão silábica no IPA gerado.
+ * @param {string} palavra Palavra original.
+ * @param {string} ipa IPA gerado limpo, sem marcas adicionais.
+ * @returns {string} IPA atualizado com as marcas originais, caso existam.
+ */
+function atualizarMarcasIPA(palavra, ipa) {
+
+	debug("Palavra original:", palavra, ", IPA:", ipa);
+
+	// Se o palavra não tem marcas, retorna o IPA tal como está
+	if (!palavra.includes("ˈ") && !palavra.includes(".")) {
+		return ipa;
+	}
+
+	let res = ipa;
+
+	// Restaurar marca de tonicidade na posição equivalente
+	if (palavra.includes("ˈ") && !ipa.includes("ˈ")) {
+		const posTonica = palavra.indexOf("ˈ");
+		// Inserir na mesma posição relativa
+		res = res.slice(0, posTonica) + "ˈ" + res.slice(posTonica);
+	}
+
+	// Restaurar pontos de divisão silábica
+	if (palavra.includes(".")) {
+		let idxOriginal = 0;
+		let idxResultado = 0;
+		let restaurado = "";
+		while (idxOriginal < palavra.length && idxResultado < res.length) {
+			if (palavra[idxOriginal] === ".") {
+				restaurado += ".";
+				idxOriginal++;
+				continue;
+			}
+			restaurado += res[idxResultado];
+			idxOriginal++;
+			idxResultado++;
+		}
+		// Caso ainda sobre parte do IPA
+		if (idxResultado < res.length) {
+			restaurado += res.slice(idxResultado);
+		}
+		res = restaurado;
+	}
+
+	return res;
+}
+
+function adicionarSlash(ipa) {
 	if (ipa[0] === "/") return ipa;
 	return "/" + ipa + "/";
 }
 
-module.exports = { corrigirIPA };
+
+module.exports = { gerarIPA, corrigirIPA };

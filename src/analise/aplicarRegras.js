@@ -19,9 +19,13 @@ function aplicarLusofonemaPorSilaba(dados) {
 
 	debug("Dados:", dados);
 
-	if (!dados.palavra || !dados.ipa) {
-		error("Dados fornecido não contêm nem palavra, nem IPA");
+	if (!dados.palavra && !dados.ipa) {
+		error("Dados fornecido não contêm nem palavra nem IPA");
 		return "";
+	}
+
+	if (!dados.ipa) {
+		dados.ipa = gerarIPA(dados.palavra);
 	}
 
 	const silabas = dados.palavra.split(".");

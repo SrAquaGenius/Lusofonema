@@ -3,17 +3,14 @@
  * Authors:  SrAqua
  * ------------------------------------------------------------------------- */
 
-const { execSync } = require('child_process');
-
 const { obterPalavraAleatoria } = require("../gestor/gestorCorpus");
 const { converterDadosParaTexto, lerPalavra,
 		copiarTemplateJSON } = require("../gestor/gestorPalavras");
 const { corrigirAdicionar } = require("../analise/corrigir");
 const { buscarDadosWiktionary } = require("../gestor/gestorWikti");
-const { corrigirIPA } = require("../analise/ipa");
-const {
-	aplicarLusofonemaLinear, aplicarLusofonemaPorSilaba
-} = require("../analise/aplicarRegras");
+const { gerarIPA, corrigirIPA } = require("../analise/ipa");
+const { aplicarLusofonemaLinear, aplicarLusofonemaPorSilaba
+		} = require("../analise/aplicarRegras");
 
 const { log, error, debug } = require("../utils/utils");
 
@@ -88,6 +85,9 @@ async function pesquisarPalavra(palavra) {
 
 	// 2. Busca dados no Wiktionary
 	try {
+
+		debug("Pesquisa por Wiktionary");
+
 		const eval = await buscarDadosWiktionary(palavra, dados);
 
 		debug("Dados:", dados);
@@ -112,11 +112,10 @@ async function pesquisarPalavra(palavra) {
 
 	// 3. Fallback: gera com espeak-ng
 	try {
-		dados.ipa = execSync(`espeak-ng -v pt --ipa=3 -q "${palavra}" 2>/dev/null`).toString().trim();
 
-		debug(dados.ipa);
+		debug("Fallbak. Obter IPA com espeak");
 
-		dados.ipa = corrigirIPA(dados.ipa);
+		dados.ipa = gerarIPA(dados.palavra);
 		dados.lusofonema = aplicarLusofonemaLinear(palavra, dados.ipa);
 
 		return { fonte: "gerada", dados: dados };
