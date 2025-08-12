@@ -116,7 +116,14 @@ async function pesquisarPalavra(palavra) {
 		debug("Fallbak. Obter IPA com espeak");
 
 		dados.ipa = gerarIPA(dados.palavra);
-		dados.lusofonema = aplicarLusofonemaLinear(palavra, dados.ipa);
+
+		let luso;
+
+		if (!dados.palavra.includes(".") || !dados.ipa.includes("."))
+			luso = aplicarLusofonemaLinear(dados.palavra, dados.ipa);
+		else luso = aplicarLusofonemaPorSilaba(dados);
+
+		dados.lusofonema = luso;
 
 		return { fonte: "gerada", dados: dados };
 	}

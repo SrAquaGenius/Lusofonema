@@ -85,7 +85,7 @@ function corrigirIPA(ipa, addSlash = true) {
  */
 function atualizarMarcasIPA(palavra, ipa) {
 
-	debug("Palavra original:", palavra, ", IPA:", ipa);
+	debug(`Palavra original: ${palavra}, IPA: ${ipa}`);
 
 	// Se o palavra não tem marcas, retorna o IPA tal como está
 	if (!palavra.includes("ˈ") && !palavra.includes(".")) {
