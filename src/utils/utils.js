@@ -4,6 +4,7 @@
  * ------------------------------------------------------------------------- */
 
 let debugFlag = false;
+let debugPlusFlag = false;
 
 /** @brief troca o estado de debug atual */
 function mudarDebug() {
@@ -50,6 +51,10 @@ function debug(...mensagens) {
 	}
 }
 
+function debugPlus(...mensagens) {
+	if (debugPlusFlag) debug(...mensagens);
+}
+
 function log(...args) {
 	console.log(...args);
 }
@@ -71,4 +76,5 @@ function clear() {
 }
 
 
-module.exports = { mostrarDebug, mudarDebug, debug, log, warn, error, todo, clear };
+module.exports = { mostrarDebug, mudarDebug, debug, debugPlus,
+				   log, warn, error, todo, clear };
