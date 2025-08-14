@@ -7,7 +7,7 @@ const { aplicarTonicidade } = require('./tonicidade');
 const { separarSilabas, marcarHiatos } = require('./silabas');
 const { regras } = require("./regras");
 
-const { debug, error, warn } = require("../utils/utils");
+const { debug, debugPlus, error, warn } = require("../utils/utils");
 
 
 /**
@@ -32,11 +32,11 @@ function aplicarLusofonemaPorSilaba(dados) {
 	const silabasIPA = dados.ipa.normalize("NFC").replace(/[\/]/g, "")
 							.trim().split(".");
 
-	debug(silabas);
-	debug(silabasIPA);
+	debug("Sílabas:", silabas);
+	debug("Sílabas IPA:", silabasIPA);
 
 	if (silabas.length !== silabasIPA.length) {
-		warn("Número de sílabas não coincide com o IPA. Fallback para modo linear.");
+		warn("Número de sílabas não coincide. Fallback para modo linear.");
 		return aplicarLusofonemaLinear(dados.palavra.replace(/\./g, ""), dados.ipa);
 	}
 
@@ -55,7 +55,7 @@ function aplicarLusofonemaPorSilaba(dados) {
 }
 
 /**
- * @brief Aplica regras fonéticas a uma sílaba da palavra e do IPA.
+ * @brief Aplica regras fonéticas, dadas uma sílaba da palavra e do IPA.
  * @param {string} silaba Ortografia da sílaba.
  * @param {string} ipa Transcrição IPA da sílaba.
  * @returns {string} Lusofonema da sílaba.
@@ -101,16 +101,36 @@ function aplicarRegrasASilaba(silaba, ipa, isLast = false) {
 			for (const { reg, ipaReg, out, inc, lastRule } of regras) {
 
 				// Se o contexto e a regra não corresponderem, pula a regra
-				if (!reg.test(wContext)) continue;
+				if (!reg.test(wContext)) {
+					debugPlus(`(${reg} ${ipaReg}) wContext e regra não coincidem`);
+					continue;
+				}
 
 				// Se tiver regra de IPA mas o contexto IPA e a regra IPA não
 				// corresponderem, pula a regra
-				if (ipaReg && !ipaReg.test(iContext)) continue;
+				if (ipaReg && !ipaReg.test(iContext)) {
+					debugPlus(`(${reg} ${ipaReg}) iContext e regra IPA não coincidem`);
+					continue;
+				}
 
 				// Se for uma lastRule mas nem é a última sílaba nem o
 				// contexto contem a última letra, pula a regra
-				if ((!isLast || !wContext.includes(ultimaLetra)) && lastRule)
+				if ((!isLast || !wContext.includes(ultimaLetra)) && lastRule) {
+					debugPlus(`(${reg} ${ipaReg}) Regra de última letra sem última letra presente`);
 					continue;
+				}
+
+				// Pular a regra se não contiver a primeira letra do contexto
+				if (!reg.source.includes(wContext[0])) {
+					debugPlus(`(${reg} ${ipaReg}) Primeira letra não se encontra no regex`);
+					continue;
+				}
+			
+				// Pular a regra se não contiver o primeiro som do contexto
+				if (!ipaReg.source.includes(iContext[0])) {
+					debugPlus(`(${reg} ${ipaReg}) Primeiro som não se encontra no ipa regex`);
+					continue;
+				}
 
 				debug("Regra detetada: ", reg, ipaReg, out, inc ?? 0);
 
