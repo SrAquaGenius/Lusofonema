@@ -135,6 +135,23 @@ const regrasSeparacao = [
 	},
 ];
 
+/**
+ * @brief Divide uma palavra em sílabas com base no separador de ponto.
+ * @param {string} palavra Palavra com separação silábica por pontos.
+ * @returns {string[]} Lista de sílabas extraídas da palavra.
+ */
+function obterSilabas(palavra) {
+	return palavra.split(".");
+}
+
+/**
+ * @brief Divide uma transcrição IPA em sílabas, removendo barras e normalizando.
+ * @param {string} ipa Transcrição IPA com separação silábica por pontos.
+ * @returns {string[]} Lista de sílabas extraídas da transcrição IPA.
+ */
+function obterSilabasIPA(ipa) {
+	return ipa.normalize("NFC").replace(/[\/]/g, "").trim().split(".");
+}
 
 /**
  * @brief Separa uma palavra em sílabas de forma heurística (não exata).
@@ -223,4 +240,4 @@ function marcarHiatos(silabas) {
 }
 
 
-module.exports = { separarSilabas, marcarHiatos };
+module.exports = { obterSilabas, obterSilabasIPA, separarSilabas, marcarHiatos };
