@@ -30,7 +30,7 @@ async function procurarPalavra(rl, callback, input) {
 	debug("Palavra:", palavra);
 
 	if (palavra === "0") {
-		log("A voltar ao menu ...\n");
+		log("A voltar ao menu ...");
 		return callback();
 	}
 

@@ -9,7 +9,7 @@ const path = require("path");
 const { debug, log, warn } = require("../utils/utils");
 
 
-const PASTA_PALAVRAS = path.join(__dirname, "..", "palavras");
+const PASTA_PALAVRAS = path.join(__dirname, "..", "..", "palavras");
 
 /**
  * @brief Cria uma cópia do template JSON usado para palavras.
