@@ -4,6 +4,7 @@
  * ------------------------------------------------------------------------- */
 
 const { aplicarTonicidade } = require('./tonicidade');
+const { obterSilabas, obterSilabasIPA } = require('./silabas');
 const { separarSilabas, marcarHiatos } = require('./silabas');
 const { regras } = require("./regras");
 
@@ -18,9 +19,8 @@ const { debug, debugPlus, error, warn } = require("../utils/utils");
 function aplicarLusofonemaPorSilaba(dados) {
 
 	debug("Dados:", dados);
-
-	if (!dados.palavra && !dados.ipa) {
-		error("Dados fornecido não contêm nem palavra nem IPA");
+	if (!dados && !dados.palavra) {
+		error("Dados fornecido são inválidos");
 		return "";
 	}
 
@@ -28,16 +28,14 @@ function aplicarLusofonemaPorSilaba(dados) {
 		dados.ipa = gerarIPA(dados.palavra);
 	}
 
-	const silabas = dados.palavra.split(".");
-	const silabasIPA = dados.ipa.normalize("NFC").replace(/[\/]/g, "")
-							.trim().split(".");
-
+	const silabas = obterSilabas(dados.palavra);
+	const silabasIPA = obterSilabasIPA(dados.ipa);
 	debug("Sílabas:", silabas);
 	debug("Sílabas IPA:", silabasIPA);
 
 	if (silabas.length !== silabasIPA.length) {
 		warn("Número de sílabas não coincide. Fallback para modo linear.");
-		return aplicarLusofonemaLinear(dados.palavra.replace(/\./g, ""), dados.ipa);
+		return aplicarLusofonemaLinear(dados.palavra, dados.ipa);
 	}
 
 	const resultado = [];
@@ -170,7 +168,7 @@ function aplicarLusofonemaLinear(palavraOriginal, ipaOriginal) {
 	debug(palavraOriginal, ipaOriginal);
 
 	const resArray = [];
-	const word = palavraOriginal;
+	const word = palavraOriginal.replace(/\./g, "");
 	const wordArray = palavraOriginal.split("");
 	const ipa = ipaOriginal.slice(1, -1).normalize("NFD");
 
