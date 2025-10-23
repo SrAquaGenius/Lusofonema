@@ -6,7 +6,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const { error, log, clear } = require("../utils/utils");
+const { error, log, clear, debug } = require("../utils/utils");
 
 const MAX_PALAVRAS_A_MOSTRAR = 15;
 
@@ -18,7 +18,8 @@ function mostrarResumoDicionario() {
 
 	clear();
 
-	const pasta = path.join(__dirname, "..", "palavras");
+	const pasta = path.join(__dirname, "..", "..", "palavras");
+	debug(pasta);
 	if (!fs.existsSync(pasta)) {
 		error("Pasta ./palavras não encontrada.");
 		return;
