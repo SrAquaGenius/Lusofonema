@@ -37,8 +37,8 @@ function mostrarAlfabeto(callback) {
 		{ letra: "T", nome: "tê", som: "/t/" },
 		{ letra: "U", nome: "u", som: "/u/ ou /w/" },
 		{ letra: "V", nome: "vê", som: "/v/" },
-		{ letra: "X", nome: "xis", som: "/ʃ/" },
-		{ letra: "Ç", nome: "csi", som: "/ks/" },
+		{ letra: "X", nome: "xi", som: "/ʃ/" },
+		{ letra: "Ç", nome: "çi", som: "/ks/" },
 		{ letra: "Z", nome: "zê", som: "/z/" },
 	];
 

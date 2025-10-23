@@ -18,7 +18,7 @@ const rl = readline.createInterface({
 	output: process.stdout
 });
 
-
+clear();
 log("🗣️  Lusofonema — Uma versão fonética da língua Portuguesa");
 log("========================================================");
 

@@ -252,6 +252,6 @@ function aplicarLusofonemaLinear(palavraOriginal, ipaOriginal) {
 }
 
 
-module.exports = { aplicarLusofonemaLinear, aplicarLusofonemaPorSilaba,
-					aplicarRegrasASilaba
- };
+module.exports = {
+	aplicarLusofonemaLinear, aplicarLusofonemaPorSilaba, aplicarRegrasASilaba
+};

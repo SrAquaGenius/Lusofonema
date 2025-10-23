@@ -68,7 +68,7 @@ function error(...args) {
 }
 
 function todo(...args) {
-	log("[TODO]", ...args, "\n");
+	log("[TODO]", ...args);
 }
 
 function clear() {

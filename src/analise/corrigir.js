@@ -170,4 +170,100 @@ async function corrigirAdicionar(rl, palavra, dados) {
 	});
 }
 
-module.exports = { corrigirAdicionar };
+/**
+ * @brief Permite corrigir qualquer campo de uma palavra no dicionário.
+ * @param {readline.Interface} rl Interface readline CLI.
+ * @param {string} palavra Palavra em estudo.
+ * @param {object} dados Objeto completo da palavra (pode ter campos extra).
+ */
+async function corrigirDicionario(rl, palavra, dados) {
+	return new Promise((resolve) => {
+
+		if (!dados) {
+			error("Objeto de dados vazio.");
+			return resolve();
+		}
+
+		const campos = Object.keys(dados);
+		let index = 0;
+
+		function ciclo() {
+
+			perguntarSeCorrigir();
+
+			log("\n🛠️  Correção de todos os campos: ('q' para sair)");
+
+			if (index >= campos.length) {
+				return perguntarGuardar();
+			}
+
+			const campo = campos[index];
+			const valor = dados[campo];
+
+			rl.question(`✏️  ${campo} [${valor}]: `, (input) => {
+				if (input.trim().toLowerCase() === "q") {
+					warn("Saída forçada. Operação cancelada.");
+					return resolve();
+				}
+
+				if (input.trim() !== "") {
+					dados[campo] = input.trim();
+				}
+
+				index++;
+				ciclo();
+			});
+		}
+
+		function perguntarGuardar() {
+			rl.question("💾 Guardar alterações no ficheiro? (s/n/q): ", (res) => {
+
+				const r = res.trim().toLowerCase();
+
+				if (r === "q") {
+					warn("Saída forçada. Operação cancelada.");
+					return resolve();
+				}
+				else if (r === "s") {
+					guardarPalavra(palavra, dados);
+					log("✅ Dados corrigidos e guardados.");
+				}
+				else if (r === "n") {
+					log("Alterações descartadas.");
+					return resolve();
+				}
+				
+				warn("Caracter Inválido!");
+				perguntarGuardar();
+			});
+		}
+
+		/* --------------------------------------------------------------------
+		 * @brief Pergunta se o utilizador quer corrigir e apresenta opções.
+		 * ----------------------------------------------------------------- */
+		function perguntarSeCorrigir() {
+			rl.question("🔧 Queres corrigir esta definição? (s/n/q): ", (res) => {
+
+				const r = res.trim().toLowerCase();
+
+				if (r === "q") {
+					warn("Saída forçada. Operação cancelada.");
+					return resolve();
+				}
+				if (r === "s") {
+					// Não fazer nada, continuar execução
+				}
+				else if (r === "n") return resolve();
+				else {
+					error("Carácter inválido.\n");
+					perguntarSeCorrigir();
+				}
+			});
+		}
+
+		ciclo();
+	});
+}
+
+
+module.exports = { corrigirAdicionar, corrigirDicionario };

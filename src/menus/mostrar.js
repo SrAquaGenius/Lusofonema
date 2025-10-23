@@ -7,6 +7,7 @@ const {
 	converterDadosParaTexto, lerPalavra
 } = require("../gestor/gestorPalavras");
 const { procurarPalavra } = require("./procurar");
+const { corrigirDicionario } = require("../analise/corrigir");
 
 const { log, error, debug, warn } = require("../utils/utils");
 
@@ -36,17 +37,18 @@ async function mostrarPalavra(rl, callback, input) {
 	}
 
 	// Procurar pela palavra escolhida
-	const res = lerPalavra(palavra);
+	const dado = lerPalavra(palavra);
+	debug(dado);
 
-	debug(res);
-
-	if (!res) {
+	if (!dado) {
 		warn(`Palavra "${palavra}" não existe na base de dados.`);
-		return perguntaVerificar(rl, callback);
+		return perguntaAdicionar(rl, callback);
 	}
 
 	log(`📚 Entrada no dicionário:`);
-	log(converterDadosParaTexto(res, true));
+	log(converterDadosParaTexto(dado, true));
+
+	await corrigirDicionario(rl, palavra, dado);
 	return callback();
 }
 
@@ -59,7 +61,7 @@ async function mostrarPalavra(rl, callback, input) {
  * @param {readline.Interface} rl Interface readline CLI para input do utilizador.
  * @param {function} callback Função a executar se o utilizador não quiser pesquisar.
  */
-function perguntaVerificar(rl, callback) {
+function perguntaAdicionar(rl, callback) {
 	rl.question("🔍 Pretende pesquisar pela palavra? (s/n): ",
 		(input) => {
 			const c = input.trim().toLowerCase();
@@ -73,7 +75,7 @@ function perguntaVerificar(rl, callback) {
 			}
 
 			warn("Carácter inválido.\n");
-			return perguntaVerificar(rl, callback);
+			return perguntaAdicionar(rl, callback);
 		}
 	);
 }
