@@ -52,7 +52,8 @@ function corrigirIPA(ipa, addSlash = true) {
 	ipa = ipa.replace(/uŋ/g, "ũ");
 	ipa = ipa.replace(/ŋ/g, "");
 	ipa = ipa.replace(/ɐ̃w̃/g, "ɐ̃w");
-	ipa = ipa.replace(/ɐ̃m/g, "ɐ̃‍");
+	ipa = ipa.replace(/ɐ̃m$/g, "ɐ̃‍");
+	ipa = ipa.replace(/ɐ̃m/g, "ɐm");
 	ipa = ipa.replace(/en/g, "ẽ");
 
 	// Ajustar alguns ditongos
