@@ -56,10 +56,12 @@ function mostrarMenu() {
 		log("");
 		switch (opcao.trim()) {
 			case "1":
-				mostrarAlfabeto(mostrarMenu);
+				mostrarAlfabeto();
+				mostrarMenu();
 				break;
 			case "2":
-				mostrarSons(mostrarMenu);
+				mostrarSons();
+				mostrarMenu();
 				break;
 			case "3":
 				mostrarResumoDicionario();

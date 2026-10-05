@@ -1,7 +1,7 @@
 /* ----------------------------------------------------------------------------
- * File:     menus/alfabeto.js
- * Authors:  SrAqua
- * ------------------------------------------------------------------------- */
+* File:     menus/alfabeto.js
+* Authors:  SrAqua
+* ------------------------------------------------------------------------- */
 
 const { log, clear, debug } = require("../utils/utils");
 
@@ -11,11 +11,9 @@ const { log, clear, debug } = require("../utils/utils");
  *        o seu nome comum em português e a representação fonética
  *        esperada (som IPA ou equivalente simplificado).
  *        Imprime os dados no terminal em formato de tabela simples.
- * @param {function} callback Função a executar após mostrar o alfabeto.
- *                            Pode ser usada para retornar ao menu.
- * @returns {void} Não retorna valor; apenas imprime e chama o callback.
+ * @returns {void} Não retorna valor. Apenas imprime os dados.
  */
-function mostrarAlfabeto(callback) {
+function mostrarAlfabeto() {
 	const alfabeto = [
 		{ letra: "A", nome: "á", som: "/a/ ou /ɐ/" },
 		{ letra: "B", nome: "bê", som: "/b/" },
@@ -49,8 +47,6 @@ function mostrarAlfabeto(callback) {
 	alfabeto.forEach(({ letra, nome, som }) => {
 		log(` ${letra.padEnd(5)}| ${nome.padEnd(5)}| ${som}`);
 	});
-
-	if (callback) callback();
 }
 
 /**
@@ -66,11 +62,9 @@ function mostrarAlfabeto(callback) {
  *        - SV : Semivogal
  *        - V-O: Vogal Oral
  *        - V-N: Vogal Nasal
- * @param {function} callback Função a executar após mostrar os sons.
- *                            Pode ser usada para retornar ao menu.
- * @returns {void} Não retorna valor; apenas imprime e chama o callback.
+ * @returns {void} Não retorna valor. Apenas imprime os dados.
  */
-function mostrarSons(callback) {
+function mostrarSons() {
 	const alfabeto = [
 		{ som: "/p/", tipo: "C-O", palavra: "Pato" },
 		{ som: "/b/", tipo: "C-O", palavra: "Bola" },
@@ -134,12 +128,10 @@ function mostrarSons(callback) {
 
 		const linhaC = `${c.som.padEnd(4)}| ${c.tipo.padEnd(5)}| ${c.palavra.padEnd(19)}`
 		const linhaV = v ? `${v.som.padEnd(4)}| ${v.tipo.padEnd(5)}| ${v.palavra}`
-						 : "";
+						: "";
 
 		log(`${linhaC}${linhaV}`);
 	}
-
-	if (callback) callback();
 }
 
 
