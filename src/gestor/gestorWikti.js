@@ -56,7 +56,7 @@ async function buscarDadosWiktionary(input, dados) {
 	}
 	catch (e) {
 		error("Erro ao buscar definição: ", e);
-		return null;
+		return false;
 	}
 }
 

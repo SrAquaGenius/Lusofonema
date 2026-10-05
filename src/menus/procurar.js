@@ -39,7 +39,7 @@ async function procurarPalavra(rl, callback, input) {
 		palavra = obterPalavraAleatoria();
 
 		if (!palavra) {
-			error("Falha a obter uma palavra aleatória.\n");
+			error("Falha a obter uma palavra aleatória.");
 			return callback();
 		}
 
@@ -52,7 +52,7 @@ async function procurarPalavra(rl, callback, input) {
 	debug(res);
 
 	if (!res || !res.fonte) {
-		error("Erro ao obter a informação da palavra.\n");
+		error("Erro ao obter a informação da palavra.");
 		return callback();
 	}
 
@@ -88,16 +88,16 @@ async function pesquisarPalavra(palavra) {
 
 		debug("Pesquisa por Wiktionary");
 
-		const eval = await buscarDadosWiktionary(palavra, dados);
+		const res = await buscarDadosWiktionary(palavra, dados);
 
 		debug("Dados:", dados);
 
-		if (eval == null) {
+		if (res == null || res == false) {
 			error("Procura de dados no Wiktionary falhou.");
 			return null;
 		}
 
-		else if (eval == true && dados.ipa) {
+		else if (res == true && dados.ipa) {
 
 			dados.ipa = corrigirIPA(dados.ipa);
 			dados.lusofonema = aplicarLusofonemaPorSilaba(dados);
