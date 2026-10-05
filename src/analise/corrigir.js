@@ -187,9 +187,11 @@ async function corrigirDicionario(rl, palavra, dados) {
 		const campos = Object.keys(dados);
 		let index = 0;
 
-		function ciclo() {
+		async function ciclo() {
 
-			perguntarSeCorrigir();
+			const continuar = await perguntarSeCorrigir();
+
+			if (!continuar) return;
 
 			log("\n🛠️  Correção de todos os campos: ('q' para sair)");
 

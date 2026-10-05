@@ -91,6 +91,7 @@ function mostrarMenu() {
 				// testarTexto(rl, mostrarMenu);
 				break;
 			case "7":
+				clear();
 				mudarDebug();
 				mostrarMenu();
 				break;
