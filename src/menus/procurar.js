@@ -21,10 +21,9 @@ const { log, error, debug } = require("../utils/utils");
  *        Se for nova, gera entrada com espeak-ng e sugere correção.
  *        Se input for vazio, escolhe palavra aleatória do corpus.
  *        Se for "0", retorna ao menu.
- * @param {readline.Interface} rl Interface readline.
  * @param {Function} callback Função de retorno.
  */
-async function procurarPalavra(rl, callback, input) {
+async function procurarPalavra(callback, input) {
 
 	let palavra = input.trim().toLowerCase();
 	debug("Palavra:", palavra);
@@ -59,7 +58,7 @@ async function procurarPalavra(rl, callback, input) {
 	log(`📚 Entrada ${res.fonte}:`);
 	log(converterDadosParaTexto(res.dados, true));
 
-	await corrigirAdicionar(rl, palavra, res.dados);
+	await corrigirAdicionar(palavra, res.dados);
 	return callback();
 }
 

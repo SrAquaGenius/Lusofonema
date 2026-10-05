@@ -5,15 +5,15 @@
 
 const { guardarPalavra } = require("../gestor/gestorPalavras");
 
+const { rl } = require("../utils/readline");
 const { log, warn, error, todo } = require("../utils/utils");
 
 /**
  * @brief Inicia o ciclo de correção e eventual atualização do ficheiro JSON.
- * @param {readline.Interface} rl Interface readline CLI.
  * @param {string} palavra Palavra em estudo.
  * @param {object} dados Objeto com os campos da palavra a corrigir.
  */
-async function corrigirAdicionar(rl, palavra, dados) {
+async function corrigirAdicionar(palavra, dados) {
 	return new Promise((resolve) => {
 
 		if (!dados) {
@@ -172,11 +172,10 @@ async function corrigirAdicionar(rl, palavra, dados) {
 
 /**
  * @brief Permite corrigir qualquer campo de uma palavra no dicionário.
- * @param {readline.Interface} rl Interface readline CLI.
  * @param {string} palavra Palavra em estudo.
  * @param {object} dados Objeto completo da palavra (pode ter campos extra).
  */
-async function corrigirDicionario(rl, palavra, dados) {
+async function corrigirDicionario(palavra, dados) {
 	return new Promise((resolve) => {
 
 		if (!dados) {

@@ -3,20 +3,14 @@
  * Authors:  SrAqua
  * ------------------------------------------------------------------------- */
 
-const readline = require("readline");
-
 const { mostrarAlfabeto, mostrarSons } = require("./menus/alfabeto");
 const { mostrarResumoDicionario } = require("./menus/dicionario");
 const { mostrarPalavra } = require("./menus/mostrar");
 const { procurarPalavra } = require("./menus/procurar");
 // const { testarTexto } = require("./menu/testarTexto");
 
+const { rl, perguntar } = require("./utils/readline");
 const { mostrarDebug, mudarDebug, log, todo, clear } = require("./utils/utils");
-
-const rl = readline.createInterface({
-	input: process.stdin,
-	output: process.stdout
-});
 
 clear();
 log("🗣️  Lusofonema — Uma versão fonética da língua Portuguesa");
@@ -52,7 +46,7 @@ function mostrarMenu() {
 	log("7 - Ativar/Desativar o debug: (", mostrarDebug() ? "🟢" : "⚫", ")");
 	log("0 - Sair da aplicação");
 
-	rl.question(": ", (opcao) => {
+	rl.question(": ", async (opcao) => {
 		log("");
 		switch (opcao.trim()) {
 			case "1":
@@ -70,27 +64,22 @@ function mostrarMenu() {
 
 			case "4":
 				clear();
-				rl.question("🔍 Palavra a mostrar ('0' para voltar): ",
-					async (input) => {
-						mostrarPalavra(rl, mostrarMenu, input);
-					}
-				);				
+				input = await perguntar(
+					"🔍 Palavra a mostrar ('0' para voltar): ");
+				await mostrarPalavra(mostrarMenu, input);		
 				break;
 
 			case "5":
 				clear();
-				rl.question(
-					"🔍 Palavra a procurar ('Enter' para aleatória, '0' para voltar): ",
-					async (input) => {
-						procurarPalavra(rl, mostrarMenu, input);
-					}
-				);
+				input = await perguntar(
+					"🔍 Palavra a procurar ('Enter' para aleatória, '0' para voltar): ");
+				await procurarPalavra(mostrarMenu, input);
 				break;
 
 			case "6":
 				todo("testarTexto");
+				// testarTexto(mostrarMenu);
 				mostrarMenu();
-				// testarTexto(rl, mostrarMenu);
 				break;
 			case "7":
 				clear();
