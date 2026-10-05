@@ -35,67 +35,66 @@ log("========================================================");
  * utilizador. Não recebe parâmetros diretamente, mas depende de variáveis e
  * funções do escopo exterior, incluindo o estado `debugLigado`.
  */
-function mostrarMenu() {
-	log("\nMenu:");
-	log("1 - Ver alfabeto do Lusofonema");
-	log("2 - Ver alfabeto fonético");
-	log("3 - Mostrar resumo do dicionario");
-	log("4 - Mostrar uma palavra");
-	log("5 - Procurar por uma palavra");
-	log("6 - Mostrar texto");
-	log("7 - Ativar/Desativar o debug: (", mostrarDebug() ? "🟢" : "⚫", ")");
-	log("0 - Sair da aplicação");
+async function mostrarMenu() {
+	const opcao = await perguntar(`
+Menu:
+1 - Ver alfabeto
+2 - Ver sons
+3 - Ver dicionário
+4 - Mostrar palavra
+5 - Procurar palavra
+6 - Testar Texto
+7 - Ativar/Desativar o debug: (${mostrarDebug() ? "on" : "off"})
+0 - Sair
+: `);
 
-	rl.question(": ", async (opcao) => {
-		log("");
-		switch (opcao.trim()) {
-			case "1":
-				mostrarAlfabeto();
-				mostrarMenu();
-				break;
-			case "2":
-				mostrarSons();
-				mostrarMenu();
-				break;
-			case "3":
-				mostrarResumoDicionario();
-				mostrarMenu();
-				break;
+	switch (opcao.trim()) {
+		case "1":
+			mostrarAlfabeto();
+			mostrarMenu();
+			break;
+		case "2":
+			mostrarSons();
+			mostrarMenu();
+			break;
+		case "3":
+			mostrarResumoDicionario();
+			mostrarMenu();
+			break;
 
-			case "4":
-				clear();
-				input = await perguntar(
-					"🔍 Palavra a mostrar ('0' para voltar): ");
-				await mostrarPalavra(mostrarMenu, input);		
-				break;
+		case "4":
+			clear();
+			input = await perguntar(
+				"🔍 Palavra a mostrar ('0' para voltar): ");
+			await mostrarPalavra(mostrarMenu, input);		
+			break;
 
-			case "5":
-				clear();
-				input = await perguntar(
-					"🔍 Palavra a procurar ('Enter' para aleatória, '0' para voltar): ");
-				await procurarPalavra(mostrarMenu, input);
-				break;
+		case "5":
+			clear();
+			input = await perguntar(
+				"🔍 Palavra a procurar ('Enter' para aleatória, '0' para voltar): ");
+			await procurarPalavra(mostrarMenu, input);
+			break;
 
-			case "6":
-				todo("testarTexto");
-				// testarTexto(mostrarMenu);
-				mostrarMenu();
-				break;
-			case "7":
-				clear();
-				mudarDebug();
-				mostrarMenu();
-				break;
-			case "0":
-				log("👋 Adeus!");
-				rl.close();
-				break;
-			default:
-				log("❗ Opção inválida.\n");
-				mostrarMenu();
-				break;
-		}
-	});
+		case "6":
+			todo("testarTexto");
+			// testarTexto(mostrarMenu);
+			mostrarMenu();
+			break;
+		case "7":
+			clear();
+			mudarDebug();
+			mostrarMenu();
+			break;
+		case "0":
+			log("👋 Adeus!");
+			rl.close();
+			break;
+		default:
+			log("❗ Opção inválida.\n");
+			mostrarMenu();
+			break;
+	};
 }
 
 mostrarMenu();
