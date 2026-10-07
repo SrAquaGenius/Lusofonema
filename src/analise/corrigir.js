@@ -5,8 +5,8 @@
 
 const { guardarPalavra } = require("../gestor/gestorPalavras");
 
-const { rl } = require("../utils/readline");
-const { log, warn, error, todo } = require("../utils/utils");
+const { rl, perguntar, perguntarCampo } = require("../utils/readline");
+const { log, warn, error, todo, debug } = require("../utils/utils");
 
 /**
  * @brief Inicia o ciclo de correção e eventual atualização do ficheiro JSON.
@@ -28,7 +28,7 @@ async function corrigirAdicionar(palavra, dados) {
 		/* --------------------------------------------------------------------
 		 * @brief Mostra o estado atual e inicia o ciclo de correção.
 		 * ----------------------------------------------------------------- */
-		function ciclo() {
+		function cicloCorrecao() {
 			log("\n🛠️  Correção atual:");
 			log(`→ Palavra: ${word}`);
 			log(`→ IPA: ${ipa}`);
@@ -41,7 +41,7 @@ async function corrigirAdicionar(palavra, dados) {
 		 * @brief Pergunta se o utilizador quer corrigir e apresenta opções.
 		 * ----------------------------------------------------------------- */
 		function perguntarSeCorrigir() {
-			rl.question("🔧 Queres corrigir este triplo? (s/n/q): ", (res) => {
+			rl.question("🔧 Queres corrigir este triplo? (s/n/q): ", async (res) => {
 				const r = res.trim().toLowerCase();
 
 				if (r === "q") {
@@ -55,57 +55,51 @@ async function corrigirAdicionar(palavra, dados) {
 					log("0 - Cancelar correção");
 					log("q - Cancelar e voltar ao menu inicial");
 
-					rl.question("✏️  Escolhe uma opção: ", (modo) => {
-						switch (modo.trim()) {
-							case "1": editarTodosCampos(); break;
-							case "2": editarIPA(); break;
-							case "3": editarLusofonema(); break;
-							case "0": ciclo(); break;
-							case "q": 
-								warn("Saída forçada. Operação cancelada.");
-								return resolve();
-							default:
-								error("Opção inválida.\n");
-								ciclo();
-						}
-					});
+					const modo = await perguntar("✏️  Escolhe uma opção: ");
+					switch (modo.trim()) {
+						case "1": await editarTodosCampos(); break;
+						case "2": await editarIPA(); break;
+						case "3": await editarLusofonema(); break;
+						case "0": cicloCorrecao(); break;
+						case "q": 
+							warn("Saída forçada. Operação cancelada.");
+							return resolve();
+						default:
+							error("Opção inválida.\n");
+							cicloCorrecao();
+					}
+
+					cicloCorrecao();
 				}
 				else if (r === "n") guardarJSONCorrigido();
-				else {
-					error("Carácter inválido.\n");
-					perguntarSeCorrigir();
-				}
+				else error("Carácter inválido.\n");
 			});
 		}
 
 		/* --------------------------------------------------------------------
 		 * @brief Permite editar palavra, IPA e Lusofonema manualmente.
 		 * ----------------------------------------------------------------- */
-		function editarTodosCampos() {
-			rl.question(`✏️  Palavra [${word}]: `, (inPalavra) => {
-				if (inPalavra.trim().toLowerCase() === "q") {
-					warn("Saída forçada. Operação cancelada.");
-					return resolve();
-				}
-				word = inPalavra.trim().toLowerCase() || word;
+		async function editarTodosCampos() {
 
-				rl.question(`✏️  IPA [${ipa}]: `, (inIPA) => {
-					if (inIPA.trim().toLowerCase() === "q") {
-						warn("Saída forçada. Operação cancelada.");
-						return resolve();
-					}
-					ipa = inIPA.trim() || ipa;
+			const novaPalavra = await perguntarCampo(
+				"✏️  Palavra", word
+			);
+			if (novaPalavra === null) return;
+			word = novaPalavra;
 
-					rl.question(`✏️  Lusofonema [${luso}]: `, (inLuso) => {
-						if (inLuso.trim().toLowerCase() === "q") {
-							warn("Saída forçada. Operação cancelada.");
-							return resolve();
-						}
-						luso = inLuso.trim() || luso;
-						ciclo();
-					});
-				});
-			});
+			const novoIPA = await perguntarCampo(
+				"✏️  IPA", ipa
+			);
+			if (novoIPA === null) return;
+			ipa = novoIPA;
+
+			const novoLuso = await perguntarCampo(
+				"✏️  Lusofonema", luso
+			);
+			if (novoLuso === null) return;
+			luso = novoLuso;
+
+			//return;
 		}
 
 		/* --------------------------------------------------------------------
@@ -120,7 +114,7 @@ async function corrigirAdicionar(palavra, dados) {
 				ipa = inIPA.trim() || ipa;
 				todo("Chamar aplicarLusofonema");
 				//luso = aplicarLusofonema(word, ipa);
-				ciclo();
+				cicloCorrecao();
 			});
 		}
 
@@ -134,7 +128,7 @@ async function corrigirAdicionar(palavra, dados) {
 					return resolve();
 				}
 				dados.lusofonema = inLuso.trim() || luso;
-				ciclo();
+				cicloCorrecao();
 			});
 		}
 
@@ -166,7 +160,7 @@ async function corrigirAdicionar(palavra, dados) {
 		}
 
 		// Início do ciclo
-		ciclo();
+		cicloCorrecao();
 	});
 }
 

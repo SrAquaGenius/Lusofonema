@@ -16,4 +16,17 @@ function perguntar(pergunta) {
 	});
 }
 
-module.exports = { rl, perguntar };
+async function perguntarCampo(campo, valor) {
+	const input = await perguntar(`${campo} [${valor}]: `);
+	const resposta = input.trim().toLowerCase();
+
+	if (resposta === "q") {
+		warn("Saída forçada. Operação cancelada.");
+		return null;
+	}
+
+	if (resposta === "") return valor;
+	return input.trim() || valor;
+}
+
+module.exports = { rl, perguntar, perguntarCampo };
